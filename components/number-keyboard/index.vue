@@ -2,10 +2,13 @@
   <div class="md-number-keyboard" :class="{'in-view': isView}">
     <template v-if="isView">
       <md-number-keyboard-container
+        ref="keyborad"
         :type="type"
         :disorder="disorder"
         :ok-text="okText"
         :is-view="isView"
+        :hide-dot="hideDot"
+        :text-render="textRender"
         @enter="$_onEnter"
         @delete="$_onDelete"
         @confirm="$_onConfirm"
@@ -14,6 +17,7 @@
     </template>
     <template v-else>
       <md-popup
+        ref="popup"
         v-model="isKeyboardShow"
         position="bottom"
         @show="$emit('show')"
@@ -21,14 +25,18 @@
         :has-mask="false"
       >
         <md-number-keyboard-container
+          ref="keyborad"
           :type="type"
           :disorder="disorder"
           :ok-text="okText"
           :is-view="isView"
+          :hide-dot="hideDot"
+          :text-render="textRender"
           @enter="$_onEnter"
           @delete="$_onDelete"
           @confirm="$_onConfirm"
           @hide="isKeyboardShow = false"
+          @touchmove.native.prevent
         ></md-number-keyboard-container>
       </md-popup>
     </template>
@@ -36,7 +44,7 @@
 </template>
 
 <script>import Popup from '../popup'
-import Keyborad from './keyboard'
+import Keyborad from './board'
 
 export default {
   name: 'md-number-keyboard',
@@ -59,11 +67,17 @@ export default {
       type: Boolean,
       default: false,
     },
+    hideDot: {
+      type: Boolean,
+    },
     disorder: {
       type: Boolean,
     },
     okText: {
       type: String,
+    },
+    textRender: {
+      type: Function,
     },
   },
 
@@ -114,8 +128,10 @@ export default {
 
 <style lang="stylus">
 .md-number-keyboard
-  .md-popup, .md-popup-box
-    z-index number-keyboard-zindex !important
+  .md-popup
+    z-index number-keyboard-zindex
   .md-popup-box
+    padding-top 1px
     background-color color-bg-base
+    padding-bottom constant(safe-area-inset-bottom)
 </style>

@@ -1,5 +1,6 @@
 <template>
   <button
+<<<<<<< HEAD
     type="button"
     class="md-button"
     :class="[type, size, icon ? 'with-icon' : '']"
@@ -9,6 +10,28 @@
     <div class="md-button-inner">
       <md-icon v-if="icon" :name="icon"></md-icon>
       <slot></slot>
+=======
+    :type="nativeType"
+    class="md-button"
+    :class="[
+      type,
+      inactive ? 'inactive' : 'active',
+      inline ? 'inline' : 'block',
+      round ? 'round' : '',
+      plain ? 'plain' : '',
+      size === 'small' ? 'small' : ''
+    ]"
+    :disabled="inactive || type === 'disabled'"
+    v-on="$listeners"
+  >
+    <div class="md-button-inner">
+      <template v-if="icon">
+        <md-icon :name="icon" :svg="iconSvg"></md-icon>
+      </template>
+      <p class="md-button-content">
+        <slot></slot>
+      </p>
+>>>>>>> 18544c76be38dcf6854e44bbdbdef665e1379462
     </div>
   </button>
 </template>
@@ -24,39 +47,82 @@ export default {
   props: {
     type: {
       type: String,
-      default: 'primary',
+      default: 'default', // default, primary, warning, disabled, link
     },
-    size: {
+    nativeType: {
       type: String,
-      default: 'large',
+      default: 'button',
     },
     icon: {
       type: String,
       default: '',
     },
-    disabled: {
+    iconSvg: {
       type: Boolean,
       default: false,
     },
+<<<<<<< HEAD
+=======
+    size: {
+      type: String,
+      default: 'large', // large, small
+    },
+    plain: {
+      type: Boolean,
+      default: false,
+    },
+    round: {
+      type: Boolean,
+      default: false,
+    },
+    inline: {
+      type: Boolean,
+      default: false,
+    },
+    inactive: {
+      type: Boolean,
+      default: false,
+    },
+>>>>>>> 18544c76be38dcf6854e44bbdbdef665e1379462
   },
 }
 </script>
 
 <style lang="stylus">
 .md-button
+<<<<<<< HEAD
   display block
   -webkit-user-select none
   -webkit-tap-highlight-color transparent
+=======
+>>>>>>> 18544c76be38dcf6854e44bbdbdef665e1379462
   position relative
+  display block
+  height button-height
+  line-height button-height
+  font-size button-font-size
+  font-weight button-font-weight
+  font-family font-family-normal
   text-align center
+<<<<<<< HEAD
   border-radius button-primary-radius
   background none
   border none
   box-shadow none
   outline none
   appearance none
+=======
+  border none
+  border-radius button-radius
+>>>>>>> 18544c76be38dcf6854e44bbdbdef665e1379462
   box-sizing border-box
+  outline none
+  transition all .3s
+  -webkit-appearance none
+  -webkit-user-select none
+  -webkit-tap-highlight-color transparent
   overflow visible
+<<<<<<< HEAD
   &:disabled
     &:active::before
       display none
@@ -70,19 +136,44 @@ export default {
   &:active::before
     display block
   .md-button-inner
+=======
+
+.md-button-inner
+  display flex
+  align-items center
+  justify-content center
+  width 100%
+  height 100%
+  overflow hidden
+  text-overflow ellipsis
+  word-break break-word
+  white-space nowrap
+
+.md-button-content
+  display flex
+  align-items center
+  padding 0 6px
+  .md-icon
+    padding 0
+
+.md-button
+  position relative
+  .md-icon
+>>>>>>> 18544c76be38dcf6854e44bbdbdef665e1379462
     display flex
     align-items center
     justify-content center
-    width 100%
-    height 100%
-    overflow hidden
-    text-overflow ellipsis
-    word-break break-word
-    white-space nowrap
-
+    padding 0 6px
   // type
+  &.default
+    background-color button-default-fill
+    color button-default-color
+    hairline(all, color-border-element, button-radius, 3px)
+    &.active:active
+      background-color button-default-active-fill
   &.primary
     background-color button-primary-fill
+<<<<<<< HEAD
     color color-text-base-inverse
     &:active::before
       background-color button-primary-fill-tap
@@ -139,5 +230,80 @@ export default {
       align-items center
       justify-content center
       margin-right button-icon-gap
+=======
+    color button-primary-color
+    hairline(all, button-primary-fill, button-radius, 3px)
+    &.active:active
+      background-color button-primary-active-fill
+  &.warning
+    background-color button-warning-fill
+    color button-warning-color
+    hairline(all, button-warning-fill, button-radius, 3px)
+    &.active:active
+      background-color button-warning-active-fill
+  &.disabled
+    background-color button-disabled-fill
+    color button-disabled-color
+    hairline(all, button-disabled-fill, button-radius, 3px)
 
+  &.plain
+    background transparent
+
+    &.default
+      color button-default-plain-color
+      hairline(all, color-border-element, button-radius, 3px)
+      &.active:active
+        background-color button-default-plain-active-fill
+    &.primary
+      color button-primary-plain-color
+      hairline(all, button-primary-fill, button-radius, 3px)
+      &.active:active
+        background-color button-primary-plain-active-fill
+    &.warning
+      color button-warning-plain-color
+      hairline(all, button-warning-fill, button-radius, 3px)
+      &.active:active
+        background-color button-warning-plain-active-fill
+    &.disabled
+      color button-disabled-plain-color
+      hairline(all, color-border-element, button-radius, 3px)
+
+  &.round
+    border-radius button-height
+    &:after
+      border-radius button-height !important
+
+  &.inline
+    display inline-block
+    padding 0 h-gap-md
+  &.block
+    width 100%
+
+  &.small
+    height button-small-height
+    line-height button-small-height
+    font-size button-small-font-size
+    &.round
+      border-radius button-small-height
+      &:after
+        border-radius button-small-height
+
+  &.link
+    display inline
+    width auto
+    height auto
+    line-height 1
+    font-size button-small-font-size
+    font-weight font-weight-normal
+    color button-primary-fill
+    background transparent
+    &.inactive
+      color color-text-disabled
+      opacity 1
+>>>>>>> 18544c76be38dcf6854e44bbdbdef665e1379462
+
+  &.inactive
+    opacity opacity-disabled
+    &.disabled
+      opacity 1
 </style>

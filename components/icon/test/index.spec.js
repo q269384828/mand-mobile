@@ -1,17 +1,30 @@
-import Icon from '../index'
-import {mount} from 'avoriaz'
+import {Icon} from 'mand-mobile'
+import sinon from 'sinon'
+import {shallowMount} from '@vue/test-utils'
 
-describe('Icon', () => {
+describe('Icon - Operation', () => {
   let wrapper
 
-  it('create a red icon', () => {
-    wrapper = mount(Icon, {
+  afterEach(() => {
+    wrapper && wrapper.destroy()
+  })
+
+  it('icon click event', () => {
+    let clicked = false
+    wrapper = shallowMount(Icon, {
       propsData: {
-        name: 'hollow-plus',
-        color: 'red',
+        name: 'success-color',
       },
-      attachToDocument: true,
+      listeners: {
+        click() {
+          clicked = true
+        },
+      },
     })
-    expect(wrapper.hasStyle('fill', 'red')).to.be.true
+    const eventSpy = sinon.spy(wrapper.vm, '$emit')
+
+    wrapper.find('.md-icon').trigger('click')
+    expect(eventSpy.calledWith('click')).toBe(true)
+    expect(clicked).toBe(true)
   })
 })

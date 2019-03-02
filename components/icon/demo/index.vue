@@ -20,16 +20,23 @@ export default {...createDemoModule('icon', [Demo0, Demo1, Demo2])}
 
 <style lang="stylus">
 .md-example-child-icon
+  padding-top 20px
+  background #FFF
+  clearfix()
   .md-example-item, .md-example-item-s
     float left
-    width 33%
+    width 25%
+    height 100px
     padding 15px 0
     color #333
     text-align center
+    .md-icon
+      margin 0 auto
+      color #111A34
     p
       text-align center
       font-size font-body-normal
-      color #666
+      color #999
   .md-example-item-s
     width 25%
 </style>

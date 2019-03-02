@@ -6,13 +6,13 @@ title: 快速上手
 
 **新项目**可通过[vue-cli](https://github.com/vuejs/vue-cli)初始化集成`mand-mobile`，**现有项目**集成请参考<a href="javascript:jumpAnchor('安装')">安装</a>
 
-* Vue CLI 2([模板](https://github.com/mand-mobile/mand-mobile-template))
+* Vue CLI 2/3([模板](https://github.com/mand-mobile/mand-mobile-template))(支持1.x)
 
 ```shell
 vue init mand-mobile/mand-mobile-template my-mand-mobile-project
 ```
 
-* Vue CLI 3([插件](https://github.com/mand-mobile/vue-cli-plugin-mand))
+* Vue CLI 3([插件](https://github.com/mand-mobile/vue-cli-plugin-mand))(支持1.x/2.x)
 
 ```shell
 vue create my-project
@@ -21,20 +21,37 @@ npm install --save-dev vue-cli-plugin-mand
 vue invoke mand
 ```
 
+* Vue CLI 3([示例](https://github.com/mand-mobile/vue-cli3-example))(支持1.x/2.x)
+
+* Nuxt([示例](https://github.com/mand-mobile/nuxt-example))
+
 #### 安装
 
-##### NPM
+##### **NPM or Yarn**
 
 ```shell
 npm install mand-mobile --save
+
+# or 
+
+yarn add mand-mobile
 ```
 
+<<<<<<< HEAD
 ##### 浏览器引入
+=======
+##### **浏览器引入**
+>>>>>>> 18544c76be38dcf6854e44bbdbdef665e1379462
 
 在浏览器中使用`script`和`link`标签直接引入文件，并使用全局变量 `window['mand-mobile']`
 
-在`npm`发布包内的`mand-mobile/lib`或`mand-mobile/lib-vw`目录下提供了`JS`以及`CSS` bundle，参考<a href="javascript:jumpAnchor('产出包目录')">产出包目录</a>。你也可以通过[UNPKG](https://unpkg.com/mand-mobile/lib/)进行下载
+在`npm`发布包内的`mand-mobile/lib`或`mand-mobile/lib-vw`目录下提供了`JS`以及`CSS` bundle，参考<a href="javascript:jumpAnchor('产出包目录')">产出包目录</a>。   
 
+<<<<<<< HEAD
+=======
+你也可以通过[![](https://data.jsdelivr.com/v1/package/npm/mand-mobile/badge)](https://www.jsdelivr.com/package/npm/mand-mobile)或者[UNPKG](https://unpkg.com/mand-mobile/lib/)进行下载。
+
+>>>>>>> 18544c76be38dcf6854e44bbdbdef665e1379462
 #### 引入
 
 ##### 按需加载(推荐)
@@ -79,8 +96,10 @@ npm install mand-mobile --save
 
 组件使用：
 
+> 如果没有以上配置，会全量引入，需手动引入全部样式， 参考<a href="javascript:jumpAnchor('全量引入')">全量引入</a>
+
 ```javascript
-import { Button } from 'mand-mobile' // 【注意】如果没有以上配置，会全量引入，需手动引入全部样式， 参考#全量引入
+import { Button } from 'mand-mobile'
 ```
 
 ##### 按需引入
@@ -134,6 +153,7 @@ module.exports = {
   plugins: [
     require('postcss-pxtorem')({
       rootValue: 100,
+      minPixelValue: 2,
       propWhiteList: []
     })
   ]
@@ -148,6 +168,7 @@ const pxtorem = require('postcss-pxtorem');
 // Postcss
 webpackConfig.postcss.push(pxtorem({
   rootValue: 100,
+  minPixelValue: 2,
   propWhiteList: []
 }))
 
@@ -160,6 +181,7 @@ webpackConfig.plugins.push(new webpack.LoaderOptionsPlugin({
       use: [
         poststylus(pxtorem({
           rootValue: 100,
+          minPixelValue: 2,
           propWhiteList: []
         }))
       ]
@@ -175,7 +197,7 @@ webpackConfig.plugins.push(new webpack.LoaderOptionsPlugin({
 ```vue
 <template>
   <div id="app">
-    <md-field title="投保人" class="block">
+    <md-field class="block" title="投保人">
       <md-input-item
         title="投保人姓名"
         placeholder="请填写投保人姓名"
@@ -185,15 +207,15 @@ webpackConfig.plugins.push(new webpack.LoaderOptionsPlugin({
         placeholder="请填写投保人身份证号"
       ></md-input-item>
     </md-field>
-    <md-field title="被保人" class="block">
+    <md-field class="block" title="被保人">
       <md-input-item
         title="被保人姓名"
         placeholder="请填写被保人姓名"
       ></md-input-item>
       <md-field-item
         title="与投保人关系"
-        arrow="arrow-right"
-        :value="relation"
+        :content="relation"
+        arrow
         @click="isPickerShow = true"
         solid
       ></md-field-item>

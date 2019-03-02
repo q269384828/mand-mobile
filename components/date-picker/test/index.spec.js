@@ -1,7 +1,8 @@
-import DatePicker from '../index'
-import {mount} from 'avoriaz'
+import {DatePicker} from 'mand-mobile'
+import sinon from 'sinon'
+import {mount} from '@vue/test-utils'
 
-describe('DatePicker', () => {
+describe('DatePicker - Operation', () => {
   let wrapper
 
   afterEach(() => {
@@ -16,15 +17,17 @@ describe('DatePicker', () => {
         minDate: new Date('2013/9/9'),
         maxDate: new Date('2020/9/9'),
         defaultDate: date,
+        todayText: '今天',
       },
+      sync: false,
     })
-    const eventStub = sinon.stub(wrapper.vm, '$emit')
+    const eventSpy = sinon.spy(wrapper.vm, '$emit')
 
     wrapper.vm.$nextTick(() => {
-      expect(wrapper.find('.md-picker-column-item').length).to.equal(3)
+      expect(wrapper.findAll('.md-picker-column-item').length).toEqual(3)
       setTimeout(() => {
-        expect(eventStub.calledWith('initialed')).to.be.true
-        expect(wrapper.instance().getFormatDate('yyyy-MM-dd')).to.equal(
+        expect(eventSpy.calledWith('initialed')).toBe(true)
+        expect(wrapper.vm.getFormatDate('yyyy-MM-dd')).toEqual(
           `${date.getFullYear()}-${date.getMonth() + 1 < 10
             ? '0' + (date.getMonth() + 1)
             : date.getMonth() + 1}-${date.getDate() < 10 ? '0' + date.getDate() : date.getDate()}`,
@@ -42,16 +45,15 @@ describe('DatePicker', () => {
         unitText: ['', '', '', 'h', 'm'],
         halfDayText: ['AM', 'PM'],
         isView: true,
-        isTwelveHours: true,
         defaultDate: date,
+        maxDate: new Date('2018/9/9'),
       },
+      sync: false,
     })
 
     wrapper.vm.$nextTick(() => {
-      expect(wrapper.find('.md-picker-column-item').length).to.equal(3)
-      // setTimeout(() => {
+      expect(wrapper.findAll('.md-picker-column-item').length).toEqual(2)
       done()
-      // }, 0)
     })
   })
 
@@ -62,14 +64,14 @@ describe('DatePicker', () => {
         type: 'datetime',
         isView: true,
         defaultDate: date,
+        minDate: new Date('2020/9/9'),
       },
+      sync: false,
     })
 
     wrapper.vm.$nextTick(() => {
-      expect(wrapper.find('.md-picker-column-item').length).to.equal(5)
-      // setTimeout(() => {
+      expect(wrapper.findAll('.md-picker-column-item').length).toEqual(5)
       done()
-      // }, 0)
     })
   })
 
@@ -82,11 +84,61 @@ describe('DatePicker', () => {
         customTypes: ['dd', 'hh', 'mm'],
         isTwelveHours: true,
       },
+      sync: false,
     })
 
     wrapper.vm.$nextTick(() => {
-      expect(wrapper.find('.md-picker-column-item').length).to.equal(3)
+      expect(wrapper.findAll('.md-picker-column-item').length).toEqual(3)
       wrapper.vm.isPickerShow = false
+      done()
+    })
+  })
+
+  it('create a popup picker', done => {
+    const date = new Date()
+    const minDate = new Date(date.getTime() - 60 * 60 * 24)
+    const maxDate = new Date(date.getTime() - 60 * 60 * 24)
+    wrapper = mount(DatePicker, {
+      propsData: {
+        value: false,
+      },
+      sync: false,
+    })
+    wrapper.setProps({value: true})
+    wrapper.vm.$nextTick(() => {
+      expect(wrapper.findAll('.md-picker-column-item').length).toEqual(3)
+      wrapper.setProps({
+        defaultDate: date,
+        minDate,
+        maxDate,
+      })
+      const cancel = wrapper.find('.md-popup-cancel')
+      cancel.trigger('click')
+      setTimeout(() => {
+        wrapper.setProps({value: true})
+        const confirm = wrapper.find('.md-popup-confirm')
+        confirm.trigger('click')
+        setTimeout(() => {
+          done()
+        }, 300)
+      }, 300)
+    })
+  })
+
+  it('defaultDate = maxDate', done => {
+    const date = new Date()
+    wrapper = mount(DatePicker, {
+      propsData: {
+        isView: true,
+        type: 'datetime',
+        defaultDate: date,
+        maxDate: date,
+      },
+      sync: false,
+    })
+
+    wrapper.vm.$nextTick(() => {
+      expect(wrapper.findAll('.md-picker-column-item').length).toEqual(5)
       done()
     })
   })

@@ -25,14 +25,13 @@ Vue.component(PopupTitleBar.name, PopupTitleBar)
 |has-mask|has mask or not|Boolean|`true`|-|
 |mask-closable|if the popup will be closed when clicking mask|Boolean|`true`|-|
 |position|the position of popup|String|`center`|`center`, `top`, `bottom`, `left`, `right`|
-|transition|the animation effect of popup|String|`fade, slide-up/down/left/right`|-|
-|prevent-scroll|whether to prevent from scrolling or not|Boolean|`false`|this program still has scrolling penetration at the top and bottom of the content, recommend to use `ScrollView` as the scrolling area|
-|prevent-scroll-exclude|excluded elements of prevented scrolling|String/HTMLElement|-|-|
+|transition|the animation effect of popup|String|-|`fade`, `fade-bounce`, `fade-slide`, `fade-zoom`<br> `slide-up`, `slide-down`, `slide-left`, `slide-right`|
 
 #### PopupTitleBar Props
 |Props | Description | Type | Default | Note|
 |----|-----|------|------|------|
 |title|title of popup|String|-|-|
+|describe|description of popup|String|-|-|
 |ok-text|confirmation text|String|-|no confirmation button if empty|
 |cancel-text|cancellation text|String|-|no cancellation button if empty|
 

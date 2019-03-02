@@ -1,20 +1,16 @@
 <template>
   <div class="md-example-child md-example-child-icon md-example-child-icon-1">
     <div class="md-example-item-s">
-      <md-icon name="circle-right" size="xs"></md-icon>
-      <p>xs</p>
+      <md-icon name="spinner" size="lg" style="-webkit-filter:invert(1)"></md-icon>
+      <p>spinner</p>
     </div>
     <div class="md-example-item-s">
-      <md-icon name="circle-right" size="sm"></md-icon>
-      <p>sm</p>
+      <md-icon name="success-color" size="lg" svg></md-icon>
+      <p>success-color</p>
     </div>
     <div class="md-example-item-s">
-      <md-icon name="circle-right" size="md"></md-icon>
-      <p>md</p>
-    </div>
-    <div class="md-example-item-s">
-      <md-icon name="circle-right" size="lg"></md-icon>
-      <p>lg</p>
+      <md-icon name="warn-color" size="lg" svg></md-icon>
+      <p>warn-color</p>
     </div>
   </div>
 </template>
@@ -24,9 +20,8 @@
 export default {
   name: 'icon-demo',
   /* DELETE */
-  title: '大小',
-  titleEnUS: 'Icon size',
-  codeSandBox: 'https://codesandbox.io/s/v6jxn02x90',
+  title: 'svg图标',
+  titleEnUS: 'Svg Icon',
   /* DELETE */
   components: {
     [Icon.name]: Icon,

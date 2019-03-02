@@ -7,14 +7,14 @@
       position
     ]"
   >
-    <transition name="fade">
+    <transition name="md-mask-fade">
       <div
         v-show="hasMask && isPopupBoxShow"
         @click="$_onPopupMaskClick"
         class="md-popup-mask"
       ></div>
     </transition>
-    <transition
+    <md-transition
       :name="transition"
       @before-enter="$_onPopupTransitionStart"
       @before-leave="$_onPopupTransitionStart"
@@ -30,26 +30,23 @@
       >
         <slot></slot>
       </div>
-    </transition>
+    </md-transition>
   </div>
 </template>
 
-<script>export default {
+<script>import Transition from '../transition'
+import popupMixin from './mixins'
+
+export default {
   name: 'md-popup',
 
+  mixins: [popupMixin],
+
+  components: {
+    'md-transition': Transition,
+  },
+
   props: {
-    value: {
-      type: Boolean,
-      default: false,
-    },
-    hasMask: {
-      type: Boolean,
-      default: true,
-    },
-    maskClosable: {
-      type: Boolean,
-      default: true,
-    },
     position: {
       type: String,
       default: 'center',
@@ -59,18 +56,18 @@
       default() {
         switch (this.position) {
           case 'bottom':
-            return 'slide-up'
+            return 'md-slide-up'
           /* istanbul ignore next */
           case 'top':
-            return 'slide-down'
+            return 'md-slide-down'
           /* istanbul ignore next */
           case 'left':
-            return 'slide-right'
+            return 'md-slide-right'
           /* istanbul ignore next */
           case 'right':
-            return 'slide-left'
+            return 'md-slide-left'
           default:
-            return 'fade'
+            return 'md-fade' // fade/fade-bounce/fade-slide/fade-zoom
         }
       },
     },
@@ -79,11 +76,24 @@
       default: false,
     },
     preventScrollExclude: {
-      type: [String, HTMLElement],
+      type: [String, Function],
       default() {
         return ''
       },
     },
+    // Mixin Props
+    // value: {
+    //   type: Boolean,
+    //   default: false,
+    // },
+    // hasMask: {
+    //   type: Boolean,
+    //   default: true,
+    // },
+    // maskClosable: {
+    //   type: Boolean,
+    //   default: true,
+    // },
   },
 
   data() {
@@ -134,7 +144,8 @@
       this.$nextTick(() => {
         this.isPopupBoxShow = true
         /* istanbul ignore if */
-        if (process.env.NODE_ENV === 'testing') {
+        if (process.env.NODE_ENV === 'test') {
+          this.$_onPopupTransitionStart()
           this.$_onPopupTransitionEnd()
         }
       })
@@ -147,7 +158,8 @@
       this.preventScroll && this.$_preventScroll(false)
       this.$emit('input', false)
       /* istanbul ignore if */
-      if (process.env.NODE_ENV === 'testing') {
+      if (process.env.NODE_ENV === 'test') {
+        this.$_onPopupTransitionStart()
         this.$_onPopupTransitionEnd()
       }
     },
@@ -217,81 +229,60 @@
 
 <style lang="stylus">
 .md-popup
-  &.with-mask
-    absolute-pos()
-    position fixed
-    z-index popup-zindex
-    .md-popup-box
-      position absolute
-      z-index 2
-  .md-popup-box
-    position fixed
-    z-index popup-zindex
-    max-width 100%
-    max-height 100%
-    overflow auto
-    will-change auto
-    &.slide-up
-      padding-bottom env(safe-area-inset-bottom)
-  .md-popup-mask
-    absolute-pos()
-    position absolute
-    z-index 1
-    background-color popup-mask-bg
-  &.center .md-popup-box
-    absolute-pos(50%, auto, auto, 50%)
-    transform translate(-50%, -50%)
-  &.top, &.bottom, &.left, &.right
-    .md-popup-box
-      transition all .3s
-  &.top, &.bottom
+  absolute-pos()
+  position fixed
+  display flex
+  pointer-events none
+  z-index popup-zindex
+
+  &.center
+    align-items center
+    justify-content center
+
+  &.top
+    flex-direction column
+    justify-content flex-start
     .md-popup-box
       width 100%
-  &.left, &.right
+
+  &.bottom
+    flex-direction column
+    justify-content flex-end
+    .md-popup-box
+      width 100%
+
+  &.left
+    justify-content flex-start
     .md-popup-box
       height 100%
-  &.top .md-popup-box
-    top 0
-    left 0
-  &.bottom .md-popup-box
-    bottom 0
-    left 0
-  &.left .md-popup-box
-    left 0
-    top 0
-  &.right .md-popup-box
-    right 0
-    top 0
 
-  .fade-enter-active, .fade-leave-active
-    transition opacity .3s
-  .fade-enter, .fade-leave-to, .fade-leave-active
-    opacity 0
+  &.right
+    justify-content flex-end
+    .md-popup-box
+      height 100%
 
-  .slide-up-enter-active, .slide-up-leave-active, .slide-down-enter-active, .slide-down-leave-active, .bottom .show
-    transform translateY(0)
-  .slide-up-enter, .slide-up-leave-to
-  /* Solve the problem of hiding to show
-   * in the animation state of elements outside the viewport
-   */
-    transform translateY(70%)
-  .slide-up-leave-active
-    transform translateY(100%)
+  &.inner-popup .md-popup-box
+    background-color color-bg-inverse
+    border-radius popup-title-bar-radius popup-title-bar-radius 0 0
 
-  .slide-down-enter, .slide-down-leave-to
-    transform translateY(-70%)
-  .slide-down-leave-active
-    transform translateY(-100%)
+.md-popup-mask
+  absolute-pos()
+  position absolute
+  pointer-events auto
+  z-index 1
+  background-color popup-mask-bg
 
-  .slide-left-enter-active, .slide-left-leave-active, .slide-right-enter-active, .slide-right-leave-active
-    transform translateX(0)
-  .slide-left-enter, .slide-left-leave-to
-    transform translateX(70%)
-  .slide-left-leave-active
-    transform translateX(100%)
+.md-popup-box
+  position relative
+  pointer-events auto
+  z-index 2
+  max-width 100%
+  max-height 100%
+  overflow auto
 
-  .slide-right-enter, .slide-right-leave-to
-    transform translateX(-70%)
-  .slide-right-leave-active
-    transform translateX(-100%)
+.md-mask-fade
+  &-enter, &-leave-to
+    opacity 0.01
+  &-enter-active, &-leave-active
+    transition opacity 250ms
 </style>

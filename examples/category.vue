@@ -2,6 +2,9 @@
   <div class="md-cg">
     <h1 class="md-cg-title">Mand Mobile</h1>
     <h1 class="md-cg-subtitle">面向金融场景的移动端Vue组件库</h1>
+    <div class="md-cg-logo">
+      <img src="//manhattan.didistatic.com/static/manhattan/mand/docs/mand-logo-black.svg" alt="">
+    </div>
     <section
       v-for="(category, i) in components" :key="i"
       class="cg-category"
@@ -11,7 +14,7 @@
         :class="{'active': category.show}"
         @click="toggleCategory(i, category)">
         {{ category.name }}&nbsp;&nbsp;<span>{{ category.text }}</span>
-        <md-icon name="arrow-right" size="lg"></md-icon>
+        <md-icon name="arrow-right" size="md"></md-icon>
       </div>
       <transition name="slide-fade">
         <div class="cg-category-list" v-show="category.show">
@@ -21,7 +24,7 @@
             @click="goToComponent(item.path)">
             <div class="cg-category-item-inner">
               {{ item.name }} - {{ item.text }}
-              <md-icon name="arrow-right" size="md"></md-icon>
+              <md-icon name="arrow-right" size="sm"></md-icon>
             </div>
           </div>
           <div class="cg-category-item" @click="toggleCategory(i, category)">
@@ -82,6 +85,16 @@ block()
     font-size font-body-normal
     font-weight 300
     color color-text-minor
+  .md-cg-logo
+    position fixed
+    top -.3rem
+    right -.3rem
+    width 2rem
+    height 2rem
+    opacity .05
+    z-index -1
+    img
+      width 100%
   .cg-category
     block()
     position relative
@@ -101,10 +114,11 @@ block()
       padding 0 h-gap-lg
       line-height 120px
       font-size font-heading-normal
+      font-family DINAlternate-Bold
       // font-weight font-weight-medium
       color color-text-base
       box-sizing border-box
-      box-shadow shadow-bottom
+      box-shadow 0 2px 4px rgba(0, 0, 0, .08)
       background color-bg-base
       overflow hidden
       span
@@ -140,7 +154,7 @@ block()
     .cg-category-list
       block()
       background #FCFCFC
-      box-shadow shadow-bottom
+      box-shadow 0 2px 4px rgba(0, 0, 0, .08)
       .cg-category-item
         block()
         padding 0 h-gap-lg
@@ -152,12 +166,14 @@ block()
           height 100px
           line-height 100px
           font-size font-body-normal
+          font-family DINAlternate-Bold
           color color-text-minor
           hairline(bottom, color-border-base)
           .md-icon
             position absolute
             right 0
             top 50%
+            line-height 32px
             transform translateY(-50%)
           &.close
             text-align center

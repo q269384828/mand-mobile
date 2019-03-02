@@ -1,21 +1,4 @@
-[English](./README.md) | **中文**
-<div align="center">
-  <a href="#">
-    <img width="80" src="https://manhattan.didistatic.com/static/manhattan/mand/docs/mand-logo-black.svg" alt="LOGO">
-  </a>
-</div>
-<br>
-<div align="center">
-    <a href="http://forthebadge.com">
-        <img src="http://forthebadge.com/images/badges/made-with-vue.svg">
-    </a>
-    <a href="http://forthebadge.com">
-        <img src="http://forthebadge.com/images/badges/built-with-love.svg">
-    </a>
-    <a href="http://forthebadge.com">
-        <img src="http://forthebadge.com/images/badges/makes-people-smile.svg">
-    </a>
-</div>
+<img src="https://pt-starimg.didistatic.com/static/starimg/img/4bJIa4DLYE1544607705566.jpg">
 
 # mand-mobile
 
@@ -29,7 +12,11 @@
 
 面向金融场景的移动端UI组件库，基于Vue.js实现。
 
+<<<<<<< HEAD
 ### 🎉🎉🎉 Mand Mobile 2.0, [立即体验](https://mand-mobile.github.io/2x-doc/)
+=======
+[English](./README.md) | **中文**
+>>>>>>> 18544c76be38dcf6854e44bbdbdef665e1379462
 
 ## 链接
 
@@ -44,7 +31,7 @@
 
 扫描下方二维码，打开示例集合进行预览:
 
-<img src="https://manhattan.didistatic.com/static/manhattan/mand/docs/mand-doc-home-qrcode.png?v=2" alt="Mand Mobile Examples" width="200"/>
+<img src="https://manhattan.didistatic.com/static/manhattan/mand-mobile/2.0/docs/mand-doc-home-qrcode.png" alt="Mand Mobile Examples" width="200"/>
 
 ## 安装 & 使用
 

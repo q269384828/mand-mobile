@@ -1,24 +1,27 @@
 <template>
-  <div class="md-landscape">
+  <div class="md-landscape" :class="{'is-full': fullScreen}">
 		<md-popup
       v-model="isLandscapeShow"
       :mask-closable="maskClosable"
       prevent-scroll
-      :prevent-scroll-exclude="scroll ? '.content' : null"
-      :has-mask="hasMask"
+      prevent-scroll-exclude=".md-landscape-content"
+      :has-mask="!fullScreen && hasMask"
+      :transition="fullScreen ? 'md-fade' : 'md-punch'"
       @input="$emit('input', false)"
       @show="$emit('show')"
       @hide="$emit('hide')">
-      <div class="content" :class="{scroll}">
-        <slot></slot>
+      <div class="md-landscape-body" :class="{scroll}">
+        <div class="md-landscape-content">
+          <slot></slot>
+        </div>
+        <md-icon
+          class="md-landscape-close"
+          :class="{dark: !hasMask || fullScreen}"
+          @click="$_close"
+          :name="fullScreen ? 'clear' : 'close'"
+        />
       </div>
     </md-popup>
-    <div class="close"
-      @click="$_close"
-      v-show="isLandscapeShow"
-      :class="{dark: !hasMask}">
-      <md-icon name="cross" size="lg"></md-icon>
-    </div>
   </div>
 </template>
 
@@ -39,6 +42,10 @@ export default {
       default: false,
     },
     scroll: {
+      type: Boolean,
+      default: false,
+    },
+    fullScreen: {
       type: Boolean,
       default: false,
     },
@@ -75,29 +82,49 @@ export default {
 
 <style lang="stylus">
 .md-landscape
-  .content
-    position relative
-    min-width 540px
-    min-height 500px
-    font-size 28px
-    text-align center
-    border-radius 4px
-    >img
+  &.is-full
+    .md-popup-box
+      position absolute
+      absolute-pos()
+    .md-landscape-body
       width 100%
       height 100%
-      display block
-    &.scroll
-      max-height 700px
-      overflow-y scroll
-  .close
-    position fixed
-    z-index 1000
-    left 0
-    right 0
-    bottom 10%
-    width 40px
-    margin 0 auto
+      background landscape-fullscreen-bg
+    .md-landscape-content
+      width 100%
+      height 100%
+      overflow auto
+      -webkit-overflow-scrolling touch
+    .md-icon.md-landscape-close
+      position absolute
+      right 25px
+      top 25px
+      margin auto
+
+  .md-popup, .md-popup-box
+    z-index landscape-zindex
+
+  .md-icon.md-landscape-close
+    position relative
+    display block
+    margin 50px auto 20px auto
+    font-size 50px
+    width 50px
+    height 50px
+    line-height 50px
+    text-align center
     color color-text-base-inverse
     &.dark
       color color-text-base
+      opacity 0.5
+
+.md-landscape-content
+  width landscape-width
+  font-size font-body-large
+  overflow auto
+  -webkit-overflow-scrolling touch
+  box-sizing border-box
+  img
+    max-width 100%
+    height auto
 </style>

@@ -25,7 +25,6 @@ export default {
   titleEnUS: 'Fade carousel <a href="javascript:window.triggerSwiper3()">Goto 2</a>',
   message:
     '@before-change: from: <span id="valueSwiper10">0</span>, to: <span id="valueSwiper11">0</span><br/>@after-change: from: <span id="valueSwiper12">0</span>, to: <span id="valueSwiper13">0</span>',
-  codeSandBox: 'https://codesandbox.io/s/r0l69wxz3q',
   /* DELETE */
   components: {
     [Swiper.name]: Swiper,
@@ -60,8 +59,8 @@ export default {
 }
 </script>
 
-<style lang="stylus" scoped>
-.md-example-child
+<style lang="stylus">
+.md-example-child-swiper-2
   height 250px
   .banner-item
     float left

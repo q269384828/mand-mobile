@@ -3,31 +3,34 @@
     <template v-if="isView">
       <div class="md-captcha-content">
         <h2 class="md-captcha-title" v-if="title" v-text="title"></h2>
-        <div class="md-captcha-error" v-text="errorMsg"></div>
         <div class="md-captcha-message">
           <slot></slot>
         </div>
-        <md-button
-          v-if="count"
-          class="md-captcha-countbtn"
-          type="ghost"
-          size="small"
-          v-text="countBtnText"
-          :disabled="this.isCounting"
-          @click="$_onResend"
-        ></md-button>
       </div>
       <md-codebox
         ref="codebox"
         v-model="code"
         :maxlength="maxlength"
         :system="system"
-        :closable="false"
-        :isView="isView"
         :mask="mask"
-        :autofocus="false"
         @submit="$_onSubmit"
-      />
+        :closable="false"
+        :isView="true"
+        :justify="true"
+        :autofocus="false"
+      >
+        <footer class="md-captcha-footer">
+          <div class="md-captcha-error" v-if="errorMsg" v-text="errorMsg"></div>
+          <div class="md-captcha-brief" v-else v-text="brief"></div>
+          <button
+            class="md-captcha-btn"
+            v-if="count"
+            v-text="countBtnText"
+            :disabled="this.isCounting"
+            @click="$_onResend"
+          ></button>
+        </footer>
+      </md-codebox>
     </template>
     <template v-else>
       <md-dialog
@@ -41,19 +44,9 @@
       >
         <div class="md-captcha-content">
           <h2 class="md-captcha-title" v-if="title" v-text="title"></h2>
-          <div class="md-captcha-error" v-text="errorMsg"></div>
           <div class="md-captcha-message">
             <slot></slot>
           </div>
-          <md-button
-            v-if="count"
-            class="md-captcha-countbtn"
-            type="ghost"
-            size="small"
-            v-text="countBtnText"
-            :disabled="this.isCounting"
-            @click="$_onResend"
-          ></md-button>
         </div>
         <md-codebox
           ref="codebox"
@@ -62,9 +55,22 @@
           :system="system"
           :closable="false"
           :mask="mask"
+          :justify="true"
           :autofocus="false"
           @submit="$_onSubmit"
-        />
+        >
+          <footer class="md-captcha-footer">
+            <div class="md-captcha-error" v-if="errorMsg" v-text="errorMsg"></div>
+            <div class="md-captcha-brief" v-else v-text="brief"></div>
+            <button
+              class="md-captcha-btn"
+              v-if="count"
+              v-text="countBtnText"
+              :disabled="this.isCounting"
+              @click="$_onResend"
+            ></button>
+          </footer>
+        </md-codebox>
       </md-dialog>
     </template>
   </div>
@@ -73,6 +79,7 @@
 <script>import Dialog from '../dialog'
 import Codebox from '../codebox'
 import Button from '../button'
+import {mdDocument} from '../_util'
 
 export default {
   name: 'md-captcha',
@@ -86,6 +93,10 @@ export default {
   props: {
     title: {
       type: String,
+    },
+    brief: {
+      type: String,
+      default: '',
     },
     value: {
       type: Boolean,
@@ -108,7 +119,7 @@ export default {
       default: true,
     },
     appendTo: {
-      default: () => document.body,
+      default: () => mdDocument.body,
     },
     count: {
       type: Number,
@@ -202,15 +213,16 @@ export default {
         return
       }
       clearInterval(this.__counter__)
-      let i = this.count - 1
+      const timestamp = Date.now()
+      let i = this.count
       this.isCounting = true
       this.countBtnText = this.countActiveText.replace('{$1}', i)
       /* istanbul ignore next */
       this.__counter__ = setInterval(() => {
-        if (i === 1) {
+        if (i <= 1) {
           this.resetcount()
         } else {
-          i--
+          i = this.count - Math.floor((Date.now() - timestamp) / 1000)
           this.countBtnText = this.countActiveText.replace('{$1}', i)
         }
       }, 1000)
@@ -223,7 +235,7 @@ export default {
     setError(msg) {
       this.$nextTick(() => {
         this.errorMsg = msg
-        this.code = ''
+        // this.code = ''
       })
     },
   },
@@ -231,30 +243,55 @@ export default {
 </script>
 
 <style lang="stylus">
-  .md-captcha
-    .md-dialog
+.md-captcha
+  .md-dialog
+    .md-popup
       z-index captcha-zindex
-      .md-dialog-content
-        margin-bottom number-keyboard-height
-    .md-captcha-content
-      text-align center
-      margin-bottom 20px
-      font-size 24px
-      .md-captcha-title
-        color captcha-title-color
-        font-size captcha-title-font-size
-        margin 0
-      .md-captcha-error
-        color captcha-error-color
-        font-size 24px
-        line-height 32px
-        height 32px
-        margin-bottom 12px
-      .md-captcha-countbtn
-        display inline-block
-        padding-left 16px
-        padding-right 16px
-        margin captcha-countbtn-gap auto
-        width auto
-        min-width 130px
+    .md-dialog-body
+      padding 60px 60px 30px 60px
+    .md-dialog-content
+      margin-bottom number-keyboard-height
+  .md-codebox
+    margin-bottom 28px
+
+.md-captcha-content
+  font-size captcha-font-size
+  color captcha-color
+  text-align center
+  line-height 1.2
+  margin-bottom 50px
+
+.md-captcha-title
+  color captcha-title-color
+  font-size captcha-title-font-size
+  font-weight normal
+  line-height 1.15
+  margin 0 0 16px 0
+
+.md-captcha-footer
+  margin 28px 0
+  display flex
+  font-size captcha-footer-font-size
+  justify-content space-between
+  align-items center
+  overflow hidden
+
+.md-captcha-error, .md-captcha-brief
+  flex 1 1 0%
+.md-captcha-error
+  color captcha-error-color
+.md-captcha-brief
+  color captcha-brief-color
+
+.md-captcha-btn
+  display inline-block
+  color captcha-btn-color
+  font-size captcha-footer-font-size
+  padding 0
+  margin 0 0 0 12px
+  border 0
+  border-radius 0
+  background none
+  &:disabled
+    color color-text-disabled
 </style>

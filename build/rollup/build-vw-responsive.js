@@ -4,6 +4,7 @@ const postcss = require('postcss')
 const px2vw = require('postcss-pixel-to-viewport')
 const fs = require('fs')
 const path = require('path')
+const { resultLog } = require('../utils')
 const TARGET_LIB_BASE = 'lib'
 const TARGET_VW_LIB_BASE = 'lib-vw'
 
@@ -54,8 +55,14 @@ function compilePxToVwAll() {
 
 function main() {
   copyLib()
-    .then(compilePxToVwAll)
-    .catch(e => console.info(e))
+  .then(compilePxToVwAll)
+  .then(() => {
+    resultLog('success', 'Build **VM/VW** Complete!')
+  })
+  .catch(err => {
+    console.info(err)
+    resultLog('error', 'Build **VM/VW** Fail!')
+  })
 }
 
 main()

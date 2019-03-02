@@ -3,6 +3,7 @@ title: 更新日志
 toc: hidden
 ---
 
+<<<<<<< HEAD
 ### 1.6.7
 `2018-12-28`
 - Fix
@@ -130,101 +131,101 @@ toc: hidden
 `2018-06-15`
 - Feature
   - 新增`Toast`自定义位置参数 [#89](https://github.com/didi/mand-mobile/issues/89)
-- Fix
-  - 修复`InputItem`长度限制
+=======
+### 2.1.2
 
-### 1.3.2
-`2018-06-11`
+`2019-02-25`
+
+>>>>>>> 18544c76be38dcf6854e44bbdbdef665e1379462
+- Fix
+  - 修复`ScrollView`在内容不满一屏是无法触发到底的问题[#335](https://github.com/didi/mand-mobile/issues/335)
+  - 修复`InputItem`标题浮动时换行的问题
+
+### 2.1.1
+
+`2019-02-23`
+
+- Fix
+  - 修复构建时`postcss`未生效的问题，导致`mand-mobile.css`中图片等资源未被做url inline处理。
+  
+### 2.1.0
+
+`2019-02-22`
+
 - Feature
-  - `css varialbe`覆盖率提升
+  - `Seletor`属性`defaultValue`去除类型限制[#305](https://github.com/didi/mand-mobile/issues/305)
+  - `ScrollView`增加属性`immediateCheckEndReaching`，用于控制初始化时就立即触发是否到达底部检查，并在内容不超过容器是也会触发`endReached`，并对事件触发防抖处理[#312](https://github.com/didi/mand-mobile/issues/312)
+  - `Picker`和`DatePicker`增加属性`lineHeight`，用于自定义选项高度[#323](https://github.com/didi/mand-mobile/issues/323)
+  - `ScrollView`增加属性`touchAngle`，用于限制仅一个方向滚动是的滚动触发角度范围[#326](https://github.com/didi/mand-mobile/issues/326)
+  - `Amount`默认使用系统内置字体
 
-### 1.3.1
-`2018-06-08`
+- Fix
+  - 补充类型声明，修复无默认导出报错
+  - 修复`WaterMark`内容区域无法点击的问题[#304](https://github.com/didi/mand-mobile/issues/304)
+  - 修复`Swiper`当`isLoop`为`false`且`transition`为`slideY`时无法滑动问题[#311](https://github.com/didi/mand-mobile/issues/311)
+  - 修复`TabPicker`滚动或点击穿透的问题[#319](https://github.com/didi/mand-mobile/issues/319)
+  - 修复`InputItem`输入过快时偶尔导致光标位置异常的问题[#322](https://github.com/didi/mand-mobile/issues/322)
+  - 修复`InputItem`在`Vue 2.6+`中金融键盘闪现问题[#324](https://github.com/didi/mand-mobile/issues/324)
+  - 修复部分文档问题
+
+### 2.0.0
+
+`2019-01-30`
+
 - Feature
-  - 新增`css varialbe`样式支持
-  - `ImageReader`组件新增图片对象参数
-  - `Cashier`新增自定义文案
-- Fix
-  - 修复`InputItem`销毁未删除虚拟键盘问题issue [#104](https://github.com/didi/mand-mobile/issues/104)
+  - `DetailItem`属性`content`增加支持类型[#285](https://github.com/didi/mand-mobile/issues/285)
+  - `Dialog`属性`preventScroll`默认值改为`true`[#286](https://github.com/didi/mand-mobile/issues/286)
+  - `Radio`属性`value`增加支持类型[#289](https://github.com/didi/mand-mobile/issues/289)
+  - `Icon`的字体图标类型增加无前缀类名[#295](https://github.com/didi/mand-mobile/issues/295)
+  - `Check`，`CheckBox`属性`name`，`value`增加支持类型[#297](https://github.com/didi/mand-mobile/issues/297)
+  - `InputItem`增加属性`virtual-keyboard-vm`，用于支持外部自定义金融键盘
+  - `Cashier`增加插槽`footer`，`channels`增加属性`img`
 
-### 1.3.0
-`2018-06-01`
+- Fix
+  - 去除`InputItem`内对原生输入框光标位置设置 [#268](https://github.com/didi/mand-mobile/issues/268)
+  - 补充`index.d.ts`
+  - 修复部分组件样式问题
+
+### 2.0.0-rc.5
+
+`2019-01-04`
+
 - Feature
-  - `Selector`, `TabPicker`增加`mask-closable`，支持蒙层点击关闭 [#64](https://github.com/didi/mand-mobile/issues/64)
-  - `Cashier`更改渠道展示方式，当支付渠道为两个直接展示 [#77](https://github.com/didi/mand-mobile/issues/77)
-  - `Capatcha`支持自定义按钮文案，支持通过`auto-countdown`控制验证码是否自动发送 [#84](https://github.com/didi/mand-mobile/issues/84)
-  - `ActionSheet`增加`maxHeight`控制展示区域最大高度 [#86](https://github.com/didi/mand-mobile/issues/86)
-  - `InputItem`增加类型`digit`, 支持其他Html Input标准类型 [#95](https://github.com/didi/mand-mobile/issues/95)
-  - `Picker`，`DatePicker`，`TabPicker`点击取消或蒙层将会撤销选择更改
-- Fix
-  - 修复`DatePicker`默认时间不在可选范围内的异常，将默认值教正至临近边界值 [#75](https://github.com/didi/mand-mobile/issues/75)
-  - 修复部分文档错误信息
+  - 全量引入时的注册全局组件名增加`PascalCase`[#261](https://github.com/didi/mand-mobile/issues/261)
+  - `ScrollView`增加属性`manual-init`和方法`init`
+  - `TabBar`, `Tabs`增加属性`immediate`
+  - `Swiper`增加属性`transition-duration`
 
-### 1.2.3
-`2018-05-11`
 - Fix
-  - 修复issue [#78](https://github.com/didi/mand-mobile/issues/78)
-  - 站点更新
+  - 修复部分组件样式问题
 
-### 1.2.2
-`2018-05-09`
-- Fix
-  - 修复issue [#67](https://github.com/didi/mand-mobile/issues/67)
-  - 修复issue [#69](https://github.com/didi/mand-mobile/issues/77)
-  - 修复issue [#72](https://github.com/didi/mand-mobile/issues/72)
+### 2.0.0-rc.4
+
+`2018-12-21`
+
 - Feature
-  - 新增`vw`适配方案
-  - Popup适配iPhone X
-
-<!-- CUTOFF -->
-### 1.1.1
-`2018-05-06`
-- Fix
-  - 修复issue [#62](https://github.com/didi/mand-mobile/issues/62)
-  - 修复issue [#63](https://github.com/didi/mand-mobile/issues/63)
-
-### 1.1.0
-`2018-05-04`
-- Feature
-  - `Swiper` 增加`fade`模式下的触摸滚动 [#20](https://github.com/didi/mand-mobile/issues/20)
-  - `ImageViewer` 增加`v-model`控制展示和隐藏 [#42](https://github.com/didi/mand-mobile/issues/42)
-  - `Toast` content 属性支持数字 [#43](https://github.com/didi/mand-mobile/issues/43)
+  - 优化`NumberKeyboard`输入体验
+  - `Cashier`增加插槽`scene`
+  - `Picker`增加`default-value`[#255](https://github.com/didi/mand-mobile/issues/255)
 
 - Fix
-  - 修复`Picker`在联动数据时，重置`DefaultIndex`引起的滚动异常 [#50](https://github.com/didi/mand-mobile/issues/50)
-  - 修复构建时`Autoprefixer`的`display:box`的警告 [#54](https://github.com/didi/mand-mobile/issues/54)
+  - 修复`Popup`连续展示隐藏时失效问题
+  - 修复`Steps`样式兼容问题
+  - 修复`InputItem`样式问题，增大关闭按钮点击区域
+  - `Captcha`的`setError`中不再清除已输入内容
 
-<!-- CUTOFF -->
-### 1.0.9
-`2018-04-26`
-- 修复issue [#47](https://github.com/didi/mand-mobile/issues/47)
+### 2.0.0-rc.3
 
-### 1.0.8
-`2018-04-24`
-- Button组件点击事件无需`.native`修饰符
-- 为Landscape组件增加`mask-closable`选项
+`2018-12-14`
 
-### 1.0.6
-`2018-04-20`
-- 修复issue [#29](https://github.com/didi/mand-mobile/issues/29)
+🎉🎉🎉 👏👏👏 更多内容查看 <a href="#/zh-CN/docs/migration">从1.x迁移</a>。
 
-<!-- CUTOFF -->
-### 1.0.5
-`2018-04-18`
-- 修复issue [#24](https://github.com/didi/mand-mobile/issues/24)
-
-### 1.0.4
-`2018-04-12`
-- 修复components/index.js
-
-### 1.0.2
-`2018-04-12`
-- 注入全局变量version
-
-### 1.0.1
-`2018-04-12`
-- 修复错误的main指向
-
+<<<<<<< HEAD
 ### 1.0.0
 `2018-04-11`
 - 正式公开发布
+=======
+### 1.x
+
+去[GitHub](https://github.com/didi/mand-mobile/blob/1.x/CHANGELOG.md)查看`1.x`的 Change Log。
+>>>>>>> 18544c76be38dcf6854e44bbdbdef665e1379462

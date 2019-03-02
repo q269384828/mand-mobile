@@ -5,6 +5,7 @@
         ref="input0"
         title="普通文本"
         placeholder="普通文本"
+        is-amount
         :maxlength="5"
       ></md-input-item>
       <md-input-item
@@ -24,12 +25,6 @@
         title="高亮表单"
         placeholder="高亮表单"
         is-highlight
-      ></md-input-item>
-      <md-input-item
-        ref="input2"
-        title="大尺寸表单"
-        placeholder="大尺寸表单"
-        size="large"
       ></md-input-item>
       <md-input-item
         ref="input3"

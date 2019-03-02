@@ -1,12 +1,14 @@
-import Captcha from '../index'
+import {Captcha} from 'mand-mobile'
 import sinon from 'sinon'
-import {mount} from 'avoriaz'
+import {mount} from '@vue/test-utils'
 
-describe('Captcha', () => {
+describe('Captcha - Operation', () => {
   let wrapper
   afterEach(() => {
     wrapper && wrapper.destroy()
   })
+
+  document.body.removeChild = () => {}
 
   it('create a simple captcha', () => {
     wrapper = mount(Captcha, {
@@ -14,9 +16,10 @@ describe('Captcha', () => {
         system: true,
         value: true,
       },
+      sync: false,
     })
 
-    expect(wrapper.hasClass('md-captcha')).to.be.true
+    expect(wrapper.classes('md-captcha')).toBe(true)
   })
 
   it('create a captcha and not append to body', () => {
@@ -26,7 +29,7 @@ describe('Captcha', () => {
       },
     })
 
-    expect(wrapper.vm.$el.parentNode).not.to.equal(document.body)
+    expect(wrapper.vm.$el.parentNode).not.toEqual(document.body)
   })
 
   it('create inline captcha', () => {
@@ -36,7 +39,7 @@ describe('Captcha', () => {
       },
     })
 
-    expect(wrapper.contains('.md-dialog')).to.be.false
+    expect(wrapper.contains('.md-dialog')).toBe(false)
   })
 
   it('should clean code after shown again', () => {
@@ -53,7 +56,7 @@ describe('Captcha', () => {
       value: true,
     })
 
-    expect(wrapper.vm.code).to.equal('')
+    expect(wrapper.vm.code).toEqual('')
   })
 
   it('show and hide captcha', done => {
@@ -68,19 +71,19 @@ describe('Captcha', () => {
       value: true,
     })
     setTimeout(() => {
-      expect(eventStub.calledWith('show')).to.be.true
-      wrapper.find('.md-dialog-close')[0].trigger('click')
+      expect(eventStub.calledWith('show')).toBe(true)
+      wrapper.find('.md-dialog-close').trigger('click')
       wrapper.setProps({
         value: false,
       })
     }, 300)
     setTimeout(() => {
-      expect(eventStub.calledWith('input', false)).to.be.true
+      expect(eventStub.calledWith('input', false)).toBe(true)
       wrapper.setProps({
         value: true,
       })
       setTimeout(() => {
-        expect(eventStub.calledWith('show')).to.be.true
+        expect(eventStub.calledWith('show')).toBe(true)
         done()
       }, 300)
     }, 600)
@@ -95,29 +98,44 @@ describe('Captcha', () => {
 
     wrapper.vm.setError('invalid code')
     setTimeout(() => {
-      expect(wrapper.vm.errorMsg).to.equal('invalid code')
-      expect(wrapper.vm.code).to.equal('')
+      expect(wrapper.vm.errorMsg).toEqual('invalid code')
+      expect(wrapper.vm.code).toEqual('')
       wrapper.setData({
         code: '123',
       })
       setTimeout(() => {
-        expect(wrapper.vm.errorMsg).to.equal('')
+        expect(wrapper.vm.errorMsg).toEqual('')
         done()
       }, 0)
     }, 10)
   })
 
-  it('click button and emit send event', () => {
+  it('click button and emit send event', done => {
     wrapper = mount(Captcha, {
       propsData: {
         value: true,
+        count: 2,
       },
     })
 
     const eventStub = sinon.stub(wrapper.vm, '$emit')
-    wrapper.find('.md-captcha-content .md-button')[0].trigger('click')
+    setTimeout(() => {
+      wrapper.find('.md-captcha-btn').trigger('click')
+      expect(eventStub.calledWith('send')).toEqual(true)
+      done()
+    }, 2500)
+  })
+
+  it('not countdown', () => {
+    wrapper = mount(Captcha, {
+      propsData: {
+        value: true,
+        count: 0,
+      },
+    })
+
     wrapper.vm.countdown()
-    expect(eventStub.calledWith('send')).to.equal(true)
+    expect(wrapper.findAll('.md-captcha-btn').length).toEqual(0)
   })
 
   it('emit submit events', done => {
@@ -134,13 +152,14 @@ describe('Captcha', () => {
     wrapper.setProps({
       value: true,
     })
-    wrapper.setData({
-      code: '123',
-    })
     setTimeout(() => {
-      wrapper.first('.keyboard-number-item').trigger('click')
+      const keys = wrapper.findAll('.keyboard-number-item')
+      keys.at(0).trigger('click')
+      keys.at(1).trigger('click')
+      keys.at(2).trigger('click')
+      keys.at(0).trigger('click')
       setTimeout(() => {
-        expect(eventStub.calledWith('submit', '1231')).to.be.true
+        expect(eventStub.calledWith('submit', '1231')).toBe(true)
         done()
       }, 0)
     }, 500)

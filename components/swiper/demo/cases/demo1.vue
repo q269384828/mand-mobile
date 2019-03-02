@@ -3,7 +3,6 @@
     <md-swiper
       @before-change="beforeChange"
       @after-change="afterChange"
-      :has-dots="false"
       :default-index="1"
       :dragable="false"
       :autoplay="5000"
@@ -30,7 +29,6 @@ export default {
     'Vertically, the second screen (index 1) is displayed by default, navigation points are not displayed, and dragging is not possible. The scroll interval is 5 seconds',
   message:
     '@before-change: from: <span id="valueSwiper5">0</span>, to: <span id="valueSwiper6">0</span><br/>@after-change: from: <span id="valueSwiper7">0</span>, to: <span id="valueSwiper8">0</span>',
-  codeSandBox: 'https://codesandbox.io/s/ojxkvq2mk6',
   /* DELETE */
   components: {
     [Swiper.name]: Swiper,
@@ -57,8 +55,8 @@ export default {
 }
 </script>
 
-<style lang="stylus" scoped>
-.md-example-child
+<style lang="stylus">
+.md-example-child-swiper-1
   height 250px
   .banner-item
     float left

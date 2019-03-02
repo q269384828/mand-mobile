@@ -23,17 +23,22 @@ Vue.component(Selector.name, Selector)
 |属性 | 说明 | 类型 | 默认值 | 备注|
 |----|-----|------|------|------|
 |v-model|选择器是否可见|Boolean|false|-|
-|data|数据源|Array<{value,text,...}>|`[]`|`label`可为`html`片段|
-|default-index|选择器初始选中项索引|Number|-|-|
-|invalid-index|选择器不可用选项索引|Number|-|-|
+|data|数据源|Array<{value,text,disabled,...}>|`[]`|`text`可为`html`片段|
+|default-value|选择器初始选中项的值|any|-|-|
 |title|选择器标题|String|-|-|
+|describe|选择器描述|String|-|-|
 |ok-text|选择器确认文案|String|-|若为空则为`确认模式`，即点击选项直接选择|
 |cancel-text|选择器取消文案|String|`取消`|-|
-|mask-closable<sup class="version-after">1.3.0+</sup>|点击蒙层是否可关闭弹出层|Boolean|`true`|-|
+|mask-closable|点击蒙层是否可关闭弹出层|Boolean|`true`|-|
 |is-check|是否有`check`图标|Boolean|`false`|仅`确认模式`|
-|option-render|返回各选项渲染内容|Function({value, text ,...}):String|-|`vue 2.1.0+`可使用`slot-scope`，参考`Radio`|
-|max-height<sup class="version-after">1.3.0+</sup>|选择器内容区域最高高度, 超出后可滚动|Number|400|单位`px`|
-
+|max-height|选择器内容区域最高高度, 超出后可滚动|Number/String|`auto`|-|
+|min-height|选择器内容区域最小高度, 超出后可滚动|Number/String|`auto`|-|
+|icon|选中项的图标|String|`checked`|-|
+|icon-inverse|非选中项的图标|String|`check`|-|
+|icon-disabled|禁用项的图标|String|`check-disabled`|-|
+|icon-size|图标大小|String|`lg`|-|
+|icon-svg|使用svg图标|Boolean|`false`|-|
+|icon-position|图标位置|String|`right`|`left`, `right`|
 
 #### Selector Events
 
@@ -51,3 +56,12 @@ Vue.component(Selector.name, Selector)
 
 #### @hide()
 选择器隐藏事件
+
+#### Selector Slots
+```html
+<md-selector>
+  <template slot-scope="{ option }">
+    <div class="md-selector-custom-title">Hello, {{ option.text }}</div>
+  </template>
+</md-selector>
+```

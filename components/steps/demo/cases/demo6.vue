@@ -1,8 +1,9 @@
 <template>
-  <div class="md-example-child md-example-child-steps md-example-child-steps-5">
+  <div class="md-example-child md-example-child-steps md-example-child-steps-6">
     <md-steps
       :steps="steps"
-      :current="currentStep">
+      :current="currentStep"
+    >
     </md-steps>
   </div>
 </template>
@@ -14,7 +15,6 @@ export default {
   /* DELETE */
   title: '完成全部步骤',
   titleEnUS: 'Complete all steps',
-  codeSandBox: 'https://codesandbox.io/s/xl9mykwp3w',
   height: 150,
   /* DELETE */
   components: {
@@ -41,16 +41,3 @@ export default {
   },
 }
 </script>
-
-<style lang="stylus">
-.md-example-child-steps-5
-  height 140px
-  .md-steps .icon.current::before
-    content ''
-    color color-primary-tap
-    border-bottom 10px solid
-    border-left 10px solid transparent
-    border-right 10px solid transparent
-    position absolute
-    top 130px
-</style>

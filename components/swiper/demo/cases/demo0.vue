@@ -3,11 +3,14 @@
     <md-swiper
       @before-change="beforeChange"
       @after-change="afterChange"
-      ref="swiper">
+      ref="swiper"
+      :is-prevent="false"
+      :useNative-driver="false"
+    >
       <md-swiper-item :key="$index" v-for="(item, $index) in simple">
-        <a href="javascript:void(0)"
+        <div
           class="banner-item"
-          :style="{'background': `${item.color}`}">{{item.text}}</a>
+          :style="{'background': `${item.color}`}">{{item.text}}</div>
       </md-swiper-item>
     </md-swiper>
   </div>
@@ -23,11 +26,10 @@ export default {
     '横向轮播 <a href="javascript:window.triggerSwiper0()">Goto 2</a><a href="javascript:window.triggerSwiper1()">Play</a><a href="javascript:window.triggerSwiper2()">Stop</a>',
   titleEnUS:
     'Horizontal rotation <a href="javascript:window.triggerSwiper0()">Goto 2</a><a href="javascript:window.triggerSwiper1()">Play</a><a href="javascript:window.triggerSwiper2()">Stop</a>',
-  describle: '10秒后异步加载更多项，20秒后重置为初始数量',
-  describleEnUs: 'Async load more items in 10s, and reset to origin items in another 10s',
+  describe: '10秒后异步加载更多项，20秒后重置为初始数量',
+  describEnUs: 'Async load more items in 10s, and reset to origin items in another 10s',
   message:
     '@before-change: from: <span id="valueSwiper0">0</span>, to: <span id="valueSwiper1">0</span><br/>@after-change: from: <span id="valueSwiper2">0</span>, to: <span id="valueSwiper3">0</span>',
-  codeSandBox: 'https://codesandbox.io/s/jz7p622ryv',
   /* DELETE */
   components: {
     [Swiper.name]: Swiper,
@@ -85,8 +87,8 @@ export default {
 }
 </script>
 
-<style lang="stylus" scoped>
-.md-example-child
+<style lang="stylus">
+.md-example-child-swiper-0
   height 250px
   .banner-item
     float left

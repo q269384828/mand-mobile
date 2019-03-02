@@ -1,20 +1,14 @@
 <template>
-  <div
-    class="md-toast"
-    :class="[
-      icon ? 'has-icon' : '',
-      position,
-    ]"
-  >
+  <div class="md-toast" :class="[position]">
     <md-popup
-      v-model="visible"
+      :value="visible"
       @hide="$_onHide"
       :hasMask="hasMask"
       :maskClosable="false"
     >
       <div class="md-toast-content">
-        <md-icon v-if="icon" :name="icon" size="lg" />
-        <span v-text="content"></span>
+        <md-icon v-if="icon" :name="icon" size="lg" :svg="iconSvg"/>
+        <div class="md-toast-text" v-if="content" v-text="content"></div>
       </div>
     </md-popup>
   </div>
@@ -35,6 +29,10 @@ export default {
     icon: {
       type: String,
       default: '',
+    },
+    iconSvg: {
+      type: Boolean,
+      default: false,
     },
     content: {
       type: [String, Number],
@@ -61,29 +59,25 @@ export default {
     }
   },
 
-  mounted() {
-    this.$_update()
-  },
-  updated() {
-    this.$_update()
-  },
   beforeDestroy() {
-    if (this.duration) {
+    if (this.$_timer) {
       clearTimeout(this.$_timer)
     }
   },
 
   methods: {
-    $_update() {
-      clearTimeout(this.$_timer)
+    $_onHide() {
+      this.$emit('hide')
+    },
+    fire() {
+      if (this.$_timer) {
+        clearTimeout(this.$_timer)
+      }
       if (this.visible && this.duration) {
         this.$_timer = setTimeout(() => {
           this.hide()
         }, this.duration)
       }
-    },
-    $_onHide() {
-      this.$emit('hide')
     },
     hide() {
       this.visible = false
@@ -93,39 +87,47 @@ export default {
 </script>
 
 <style lang="stylus">
-  .md-toast
-    position relative
+.md-toast
+  .md-popup
     z-index toast-zindex
-    &.has-icon .md-toast-content
-      padding-left toast-text-left
-    .md-toast-content
-      position relative
-      display inline-block
-      text-align left
-      padding toast-padding
-      border-radius toast-radius
-      font-size toast-font-size
-      color toast-color
-      background-color toast-fill
-      box-sizing content-box
-    .md-icon
+  .md-icon
+    flex-shrink 0
+    color toast-color
+  .md-icon + .md-toast-text
+    margin-left h-gap-xs
+  .md-popup
+    .md-popup-box
+      width 540px
+      display flex
+      justify-content center
+    .md-popup-mask
+      background transparent
+  &.bottom
+    .md-popup .md-popup-box
       position absolute
-      top 50%
-      left toast-padding
-      transform translateY(-50%)
-    .md-popup
-      .md-popup-box
-        width 468px
-        text-align center
-        overflow visible
-      .md-popup-mask
-        background transparent
-    &.bottom
-      .md-popup.center .md-popup-box
-        top auto
-        bottom 50px
-    &.top
-      .md-popup.center .md-popup-box
-        top 50px
-        bottom auto
+      bottom 50px
+  &.top
+    .md-popup .md-popup-box
+      position absolute
+      top 50px
+
+.md-toast-content
+  display inline-flex
+  align-items center
+  max-width 100%
+  min-width 80px
+  padding toast-padding
+  border-radius toast-radius
+  font-size toast-font-size
+  text-align left
+  line-height 1.42857142
+  color toast-color
+  background-color toast-fill
+  box-sizing border-box
+  overflow hidden
+
+.md-toast-text
+  white-space nowrap
+  text-overflow: ellipsis
+  overflow hidden
 </style>

@@ -11,12 +11,17 @@
           'backgroundRepeat': 'no-repeat',
           'backgroundSize': 'cover'
         }">
-        <md-icon
+        <md-tag
           class="image-reader-item-del"
-          name="circle-cross"
-          color="#666"
-          @click.native="onDeleteImage('reader1', index)">
-        </md-icon>
+          size="small"
+          shape="quarter"
+          fill-color="#111A34"
+          type="fill"
+          font-color="#fff"
+          @click.native="onDeleteImage('reader1', index)"
+        >
+          <md-icon name="close"></md-icon>
+        </md-tag>
       </li>
       <li class="image-reader-item add">
         <md-image-reader
@@ -26,14 +31,14 @@
           @error="onReaderError"
           is-multiple
         ></md-image-reader>
-        <md-icon name="hollow-plus" size="md" color="#CCC"></md-icon>
-        <p>上传照片</p>
+        <md-icon name="camera" size="md" color="#CCC"></md-icon>
+        <p>添加图片</p>
       </li>
     </ul>
   </div>
 </template>
 
-<script>import {Icon, ImageReader, Toast} from 'mand-mobile'
+<script>import {Icon, ImageReader, Tag, Toast} from 'mand-mobile'
 import imageProcessor from 'mand-mobile/components/image-reader/image-processor'
 
 export default {
@@ -42,11 +47,11 @@ export default {
   title: '图片选择并轴向修正，压缩处理',
   titleEnUS: 'Picture selection and axial correction, compression processing',
   describe: 'width: 200&nbsp;&nbsp;height: 200&nbsp;&nbsp;quality: 0.1',
-  codeSandBox: 'https://codesandbox.io/s/xjq2ylrzyq',
   /* DELETE */
   components: {
     [Icon.name]: Icon,
     [ImageReader.name]: ImageReader,
+    [Tag.name]: Tag,
   },
   data() {
     return {
@@ -102,11 +107,11 @@ export default {
       padding-bottom 23.5%
       margin-bottom 2%
       margin-right 2%
-      background color-bg-base
+      background #FFF
+      box-shadow 0 5px 20px rgba(197, 202, 213, .25)
       box-sizing border-box
       list-style none
-      border-radius radius-normal
-      hairline(all, color-border-base)
+      border-radius 4px
       background-size cover
       &:nth-of-type(4n)
         margin-right 0
@@ -123,14 +128,15 @@ export default {
           left 0
           width 100%
           margin-top 15px
-          font-size font-minor-normal
-          color color-text-disabled
+          font-size 22px
+          color #CCC
           text-align center
       .image-reader-item-del
         position absolute
-        top 5px
-        right 5px
+        top 0
+        right 0
         z-index 3
-        background #EEE
-        border-radius radius-circle
+        opacity .8
+        .md-icon-close
+          font-size 24px
 </style>

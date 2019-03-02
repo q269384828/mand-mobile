@@ -1,21 +1,23 @@
 <template>
   <div class="md-tab-picker">
     <md-popup
-      v-model="isTabPickerShow"
+      :value="value"
       position="bottom"
       :mask-closable="maskClosable"
-      @show="$_onShow"
-      @hide="$_onHide"
-      @maskClick="$_onMaskClose"
+      @input="$_onPopupInput"
+      @show="$_onPopupShow"
+      @hide="$_onPopupHide"
+      @maskClick="$_onCancel"
     >
       <md-popup-title-bar
         :title="title"
-        :ok-text="okText"
-        :cancel-text="cancelText"
-        @confirm="$_onConfirm"
+        :describe="describe"
         @cancel="$_onCancel"
-      ></md-popup-title-bar>
+      >
+        <md-icon name="close" size="lg" slot="cancel" />
+      </md-popup-title-bar>
       <div class="md-tab-picker-content">
+<<<<<<< HEAD
         <md-tabs
           ref="tabs"
           :titles="subTitles"
@@ -52,6 +54,36 @@
             <slot name="loading" v-if="isLoading">{{loadingLabel}}</slot>
           </div>
         </div>
+=======
+          <md-tabs
+            v-model="currentTab"
+            ref="tabs"
+          >
+            <md-scroll-view :scrolling-x="false" auto-reflow>
+              <md-tab-pane
+                v-for="(pane, index) in panes"
+                :key="pane.name"
+                :name="pane.name"
+                :label="pane.label"
+              >
+                <md-radio-list
+                  :value="pane.value"
+                  :options="pane.options"
+                  :is-slot-scope="hasSlot"
+                  :key="tabsTmpKey"
+                  @input="$_onSelectPaneItem($event, index)"
+                  icon=""
+                  icon-inverse=""
+                  icon-position="right"
+                >
+                  <template slot-scope="{ option }">
+                    <slot :option="option"></slot>
+                  </template>
+                </md-radio-list>
+              </md-tab-pane>
+            </md-scroll-view>
+          </md-tabs>
+>>>>>>> 18544c76be38dcf6854e44bbdbdef665e1379462
       </div>
     </md-popup>
   </div>
@@ -59,23 +91,32 @@
 
 <script>import Popup from '../popup'
 import PopupTitlebar from '../popup/title-bar'
-import Tabs from '../tabs'
+import popupMixin from '../popup/mixins'
+import popupTitleBarMixin from '../popup/mixins/title-bar'
 import Icon from '../icon'
-import Radio from '../radio'
-import {noop, compareObjects} from '../_util'
+import Tabs from '../tabs'
+import TabPane from '../tab-pane'
+import RadioList from '../radio-list'
+import ScrollView from '../scroll-view'
+import {extend} from '../_util'
 
 export default {
   name: 'md-tab-picker',
 
+  mixins: [popupMixin, popupTitleBarMixin],
+
   components: {
     [Popup.name]: Popup,
     [PopupTitlebar.name]: PopupTitlebar,
-    [Tabs.name]: Tabs,
     [Icon.name]: Icon,
-    [Radio.name]: Radio,
+    [Tabs.name]: Tabs,
+    [TabPane.name]: TabPane,
+    [RadioList.name]: RadioList,
+    [ScrollView.name]: ScrollView,
   },
 
   props: {
+<<<<<<< HEAD
     value: {
       type: Boolean,
       default: false,
@@ -108,99 +149,101 @@ export default {
       type: Boolean,
       default: true,
     },
+=======
+>>>>>>> 18544c76be38dcf6854e44bbdbdef665e1379462
     data: {
-      type: Array,
-      default() {
-        return []
-      },
+      type: Object,
+      default: () => ({}),
     },
-    dataStruct: {
+    defaultValue: {
+      type: Array,
+      default: () => [],
+    },
+    placeholder: {
       type: String,
-      default: 'normal',
+      default: '请选择',
     },
-    defaultIndex: {
-      type: Array,
-      default() {
-        return []
-      },
-    },
-    optionRender: {
-      type: Array,
-      default() {
-        return []
-      },
-      validator(value) {
-        if (value.length > 0) {
-          return value.every(item => {
-            return typeof item === 'function'
-          })
-        } else {
-          return true
-        }
-      },
-    },
-    asyncFunc: {
-      type: Function,
-      default() {
-        return noop
-      },
-    },
+
+    // Mixin Props
+    // value: {
+    //   type: Boolean,
+    //   default: false,
+    // },
+    // title: {
+    //   type: String,
+    //   default: '',
+    // },
+    // describe: {
+    //   type: String,
+    //   default: '',
+    // },
+    // maskClosable: {
+    //   type: Boolean,
+    //   default: true,
+    // },
   },
 
   data() {
     return {
-      isTabPickerShow: false,
-      subTitles: [],
-      renderData: [],
-      defaultTabIndex: 0,
-      currentIndex: 0,
-      isLoading: true,
-      isDataError: false,
-      currentColumnLock: false,
-      lastSelectIndex: null,
-      refreshTabPicker: 0,
-      walkTimes: 0,
+      selected: [],
+      oldSelected: [],
+      currentTab: '',
+      oldCurrentTab: '',
+      tabsTmpKey: Date.now(),
     }
   },
 
-  watch: {
-    value(val) {
-      val && (this.isTabPickerShow = val)
-    },
-    isTabPickerShow(val) {
-      !val && this.$emit('input', val)
-    },
-    data: {
-      handler(val, oldVal) {
-        if (!compareObjects(val, oldVal)) {
-          this.$_initTabPicker()
-        }
-      },
-      deep: true,
-    },
-    isDataError(val) {
-      if (val) {
-        setTimeout(() => {
-          this.isDataError = false
-        }, 2000)
-      }
-    },
-  },
-
   computed: {
-    hasTitleSlotScope() {
-      return !!this.$scopedSlots.titles
+    panes() {
+      const panes = []
+      let target = this.data
+      let cursor = 0
+      while (target && target.name) {
+        const pane = {
+          name: target.name,
+          label: target.label || this.placeholder,
+          value: this.selected[cursor],
+          selected: null,
+          options: target.options,
+        }
+        let find = false
+        for (let i = 0, len = target.options.length; i < len; i++) {
+          if (target.options[i].value === this.selected[cursor]) {
+            pane.label = target.options[i].label
+            pane.selected = target.options[i]
+            target = target.options[i].children
+            find = true
+            cursor++
+            break
+          }
+        }
+        if (!find) {
+          target = null
+        }
+        panes.push(pane)
+      }
+
+      return panes
     },
-    hasOptionSlotScope() {
-      return !!this.$scopedSlots.option
+    hasSlot() {
+      return !!this.$scopedSlots.default
     },
   },
 
   created() {
-    this.$_initTabPicker()
+    /* istanbul ignore else */
+    if (this.defaultValue) {
+      this.selected = this.defaultValue
+    }
+
+    /* istanbul ignore else */
+    if (this.data) {
+      this.currentTab = this.data.name
+    }
   },
 
   methods: {
+<<<<<<< HEAD
     // MARK: private methods
     $_initTabPicker() {
       switch (this.dataStruct) {
@@ -404,31 +447,55 @@ export default {
 
     // MARK: events handler, 如 $_onButtonClick
     $_onShow() {
-      this.$emit('show')
+=======
+    // MARK: private events
+    $_onPopupInput(val) {
+      this.$emit('input', val)
     },
-    $_onHide() {
+    $_onPopupShow() {
+      this.$refs.tabs.reflowTabBar()
+>>>>>>> 18544c76be38dcf6854e44bbdbdef665e1379462
+      this.$emit('show')
+      setTimeout(() => {
+        this.oldSelected = extend([], this.selected)
+        this.oldCurrentTab = this.currentTab
+      }, 100)
+    },
+    $_onPopupHide() {
       this.$emit('hide')
     },
-    $_onConfirm() {
-      this.isTabPickerShow = false
-      const selectedItem = this.getSelectedItem()
-      const isSelectPart = selectedItem.some(option => {
-        return !option
-      })
-      if (!isSelectPart) {
-        this.lastSelectIndex = selectedItem.map(option => {
-          return option.item.eq
-        })
-      }
-      this.$emit('confirm', selectedItem)
-    },
     $_onCancel() {
-      this.$emit('cancel')
-      this.$_refreshTabPicker()
+      this.hideTabPicker()
+      setTimeout(() => {
+        this.selected = extend([], this.oldSelected)
+        this.currentTab = this.oldCurrentTab
+        this.tabsTmpKey = Date.now()
+      }, 100)
     },
-    $_onMaskClose() {
-      this.$_refreshTabPicker()
+    $_onSelectPaneItem(value, index) {
+      this.selected.splice(index, this.selected.length - index, value)
+      this.$nextTick(() => {
+        const nextPane = this.panes[index + 1]
+
+        /* istanbul ignore else */
+        if (nextPane) {
+          this.currentTab = nextPane.name
+        } else if (value !== '') {
+          setTimeout(() => {
+            this.$emit('change', {
+              values: this.getSelectedValues(),
+              options: this.getSelectedOptions(),
+            })
+            this.hideTabPicker()
+          }, 300)
+        }
+      })
     },
+    // MARK: public methods
+    getSelectedValues() {
+      return this.selected
+    },
+<<<<<<< HEAD
     $_onRadioChange(value, index) {
       if (this.dataStruct === 'cascade' && this.currentColumnLock) {
         return
@@ -459,44 +526,29 @@ export default {
         // Object.assign(value, {index})
         this.isLoading = true
         typeof currentColumn.asyncFunc === 'function' && currentColumn.asyncFunc(value, this.$_renderNextTabContent())
+=======
+    getSelectedOptions() {
+      if (this.panes && this.panes.length) {
+        return this.panes.filter(pane => pane.value).map(pane => pane.selected)
+      } else {
+        return []
+>>>>>>> 18544c76be38dcf6854e44bbdbdef665e1379462
       }
     },
-    $_onIndexChange(index) {
-      this.currentIndex = index
-    },
-
-    // MARK: public methods
-    getSelectedItem() {
-      return this.renderData.map((item, index) => {
-        if (~item.clickedKey) {
-          const selected = item.data[item.clickedKey]
-          return {
-            index: index,
-            item: {
-              label: selected.label,
-              value: selected.value,
-              eq: item.clickedKey,
-            },
-          }
-        } else {
-          return null
-        }
-      })
+    hideTabPicker() {
+      this.$emit('input', false)
     },
   },
 }
 </script>
 
-<style lang="stylus" scoped>
-.md-tab-picker
-  .md-tab-picker-content
-    background color-bg-base
-</style>
-
 <style lang="stylus">
 .md-tab-picker
-  .md-tab-picker-content
+  .md-popup
+    z-index tab-picker-zindex
+  .md-tab-bar
     position relative
+<<<<<<< HEAD
   .md-tabs
     .md-tab-content-wrapper
       height 400px
@@ -519,4 +571,35 @@ export default {
       color color-text-minor
   .md-popup-box
     background-color color-bg-base
+=======
+    margin-left tab-picker-h-gap
+    margin-right tab-picker-h-gap
+    padding-left 0
+    padding-right 0
+    background-color tab-picker-bg
+    hairline(bottom, color-border-base)
+  .md-tabs-content
+    height tab-picker-height
+    overflow auto
+    -webkit-overflow-scrolling touch
+    &::-webkit-scrollbar
+      display none
+  .md-tab-bar-list
+    justify-content flex-start
+    .md-tab-bar-item
+      margin 0 60px 0 0
+      padding 0
+      font-size font-caption-normal
+  .md-tab-pane
+    padding-left tab-picker-h-gap
+    padding-right tab-picker-h-gap
+    box-sizing border-box
+  .md-popup-cancel
+    width 90px !important
+.md-tab-picker-content
+  background-color tab-picker-bg
+  .md-radio-item.is-selected
+    .md-cell-item-body .md-cell-item-title
+      color radio-color
+>>>>>>> 18544c76be38dcf6854e44bbdbdef665e1379462
 </style>

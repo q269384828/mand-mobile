@@ -12,14 +12,15 @@
           <md-activity-indicator-rolling
             :size="size"
             :color="color"
+            :width="width"
           ></md-activity-indicator-rolling>
         </template>
-        <template v-else-if="type === 'roller-success'">
+        <!-- <template v-else-if="type === 'roller-success'">
           <md-activity-indicator-rolling-success
             :size="size"
             :color="color"
           ></md-activity-indicator-rolling-success>
-        </template>
+        </template> -->
         <template v-else-if="type === 'spinner'">
           <md-activity-indicator-spinning
             :size="size"
@@ -45,7 +46,7 @@
 </template>
 
 <script>import Roller from './roller'
-import RollerSuccess from './roller-success'
+// import RollerSuccess from './roller-success'
 import Spinner from './spinner'
 import Carousel from './carousel'
 
@@ -54,7 +55,7 @@ export default {
 
   components: {
     [Roller.name]: Roller,
-    [RollerSuccess.name]: RollerSuccess,
+    // [RollerSuccess.name]: RollerSuccess,
     [Spinner.name]: Spinner,
     [Carousel.name]: Carousel,
   },
@@ -68,13 +69,16 @@ export default {
       type: Number,
       default: 70,
     },
+    width: {
+      type: Number,
+    },
     color: {
       type: String,
       default() {
         if (this.type === 'spinner') {
           return 'dark'
         } else {
-          return '#fc9153'
+          return '#2F86F6'
         }
       },
     },

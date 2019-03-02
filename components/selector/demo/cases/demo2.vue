@@ -2,22 +2,20 @@
   <div class="md-example-child md-example-child-selector md-example-child-selector-2">
     <md-field>
       <md-field-item
-        name="name"
         title="确认模式"
-        arrow="arrow-right"
-        align="right"
-        :value="selectorValue"
-        @click.native="showSelector">
-      </md-field-item>
+        :content="selectorValue"
+        @click="showSelector"
+        arrow
+        solid
+      />
     </md-field>
     <md-selector
       v-model="isSelectorShow"
       :data="data[0]"
-      :default-index="1"
+      min-height="320px"
       title="确认模式"
       okText="确认"
-      cancelText="取消"
-      @confirm="onSelectorConfirm($event)"
+      @confirm="onSelectorConfirm"
     ></md-selector>
   </div>
 </template>
@@ -42,16 +40,24 @@ export default {
       data: [
         [
           {
+            value: '1',
             text: '选项一',
+            brief: '选项一说明',
           },
           {
+            value: '2',
             text: '选项二',
+            brief: '选项二说明',
           },
           {
+            value: '3',
             text: '选项三',
+            brief: '选项三说明',
           },
           {
+            value: '4',
             text: '选项四',
+            brief: '选项四说明',
           },
         ],
       ],

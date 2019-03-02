@@ -25,17 +25,20 @@ Vue.component(Picker.name, Picker)
 |data|data source|Array<{value, lable, ...}>[]|`[]`|-|
 |cols|number of columns|Number|`1`|-|
 |default-index|indexes of initially selected items in each column|Array|`[]`|-|
+|default-value|values of initially selected items in each column|Array|`[]`|Available key `text/lable/value`|
 |invalid-index|indexes of disabled items in each column|Array|`[]`|array of multiple disabled items, such as `[[1,2], 2]`|
 |is-view|inline display in page, otherwise it shows as `Popup`|Boolean|`false`|-|
 |is-cascade|data in each column is cascaded or not|Boolean|`false`|see #Appendix for the format of cascaded data|
+|line-height|line height of options|Number|`45`|unit `px`|
 |title|title of picker|String|-|-|
+|describe|description of picker|String|-|-|
 |ok-text|confirmation text|String|`confirm`|-|
 |cancel-text|cancellation text|String|`cancel`|-|
 
 #### Picker Methods
 
 ##### refresh(callback, startColumnIndex)
-Reinitialized picker, like updating `data`, `default-index` or `invalid-index`
+Reinitialized picker, like updating `data`、`default-index`、`invalid-index` or call `setColumnValues`，it can also be replaced with [key](https://vuejs.org/v2/api/#key)
 
 |Parameters | Description | Type|
 |----|-----|------|

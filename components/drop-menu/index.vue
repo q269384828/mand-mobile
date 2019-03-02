@@ -25,41 +25,42 @@
       :prevent-scroll-exclude="scroller"
       @show="$_onListShow"
       @hide="$_onListHide"
+      @before-hide="$_onListBeforeHide"
     >
       <div class="md-drop-menu-list">
-        <md-radio
+        <md-radio-list
           v-model="selectedMenuListValue[activeMenuBarIndex]"
           :options="activeMenuListData"
-          :optionRender="optionRender"
           :is-slot-scope="hasSlot"
-          is-across-border
+          align-center
           @change="$_onListItemClick"
         >
-          <template slot-scope="{ option }">
+          <div slot-scope="{ option }">
             <slot :option="option"></slot>
-          </template>
-        </md-radio>
+          </div>
+        </md-radio-list>
       </div>
     </md-popup>
   </div>
 </template>
 
 <script>import Popup from '../popup'
-import Radio from '../radio'
-import {noop, traverse, compareObjects} from '../_util'
+import RadioList from '../radio-list'
+import {traverse, compareObjects} from '../_util'
 
 export default {
   name: 'md-drop-menu',
 
   components: {
     [Popup.name]: Popup,
-    [Radio.name]: Radio,
+    [RadioList.name]: RadioList,
   },
 
   props: {
     data: {
       type: Array,
       default() {
+        /* istanbul ignore next */
         return []
       },
     },
@@ -68,10 +69,6 @@ export default {
       default() {
         return []
       },
-    },
-    optionRender: {
-      type: Function,
-      default: noop,
     },
   },
 
@@ -82,7 +79,6 @@ export default {
       selectedMenuListValue: [],
       selectedMenuListIndex: [],
       activeMenuBarIndex: -1,
-      activeMenuListData: [],
       scroller: '',
     }
   },
@@ -90,6 +86,13 @@ export default {
   computed: {
     hasSlot() {
       return !!this.$scopedSlots.default
+    },
+    activeMenuListData() {
+      if (this.activeMenuBarIndex < 0 || !this.data[this.activeMenuBarIndex]) {
+        return []
+      }
+
+      return this.data[this.activeMenuBarIndex].options
     },
   },
 
@@ -137,8 +140,9 @@ export default {
     },
     $_setScroller() {
       const boxer = this.$el ? this.$el.querySelector('.md-popup-box') : null
+      /* istanbul ignore else */
       if (boxer && boxer.clientHeight >= this.$el.clientHeight) {
-        this.scroller = '.md-field-content'
+        this.scroller = '.md-drop-menu-list'
       } else {
         return ''
       }
@@ -154,7 +158,6 @@ export default {
       if (!this.isPopupShow) {
         this.isPopupShow = true
         this.activeMenuBarIndex = index
-        this.activeMenuListData = barItem.options
       } else {
         this.isPopupShow = false
       }
@@ -163,6 +166,7 @@ export default {
       const activeMenuBarIndex = this.activeMenuBarIndex
       const barItem = this.data[activeMenuBarIndex]
       this.isPopupShow = false
+      this.selectedMenuListValue[activeMenuBarIndex] = listItem.value
       this.$set(this.selectedMenuListItem, activeMenuBarIndex, listItem)
       this.$emit('change', barItem, listItem)
     },
@@ -173,9 +177,11 @@ export default {
     },
     $_onListHide() {
       /* istanbul ignore next  */
-      this.activeMenuBarIndex = -1
-      /* istanbul ignore next  */
       this.$emit('hide')
+    },
+    $_onListBeforeHide() {
+      /* istanbul ignore next  */
+      this.activeMenuBarIndex = -1
     },
 
     // MARK: public methods
@@ -201,49 +207,54 @@ export default {
   box-sizing border-box
   color color-text-minor
   font-size drop-menu-font-size
-  .md-drop-menu-bar
-    z-index drop-menu-zindex
+  font-weight drop-menu-font-weight
+
+.md-drop-menu-bar
+  position relative
+  z-index drop-menu-zindex
+  display flex
+  height 100%
+  background drop-menu-bar-bg
+  hairline(bottom, drop-menu-bar-border-color)
+  .bar-item
     display flex
-    height 100%
-    background drop-menu-bar-bg
-    hairline(bottom, drop-menu-bar-border-color)
-    .bar-item
-      display flex
-      flex 1
-      margin 2% 0
-      align-items center
-      justify-content center
-      border-right dotted 2px drop-menu-bar-border-color
-      span
-        position relative
-        padding-right 30px
-        &:after
-          content ""
-          position absolute
-          right 0
-          top 50%
-          width 0
-          height 0
-          margin-top -4px
-          border-left solid 8px transparent
-          border-right solid 8px transparent
-          border-top solid 9px color-text-minor
-          border-radius 4px
-          transition transform .3s ease-in-out-quint
-      &.active
-        span:after
-          transform rotate(180deg)
-      &.selected
-        color drop-menu-color
-        span:after
-          border-top-color drop-menu-color
-      &.disabled
-        opacity drop-menu-disabled-opacity
-      &:last-of-type
-        border none
-  .md-drop-menu-list
-    width 100%
-    padding-top drop-menu-height
-    background drop-menu-list-bg
-    box-sizing border-box
+    flex 1
+    margin 2% 0
+    align-items center
+    justify-content center
+    span
+      position relative
+      padding-right 30px
+      &:after
+        content ""
+        position absolute
+        right 0
+        top 50%
+        width 0
+        height 0
+        margin-top -4px
+        border-left solid 8px transparent
+        border-right solid 8px transparent
+        border-top solid 9px color-border-element
+        transition transform .3s ease-in-out-quint
+    &.active
+      color drop-menu-color
+      span:after
+        transform rotate(180deg)
+        border-top-color drop-menu-color
+    &.selected
+      color drop-menu-color
+    &.disabled
+      opacity drop-menu-disabled-opacity
+
+.md-drop-menu-list
+  width 100%
+  padding-top drop-menu-height
+  background drop-menu-list-bg
+  box-sizing border-box
+  .md-radio-item
+    font-weight font-weight-normal
+    &.is-selected .md-cell-item-title
+      color color-primary
+      
 </style>

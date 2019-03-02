@@ -1,6 +1,7 @@
 const colors = require('colors')
+const chalk = require('chalk')
 const defaultMbConfig = require('./default.mfe.blog.config')
-
+const NOOP = () => {}
 // Mfe template blog config info
 const mbConfig = Object.assign(defaultMbConfig, require('../../mfe.blog.config'))
 
@@ -11,6 +12,12 @@ colors.setTheme({
   bold: 'bold',
 })
 
+function stdout(title, msg) {
+  process.stdout.clearLine()
+  process.stdout.cursorTo(0)
+  process.stdout.write(`${chalk.yellow.bold(title)} ${msg}`)
+}
+
 function log(msg) {
   if (process.argv.indexOf('--log') >= 0) {
     console.log(msg)
@@ -18,19 +25,19 @@ function log(msg) {
 }
 
 function info(msg) {
-  log('[MTB INFO]'.info.bold + ` ${msg}`)
+  log('[DOC SITE INFO]'.info.bold + ` ${msg}`)
 }
 
 function warn(msg) {
-  log('[MTB WARN]'.warn.bold + ` ${msg}`)
+  log('[DOC SITE WARN]'.warn.bold + ` ${msg}`)
 }
 
 function error(msg) {
-  log('[MTB ERROR]'.error.bold + ` ${msg}`)
+  log('[DOC SITE ERROR]'.error.bold + ` ${msg}`)
 }
 
 // Traverse "source" and do sth with each item
-function traverseSource(source, fn, path = [], level = 0) {
+function traverseSource(source, fn = NOOP, path = [], level = 0) {
   for (let i = 0, len = source.length; i < len; i++) {
     const item = source[i]
     path[level] = item.name
@@ -43,7 +50,13 @@ function traverseSource(source, fn, path = [], level = 0) {
       level--
     }
 
-    fn && fn(item, path)
+    const res = fn(item, path)
+
+    if (res === 1) {
+      continue
+    } else if (res === 2) {
+      break
+    }
   }
 }
 
@@ -63,4 +76,12 @@ function kebabToCamel (str) {
   return newStr
 }
 
-module.exports = {mbConfig, traverseSource, kebabToCamel, info, warn, error}
+function sleep (time = 0) {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve()
+    }, time)
+  })
+}
+
+module.exports = {mbConfig, traverseSource, kebabToCamel, info, warn, error, stdout, sleep}

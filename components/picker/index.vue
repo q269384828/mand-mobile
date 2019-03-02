@@ -3,20 +3,23 @@
     class="md-picker"
     :class="{'with-popup': !isView}"
   >
-    <template v-if="isView">  
+    <template v-if="isView">
       <md-picker-column
         ref="pickerColumn"
         :data="data"
         :default-value="defaultValue"
         :default-index="defaultIndex"
         :invalid-index="invalidIndex"
+        :line-height="lineHeight"
         :cols="cols"
         @initialed="$emit('initialed')"
         @change="$_onPickerChange"
       ></md-picker-column>
     </template>
-    <template v-else>  
+    <template v-else>
       <md-popup
+        ref="popup"
+        class="inner-popup"
         v-model="isPickerShow"
         position="bottom"
         :mask-closable="maskClosable"
@@ -28,6 +31,7 @@
       >
         <md-popup-title-bar
           :title="title"
+          :describe="describe"
           :ok-text="okText"
           :cancel-text="cancelText"
           @confirm="$_onPickerConfirm"
@@ -39,6 +43,7 @@
           :default-value="$_getDefaultValue()"
           :default-index="$_getDefaultIndex()"
           :invalid-index="invalidIndex"
+          :line-height="lineHeight"
           :cols="cols"
           @initialed="$_onPickerInitialed"
           @change="$_onPickerChange"
@@ -51,11 +56,14 @@
 <script>import Popup from '../popup'
 import PopTitleBar from '../popup/title-bar'
 import PickerColumn from './picker-column'
+import pickerMixin from './mixins'
 import cascadePicker from './cascade'
-import {compareObjects} from '../_util'
+import {compareObjects, extend} from '../_util'
 
 export default {
   name: 'md-picker',
+
+  mixins: [pickerMixin],
 
   components: {
     [Popup.name]: Popup,
@@ -64,10 +72,6 @@ export default {
   },
 
   props: {
-    value: {
-      type: Boolean,
-      default: false,
-    },
     data: {
       type: Array,
       default() {
@@ -87,11 +91,15 @@ export default {
     defaultIndex: {
       type: Array,
       default() {
-        const arr = new Array(this.cols)
-        for (let i = 0, len = arr.length; i < len; i++) {
-          arr[i] = 0
-        }
-        return arr
+        // if (this.cols < 1) {
+        //   return []
+        // }
+        // const arr = new Array(this.cols)
+        // for (let i = 0, len = arr.length; i < len; i++) {
+        //   arr[i] = 0
+        // }
+        // return arr
+        return []
       },
     },
     invalidIndex: {
@@ -104,26 +112,39 @@ export default {
       type: Boolean,
       default: false,
     },
-    isView: {
-      type: Boolean,
-      default: false,
-    },
-    title: {
-      type: String,
-      default: '',
-    },
-    okText: {
-      type: String,
-      default: '确认',
-    },
-    cancelText: {
-      type: String,
-      default: '取消',
-    },
-    maskClosable: {
-      type: Boolean,
-      default: true,
-    },
+
+    // Mixin Props
+    // value: {
+    //   type: Boolean,
+    //   default: false,
+    // },
+    // isView: {
+    //   type: Boolean,
+    //   default: false,
+    // },
+    // title: {
+    //   type: String,
+    //   default: '',
+    // },
+    // describe: {
+    //   type: String,
+    //   default: '',
+    // },
+    // okText: {
+    //   type: String,
+    //   default: '确认',
+    // },
+    // cancelText: {
+    //   type: String,
+    //   default: '取消',
+    // },
+    // maskClosable: {
+    //   type: Boolean,
+    //   default: true,
+    // },
+    // lineHeight: {
+    //   type: Boolean,
+    // },
   },
 
   data() {
@@ -196,7 +217,7 @@ export default {
       } else {
         // mark initial activedIndexs as snapshoot
         setTimeout(() => {
-          this.oldActivedIndexs = [...this.column.activedIndexs]
+          this.oldActivedIndexs = extend([], this.column.activedIndexs)
         }, 100)
       }
     },
@@ -207,13 +228,15 @@ export default {
       }
 
       const defaultIndex = this.$_getDefaultIndex()
-      const defaultIndexOfFirstColumn = defaultIndex[0] || 0
+      const defaultValue = this.$_getDefaultValue()
+      // const defaultIndexOfFirstColumn = defaultIndex[0] || 0
       this.$nextTick(() => {
         cascadePicker(this.column, {
-          currentLevel: 0,
+          currentLevel: -1,
           maxLevel: this.cols,
-          values: this.data[0] ? this.data[0][defaultIndexOfFirstColumn] || [] : [],
+          values: this.data || [],
           defaultIndex,
+          defaultValue,
         })
       })
     },
@@ -258,7 +281,7 @@ export default {
       // reset picker by snapshot
       this.$nextTick(() => {
         this.$_resetPickerColumn()
-        this.refresh()
+        this.column.refresh()
       })
     },
     $_onPickerChange(columnIndex, itemIndex, values) {
@@ -297,7 +320,7 @@ export default {
 
     refresh() {
       this.column.isScrollInitialed = false
-      /** 
+      /**
        * Manual call 'column.refresh' only when picker is in-view or popup is show,
        * otherwise 'column.refresh' will be called at popup's 'onBerforeShow' automatically
       */
@@ -312,8 +335,6 @@ export default {
 <style lang="stylus">
 .md-picker
   width 100%
-  &.with-popup .md-popup
-    z-index picker-zindex !important  
-  .md-popup-box
-    background-color color-bg-base 
+  .md-popup
+    z-index picker-zindex
 </style>

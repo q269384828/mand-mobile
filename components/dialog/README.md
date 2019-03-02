@@ -10,7 +10,9 @@ preview: https://didi.github.io/mand-mobile/examples/#/dialog
 ```javascript
 import { Dialog } from 'mand-mobile'
 
-Vue.component(Dialog.name, Dialog)
+Dialog.alert({ content: '' })
+
+this.$dialog.alert({ content: '' }) // 全量引入
 ```
 
 ### 代码演示
@@ -23,16 +25,15 @@ Vue.component(Dialog.name, Dialog)
 |----|-----|------|------|------|
 | v-model | 双向绑定是否显示窗口 | Boolean | `false`|-|
 | title | 窗口标题 | String | -|-|
-| icon | Icon组件图标名称 | String | -|如需自定义图标, 请查看`Icon`组件|
+| icon | Icon组件图标名称 | String | -|-|
+| icon-svg | svg图标 | Boolean |`false`|如需自定义图标, 请查看`Icon`组件|
 | closable | 是否显示关闭按钮 | Boolean | `true`|-|
-| btns | 底部操作按钮组 | Array | `[]`|-|
+| layout | 底部按钮组布局方式, `row, column` | String | `row` | - |
+| btns | 底部操作按钮组 | Array<{text, handler, warning}> | `[]`|`warning` is used to identify the warning action|
 | append-to | 组件的挂载节点 | HTMLElement | `document.body`|-|
 | has-mask | 是否有蒙层 | Boolean | `true`|-|
 | mask-closable | 点击蒙层是否可关闭弹出层 | Boolean | `false`|-|
-| position | 弹出层位置, `center/top/bottom/left/right` | String | `center`|-|
-| transition | 弹出层过度动画, `fade, slide-up/down/left/right`  | String | `fade`|-|
-| prevent-scroll | 是否禁止滚动穿透 | Boolean | false |-|
-| prevent-scroll-exclude | 禁止滚动排除元素  | String | -|-|
+| transition | 弹出层过度动画 | String |`fade`, `fade-bounce`, `fade-slide`, `fade-zoom`<br> `slide-up`, `slide-down`, `slide-left`, `slide-right`|
 
 #### Dialog Slots
 组件子元素会被当做默认插槽内容使用，适合于不需要标题的自定义窗口内容的场景。
@@ -52,7 +53,7 @@ Vue.component(Dialog.name, Dialog)
 
 #### Dialog Static Methods
 
-##### confirm(props)
+##### Dialog.confirm(props)
 静态方法创建确认模态窗口, 返回Dialog实例
 
 |属性 | 说明 | 类型 | 默认值|
@@ -62,6 +63,8 @@ Vue.component(Dialog.name, Dialog)
 | content | 正文内容 | String | -|
 | cancelText | 底部取消按钮文字 | String | `取消`|
 | confirmText | 底部确认按钮文字 | String | `确认`|
+| cancelWarning | 点击取消按钮为警示操作 | Boolean | `false` |
+| confirmWarning | 点击确认按钮为警示操作 | Boolean | `false` |
 | onConfirm | 点击确认按钮回调函数 | Function | -|
 
 ##### Dialog.alert(props)
@@ -73,6 +76,7 @@ Vue.component(Dialog.name, Dialog)
 | title | 窗口标题 | String | -|
 | content | 正文内容 | String | -|
 | confirmText | 底部确认按钮文字 | String | `确认`|
+| warning | 点击确认按钮为警示操作 | Boolean | `false` |
 | onConfirm | 点击确认按钮回调函数 | Function | -|
 
 ##### Dialog.succeed(props)
@@ -96,4 +100,4 @@ Vue.component(Dialog.name, Dialog)
 | onConfirm | 点击确认按钮回调函数 | Function | -|
 
 ##### Dialog.closeAll()
-静态方法关闭所有动态创建的全局Dialog <sup class="version-after">1.4.0+</sup>
+静态方法关闭所有动态创建的全局Dialog

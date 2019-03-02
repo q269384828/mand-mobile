@@ -3,8 +3,7 @@
     <md-date-picker
       ref="datePicker"
       type="datetime"
-      :default-date="currentDate"
-      is-twelve-hours
+      :min-date="currentDate"
       is-view
     ></md-date-picker>
   </div>
@@ -24,6 +23,7 @@ export default {
   data() {
     return {
       currentDate: new Date(),
+      minDate: new Date('2018/8/30 11:30'),
     }
   },
   mounted() {

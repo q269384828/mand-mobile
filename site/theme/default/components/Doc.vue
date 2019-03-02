@@ -104,12 +104,12 @@
                 </div>
                 <div class="doc-demo-box-toggle" @click="toggleDemoBox(index)">
                   <template v-if="demoBoxShowStat[index]">
-                    <i class="icon-arrow-up"></i>
+                    <i class="icon-triangle-up"></i>
                     <span v-if="lang === 'en-US'">Hide Code</span>
                     <span v-else>代码收起</span>
                   </template>
                   <template v-else>
-                    <i class="icon-arrow-down"></i>
+                    <i class="icon-triangle-down"></i>
                     <span v-if="lang === 'en-US'">Show Code</span>
                     <span v-else>代码展示</span>
                   </template>
@@ -195,12 +195,12 @@
                 </div>
                 <div class="doc-demo-box-toggle" @click="toggleDemoBox(index)">
                   <template v-if="demoBoxShowStat[index]">
-                    <i class="icon-arrow-up"></i>
+                    <i class="icon-triangle-up"></i>
                     <span v-if="lang === 'en-US'">Hide Code</span>
                     <span v-else>代码收起</span>
                   </template>
                   <template v-else>
-                    <i class="icon-arrow-down"></i>
+                    <i class="icon-triangle-down"></i>
                     <span v-if="lang === 'en-US'">Show Code</span>
                     <span v-else>代码展示</span>
                   </template>
@@ -241,7 +241,6 @@
 
 <script>
 import VueQRCodeComponent from 'vue-qrcode-component'
-import { setTimeout } from 'timers';
 
 export default {
   components: {
@@ -389,7 +388,7 @@ export default {
 
 </script>
 
-<style lang="stylus" scoped>
+<style lang="stylus">
 .mfe-blog-theme-default-doc
   position relative
   block()
@@ -459,7 +458,7 @@ export default {
         font-style normal
       p
         margin-top 5px
-        color #048EFA
+        color #2F86F6
         font-size 14px
     a.prev
       float left
@@ -486,9 +485,11 @@ export default {
   .default-doc-demo
     margin-bottom 20px
     .doc-demo-box-info
-      padding 20px
+      padding 15px
       .doc-demo-title
-        font-size 16px
+        display flex
+        align-items center
+        font-size 14px
         font-weight 500
       .doc-demo-describe
         margin-top 10px
@@ -499,7 +500,7 @@ export default {
         display inline-block
         width 100%
         box-sizing border-box
-        border-left .3em solid #048EFA
+        border-left .3em solid #2F86F6
         padding  1em
         margin-left 0
         margin-top 10px
@@ -508,8 +509,9 @@ export default {
         font-weight 400
   .doc-demo-box
     position relative
-    padding-bottom 44px
-    border solid 1px #ebebeb
+    padding-bottom 24px
+    border-top solid 1px #efefef
+    box-shadow 0px 2px 1px -1px rgba(0,0,0,0.08), 0px 1px 1px 0px rgba(0,0,0,0.1), 0px 1px 3px 0px rgba(0,0,0,0.1)
     border-radius 2px
     transition all .3s
     overflow hidden
@@ -537,7 +539,7 @@ export default {
     padding 10px 0
     box-sizing border-box
     border-top solid 1px #ebebeb
-    background #fbf9f9
+    background #F9FAFB
     .doc-demo-box-preview-box
       position relative
       width 100%
@@ -567,18 +569,19 @@ export default {
     right 0
     z-index 1102
     width 100%
-    height 44px
+    height 24px
     border-top solid 1px #ebebeb
     cursor pointer
     text-align center
-    line-height 44px
+    line-height 24px
     font-size 12px
     color #ccc
     transition background .3s
     background #fff
     overflow hidden
     i
-      margin-right 5px
+      font-size 24px
+      line-height 24px
     span
       position absolute
       top 0
@@ -607,8 +610,6 @@ export default {
       font-size 16px
       color #ccc
       transition all .3s
-      &:hover
-        transform scale(1.2)
       &:active, &:visited, &:focus
         box-shadow none
         outline none

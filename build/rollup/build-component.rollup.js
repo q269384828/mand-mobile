@@ -33,7 +33,8 @@ function compileVueStylus (content, cb, compiler, filePath) {
     .set('filename', filePath)
     .define('url', stylus.url())
     .import(path.join(__dirname, '../../components/_style/mixin/util.styl'))
-    .import(path.join(__dirname, '../../components/_style/mixin/theme.styl'))
+    .import(path.join(__dirname, '../../components/_style/mixin/theme.components.styl'))
+    .import(path.join(__dirname, '../../components/_style/mixin/theme.basic.styl'))
     .import(path.join(__dirname, '../../node_modules/nib/lib/nib/vendor'))
     .import(path.join(__dirname, '../../node_modules/nib/lib/nib/gradients'))
     .render((err, css) => {
@@ -41,7 +42,9 @@ function compileVueStylus (content, cb, compiler, filePath) {
         throw err
       }
       postcss([autoprefixer])
-        .process(css)
+        .process(css, {
+          from: undefined
+        })
         .then(result => {
           cb(null, result.css)
         })
@@ -74,20 +77,22 @@ function computedCompilerConfig(filePath) {
 
 function move(destDir) {
   return new Promise((resolve, reject) => {
-    copy(SRC_BASE, destDir, {filter: function(item) {
-      if (/demo|test/.test(item)) {
-        return false
-      }
-      if (/^index.js$/.test(item)) {
-        return false
-      }
-      return true
-    }}, function (err, result) {
-      if (err) {
-        reject(err)
-      }
-      resolve(result)
-    })
+    copy(SRC_BASE, destDir, {
+      overwrite: true,
+      filter: function(item) {
+        if (/demo|test/.test(item)) {
+          return false
+        }
+        if (/^index.js$/.test(item)) {
+          return false
+        }
+        return true
+      }}, function (err, result) {
+        if (err) {
+          reject(err)
+        }
+        resolve(result)
+      })
   })
 }
 

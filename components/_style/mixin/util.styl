@@ -6,15 +6,15 @@ absolute-pos(t = 0, r = 0, b = 0, l = 0)
 fixed-pos(t = 0, r = 0, b = 0, l = 0)
   absolute-pos(t, r, b, l)
 
+block()
+  float left
+  width 100%
+  
 clearfix()
   &:after
     content ""
     display table
     clear both
-// normalize()
-//   margin 0
-//   padding 0
-//   list-style none
 
 word-break()
   word-break break-all
@@ -47,39 +47,50 @@ hairline-common(direction, color)
     @media (min-resolution: 3dppx)
       transform scaleX(0.33) translateX(100%)
 
-hairline(direction = all, color = color-line-1, radius = 0)
-  position relative
+hairline(direction = all, color = color-border-base, radius = 0, size = border-width-base)
   if direction == top
     &::after
       hairline-common(direction, color)
       top 0
       left 0
+      right auto
+      bottom auto
       width 100%
-      height border-width-base
+      height size
+      transform-origin 50% 0
 
   else if direction == bottom
     &::before
       hairline-common(direction, color)
       bottom 0
       left 0
+      right auto
+      top auto
       width 100%
-      height border-width-base
-    
+      height size
+      transform-origin 50% 100%
+
   else if direction == left
     &::after
       hairline-common(direction, color)
       top 0
       left 0
-      width border-width-base
+      right auto
+      bottom auto
+      width size
       height 100%
+      transform-origin 0 50%
 
   else if direction == right
     &::before
       hairline-common(direction, color)
       top 0
       right 0
-      width border-width-base
+      left auto
+      bottom auto
+      width size
       height 100%
+      transform-origin 100% 50%
 
   else
     &::after
@@ -87,15 +98,40 @@ hairline(direction = all, color = color-line-1, radius = 0)
       position absolute
       top 0
       left 0
+      right auto
+      bottom auto
       width 200%
       height 200%
-      border solid border-width-base color
+      border solid size color
       box-sizing border-box
       transform-origin 0 0
       transform scale(0.5)
       z-index 2
-      if radius
-        border-radius radius
+      if radius is a 'unit'
+        border-radius radius * 2
+      else
+        border-radius "calc(%s * 2)" % radius
+
+remove-hairline(direction = all)
+  if direction == top
+    &::after
+      display none
+
+  else if direction == bottom
+    &::before
+      display none
+
+  else if direction == left
+    &::after
+      display none
+
+  else if direction == right
+    &::before
+      display none
+
+  else
+    &::after
+      display none
 
 svg-background(svg)
   background-image url(svg)

@@ -14,6 +14,7 @@
     >
       <md-popup-title-bar
         title="Popup Title"
+        describe="Popup Description"
         ok-text="ok"
         cancel-text="cancel"
         @confirm="hidePopUp('bottom')"
@@ -33,7 +34,7 @@
       <div class="md-example-popup md-example-popup-top">
         Popup Top
         <md-icon
-          name="cross"
+          name="close"
           @click.native="hidePopUp('top')"
         ></md-icon>
       </div>
@@ -66,9 +67,8 @@
 export default {
   name: 'popup-demo',
   /* DELETE */
-  title: '不同位置弹出',
-  titleEnUS: 'Pop up from different positions',
-  height: 500,
+  title: '不同位置',
+  titleEnUS: 'Different positions',
   /* DELETE */
   components: {
     [Popup.name]: Popup,
@@ -100,10 +100,12 @@ export default {
     margin-bottom 20px
   .md-example-popup
     position relative
-    font-size font-minor-large
-    background color-bg-base
+    font-size 28px
+    font-family DINPro
+    font-weight 500
     box-sizing border-box
     text-align center
+    background-color #FFF
   .md-example-popup-center
     padding 50px
     border-radius radius-normal
@@ -111,8 +113,8 @@ export default {
     width 100%
     height 75px
     line-height 75px
-    background notice-bar-fill
-    color notice-bar-color
+    background #4a4c5b
+    color #fff
     .md-icon
       position absolute
       right 20px
@@ -120,7 +122,7 @@ export default {
       transform translateY(-50%)
   .md-example-popup-bottom
     width 100%
-    padding: 50px 0
+    padding 100px 0
     p
       line-height 50px
   .md-example-popup-left, .md-example-popup-right
@@ -128,6 +130,4 @@ export default {
     padding 0 150px
     display flex
     align-items center
-  .md-popup-box
-    background-color #FFF
 </style>

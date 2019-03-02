@@ -13,12 +13,19 @@
     <div class="scroll-view-header" v-if="$slots.header">
       <slot name="header"></slot>
     </div>
-    <div class="scroll-view-container">
+    <div
+      class="scroll-view-container"
+      :class="{
+        'horizon': scrollingX && !scrollingY
+      }"
+    >
       <div
         v-if="hasRefresher"
         class="scroll-view-refresh"
-        :class="{'refreshing': isRefreshing, 'refresh-active': isRefreshActive}"
-        :style="{top: `-${refreshOffsetY}px`}"
+        :class="{
+          'refreshing': isRefreshing,
+          'refresh-active': isRefreshActive,
+        }"
       >
         <slot
           name="refresh"
@@ -30,11 +37,10 @@
       <slot></slot>
       <div
         v-if="hasMore"
-        :is-end-reaching="isEndReaching"
-        :class="{active: isEndReaching}"
+        :class="{active: isEndReachingStart || isEndReaching}"
         class="scroll-view-more"
       >
-        <slot name="more"></slot>
+        <slot name="more" :is-end-reaching="isEndReachingStart || isEndReaching"></slot>
       </div>
     </div>
     <div class="scroll-view-footer" v-if="$slots.footer">
@@ -43,7 +49,8 @@
   </div>
 </template>
 
-<script>import Scroller from '../_util/scroller'
+<script>import {debounce} from '../_util'
+import Scroller from '../_util/scroller'
 import {render} from '../_util/render'
 
 export default {
@@ -65,9 +72,21 @@ export default {
       type: Boolean,
       default: false,
     },
+    manualInit: {
+      type: Boolean,
+      default: false,
+    },
     endReachedThreshold: {
       type: Number,
       default: 0,
+    },
+    immediateCheckEndReaching: {
+      type: Boolean,
+      default: false,
+    },
+    touchAngle: {
+      type: Number,
+      default: 45,
     },
   },
   data() {
@@ -82,14 +101,20 @@ export default {
       isMouseDown: false,
       isRefreshing: false,
       isRefreshActive: false,
+      isEndReachingStart: false,
       isEndReaching: false,
       scrollX: null,
       scrollY: null,
+      startX: 0,
+      startY: 0,
+      currentX: 0,
+      currentY: 0,
       containerW: 0,
       containerH: 0,
       contentW: 0,
       contentH: 0,
       reflowTimer: null,
+      endReachedHandler: null,
     }
   },
   computed: {
@@ -101,14 +126,19 @@ export default {
     },
   },
   mounted() {
-    this.$_initScroller()
-    this.autoReflow && this.$_initAutoReflow()
+    if (!this.manualInit) {
+      this.$_initScroller()
+    }
   },
   destroyed() {
     this.reflowTimer && clearInterval(this.reflowTimer)
   },
   methods: {
     $_initScroller() {
+      /* istanbul ignore if */
+      if (this.isInitialed) {
+        return
+      }
       this.container = this.$el
       this.refresher = this.$el.querySelector('.scroll-view-refresh')
       this.more = this.$el.querySelector('.scroll-view-more')
@@ -131,6 +161,7 @@ export default {
           bouncing: this.bouncing,
           zooming: false,
           animationDuration: 200,
+          speedMultiplier: 1.2,
           inRequestAnimationFrame: true,
         },
       )
@@ -156,40 +187,94 @@ export default {
       }
       this.scroller = scroller
       this.reflowScroller(true)
+      this.autoReflow && this.$_initAutoReflow()
+      this.endReachedHandler = debounce(() => {
+        this.isEndReaching = true
+        this.$emit('endReached')
+        this.$emit('end-reached')
+      }, 50)
+
       setTimeout(() => {
         this.isInitialed = true
       }, 50)
+
+      if (this.immediateCheckEndReaching) {
+        this.$nextTick(this.$_checkScrollerEnd)
+      }
     },
     $_initAutoReflow() {
       this.reflowTimer = setInterval(() => {
         this.reflowScroller()
       }, 100)
     },
-    // MARK: events handler
-    $_onScollerTouchStart(event) {
-      // event.target.tagName && event.target.tagName.match(/input|textarea|select/i)
+    $_checkScrollerEnd() {
       if (!this.scroller) {
         return
       }
+      const containerHeight = this.scroller._clientHeight
+      const content = this.scroller._contentHeight
+      const top = this.scroller._scrollTop
+      const moreOffsetY = this.moreOffsetY
+      const moreThreshold = this.endReachedThreshold
+      const endOffset = content - containerHeight - (top + moreOffsetY + moreThreshold)
+      if (top >= 0 && !this.isEndReaching && endOffset <= 0 && this.endReachedHandler) {
+        // First prepare for "load more" state
+        this.isEndReachingStart = true
+        // Second enter "load more" state
+        // & trigger endReached event only once after the rebounding animation
+        this.endReachedHandler()
+      }
+    },
+    $_getScrollerAngle() {
+      const diffX = this.currentX - this.startX
+      const diffY = this.currentY - this.startY
+      const angle = Math.atan2(Math.abs(diffY), Math.abs(diffX)) * 180 / Math.PI
+      return this.scrollingX ? 90 - angle : angle
+    },
+    // MARK: events handler
+    $_onScollerTouchStart(event) {
+      // event.target.tagName && event.target.tagName.match(/input|textarea|select/i)
+      /* istanbul ignore if */
+      if (!this.scroller) {
+        return
+      }
+      this.startX = event.targetTouches[0].pageX
+      this.startY = event.targetTouches[0].pageY
       this.scroller.doTouchStart(event.touches, event.timeStamp)
     },
     $_onScollerTouchMove(event) {
+      /* istanbul ignore if */
       if (!this.scroller) {
         return
       }
       event.preventDefault()
+
+      this.currentX = event.targetTouches[0].pageX
+      this.currentY = event.targetTouches[0].pageY
+
+      if (!this.scrollingX || !this.scrollingY) {
+        const currentTouchAngle = this.$_getScrollerAngle()
+        if (currentTouchAngle < this.touchAngle) {
+          return
+        }
+      }
+
       this.scroller.doTouchMove(event.touches, event.timeStamp, event.scale)
     },
     $_onScollerTouchEnd(event) {
+      /* istanbul ignore if */
       if (!this.scroller) {
         return
       }
       this.scroller.doTouchEnd(event.timeStamp)
     },
     $_onScollerMouseDown(event) {
+      /* istanbul ignore if */
       if (!this.scroller) {
         return
       }
+      this.startX = event.pageX
+      this.startY = event.pageY
       this.scroller.doTouchStart(
         [
           {
@@ -202,8 +287,18 @@ export default {
       this.isMouseDown = true
     },
     $_onScollerMouseMove(event) {
+      /* istanbul ignore if */
       if (!this.scroller || !this.isMouseDown) {
         return
+      }
+
+      this.currentX = event.pageX
+      this.currentY = event.pageY
+      if (!this.scrollingX || !this.scrollingY) {
+        const currentTouchAngle = this.$_getScrollerAngle()
+        if (currentTouchAngle < this.touchAngle) {
+          return
+        }
       }
       this.scroller.doTouchMove(
         [
@@ -217,6 +312,7 @@ export default {
       this.isMouseDown = true
     },
     $_onScollerMouseUp(event) {
+      /* istanbul ignore if */
       if (!this.scroller || !this.isMouseDown) {
         return
       }
@@ -231,22 +327,16 @@ export default {
       }
       this.scrollX = left
       this.scrollY = top
-      const containerHeight = this.scroller._clientHeight
-      const content = this.scroller._contentHeight
-      const moreOffsetY = this.moreOffsetY
-      const moreThreshold = this.endReachedThreshold
-      if (
-        top > 0 &&
-        !this.isEndReaching &&
-        content > containerHeight &&
-        content - containerHeight <= top + moreOffsetY + moreThreshold
-      ) {
-        this.isEndReaching = true
-        this.$emit('endReached')
-      }
+      this.$_checkScrollerEnd()
       this.$emit('scroll', {scrollLeft: left, scrollTop: top})
     },
+    init() {
+      this.$nextTick(() => {
+        this.$_initScroller()
+      })
+    },
     scrollTo(left, top, animate = false) {
+      /* istanbul ignore if */
       if (!this.scroller) {
         return
       }
@@ -255,6 +345,7 @@ export default {
     reflowScroller(force = false) {
       const container = this.container
       const content = this.content
+      /* istanbul ignore if */
       if (!this.scroller || !container || !content) {
         return
       }
@@ -285,12 +376,14 @@ export default {
       })
     },
     triggerRefresh() {
+      /* istanbul ignore if */
       if (!this.scroller) {
         return
       }
       this.scroller.triggerPullToRefresh()
     },
     finishRefresh() {
+      /* istanbul ignore if */
       if (!this.scroller) {
         return
       }
@@ -298,9 +391,11 @@ export default {
       this.reflowScroller()
     },
     finishLoadMore() {
+      /* istanbul ignore if */
       if (!this.scroller) {
         return
       }
+      this.isEndReachingStart = false
       this.isEndReaching = false
       this.reflowScroller()
     },
@@ -312,15 +407,14 @@ export default {
 .md-scroll-view
   position relative
   display block
-  // width 100%
   height 100%
-  background #fff
   overflow hidden
   user-select none
   .scroll-view-header, .scroll-view-footer
     position absolute
     left 0
     right 0
+    z-index 2
   .scroll-view-header
     top 0
   .scroll-view-footer
@@ -334,8 +428,11 @@ export default {
       position absolute
       left 0
       right 0
+      transform translate3d(0, -100%, 0)
     .scroll-view-more
       visibility hidden
       &.active
         visibility visible
+    &.horizon
+      display inline-block
 </style>

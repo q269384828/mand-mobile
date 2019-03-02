@@ -1,82 +1,38 @@
-import Tabs from '../index'
-import {mount} from 'avoriaz'
+import Vue from 'vue'
+import {Tabs, TabPane} from 'mand-mobile'
+import sinon from 'sinon'
+import {mount} from '@vue/test-utils'
 
-describe('Tabs', () => {
+describe('Tabs - Operation', () => {
   let wrapper
 
   afterEach(() => {
     wrapper && wrapper.destroy()
   })
 
-  it('create an empty tabs', () => {
-    wrapper = mount(Tabs)
-
-    expect(wrapper.hasClass('md-tabs')).to.be.true
-  })
-
-  it('create a tabs with title list', () => {
-    wrapper = mount(Tabs, {
-      propsData: {
-        titles: ['标题一', '标题二', '标题三'],
-      },
-    })
-
-    expect(wrapper.find('.md-tab-title').length).to.equal(3)
-  })
-
-  it('switch index by using selectTab method', done => {
-    wrapper = mount(Tabs, {
-      propsData: {
-        titles: ['标题一', '标题二', '标题三'],
-      },
-    })
-
-    expect(wrapper.find('.md-tab-title')[0].hasClass('active')).to.be.true
-
-    wrapper.vm.selectTab(2)
-    wrapper.vm.$nextTick(() => {
-      expect(wrapper.find('.md-tab-title')[2].hasClass('active')).to.be.true
-      done()
-    })
-  })
-
-  it('switch index by clicking', done => {
-    wrapper = mount(Tabs, {
-      propsData: {
-        titles: ['标题一', '标题二', '标题三'],
-      },
-    })
-
-    expect(wrapper.find('.md-tab-title')[0].hasClass('active')).to.be.true
-    wrapper.find('.md-tab-title')[2].trigger('click')
-    wrapper.vm.$nextTick(() => {
-      expect(wrapper.find('.md-tab-title')[2].hasClass('active')).to.be.true
-      done()
-    })
-  })
-
-  it('create a tabs with customized titles and contents', () => {
+  test(`Switch tab`, done => {
+    Vue.component(TabPane.name, TabPane)
     wrapper = mount(Tabs, {
       slots: {
         default: [
-          {
-            template: '<div>content A</div>',
-          },
-          {
-            template: '<div>content B</div>',
-          },
-        ],
-        title: [
-          {
-            template: '<div>title A</div>',
-          },
-          {
-            template: '<div>title B</div>',
-          },
+          '<md-tab-pane class="content" name="p0" label="xxx">xxx</md-tab-pane>',
+          '<md-tab-pane class="content" name="p1" label="yyy">yyy</md-tab-pane>',
+          '<md-tab-pane class="content" name="p2" label="zzz">zzz</md-tab-pane>',
         ],
       },
+      sync: false,
     })
 
-    expect(wrapper.find('.md-tab-title').length).to.equal(2)
+    expect(wrapper.vm.currentName).toBe('p0')
+
+    wrapper.vm.$nextTick(() => {
+      const eventSpy = sinon.spy(wrapper.vm, '$emit')
+      const tab = wrapper.findAll('.md-tab-bar-item').at(1)
+      tab.trigger('click')
+
+      expect(eventSpy.calledWith('change')).toBe(true)
+      expect(wrapper.vm.currentName).toBe('p1')
+      done()
+    })
   })
 })

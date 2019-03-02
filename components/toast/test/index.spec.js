@@ -1,51 +1,15 @@
-import Toast from '../toast.vue'
+import Toast from 'mand-mobile/components/toast/toast'
 import sinon from 'sinon'
-import {mount} from 'avoriaz'
+import {mount} from '@vue/test-utils'
 
-describe('Toast', () => {
+describe('Toast - Operation', () => {
   let wrapper
 
   afterEach(() => {
     wrapper && wrapper.destroy()
   })
 
-  it('create simple toast', () => {
-    wrapper = mount(Toast, {
-      propsData: {
-        content: 'Hello, Earth!',
-      },
-    })
-
-    expect(wrapper.hasClass('md-toast')).to.equal(true)
-  })
-
-  it('has content', () => {
-    wrapper = mount(Toast, {
-      propsData: {
-        content: 'Hello, Earth!',
-      },
-    })
-
-    expect(
-      wrapper
-        .first('.md-toast-content span')
-        .text()
-        .trim(),
-    ).to.equal('Hello, Earth!')
-  })
-
-  it('create icon toast', () => {
-    wrapper = mount(Toast, {
-      propsData: {
-        icon: 'cross',
-        content: 'Hello, Earth!',
-      },
-    })
-
-    expect(wrapper.contains('.md-icon')).to.be.true
-  })
-
-  it('should update timer after state changed', done => {
+  test('should update timer after state changed', done => {
     wrapper = mount(Toast, {
       propsData: {
         icon: 'spinner',
@@ -55,14 +19,15 @@ describe('Toast', () => {
     })
     setTimeout(() => {
       wrapper.setProps({icon: 'circle-right'})
+      wrapper.vm.fire()
       setTimeout(function() {
-        expect(wrapper.vm.visible).to.be.true
+        expect(wrapper.vm.visible).toBe(true)
         done()
       }, 500)
     }, 800)
   })
 
-  it('auto hide', done => {
+  test('auto hide', done => {
     wrapper = mount(Toast, {
       propsData: {
         icon: 'spinner',
@@ -70,27 +35,28 @@ describe('Toast', () => {
         duration: 1000,
       },
     })
+
+    wrapper.vm.fire()
     setTimeout(() => {
-      expect(wrapper.vm.visible).to.be.false
+      expect(wrapper.vm.visible).toBe(false)
       done()
     }, 1100)
   })
 
-  // it('emit hide event', done => {
-  //   wrapper = mount(Toast, {
-  //     propsData: {
-  //       icon: 'spinner',
-  //       content: 'Hello, Earth!',
-  //       duration: 0
-  //     }
-  //   })
+  test('emit hide event', done => {
+    wrapper = mount(Toast, {
+      propsData: {
+        icon: 'spinner',
+        content: 'Hello, Earth!',
+        duration: 0,
+      },
+    })
 
-  //   const eventStub = sinon.stub(wrapper.vm, '$emit')
-  //   wrapper.vm.hide()
-  //   setTimeout(() => {
-  //     console.log(wrapper.vm.$el)
-  //     expect(eventStub.calledWith('hide')).to.be.true
-  //     done()
-  //   }, 500)
-  // })
+    const eventStub = sinon.stub(wrapper.vm, '$emit')
+    wrapper.vm.hide()
+    setTimeout(() => {
+      expect(eventStub.calledWith('hide')).toBe(true)
+      done()
+    }, 500)
+  })
 })

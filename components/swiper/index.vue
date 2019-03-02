@@ -19,7 +19,7 @@
 
 <script>import Scroller from '../_util/scroller'
 import {render} from '../_util/render'
-import {warn} from '../_util'
+import {warn, inBrowser} from '../_util'
 
 export default {
   name: 'md-swiper',
@@ -45,6 +45,10 @@ export default {
         return ['slide', 'slideY', 'fade'].indexOf(value) > -1
       },
     },
+    transitionDuration: {
+      type: Number,
+      default: 250,
+    },
     defaultIndex: {
       type: Number,
       default: 0,
@@ -68,6 +72,10 @@ export default {
       type: Boolean,
       default: true,
     },
+    useNativeDriver: {
+      type: Boolean,
+      default: true,
+    },
   },
 
   data() {
@@ -76,7 +84,7 @@ export default {
       dragging: false,
       userScrolling: false,
       isInitial: false,
-      hasTouch: 'ontouchstart' in window,
+      hasTouch: inBrowser ? 'ontouchstart' in window : false,
       index: 0,
       fromIndex: 0,
       toIndex: 0,
@@ -125,8 +133,9 @@ export default {
   */
   mounted() {
     this.ready = true
-    this.hasTouch = 'ontouchstart' in window
+    this.hasTouch = 'ontouchstart' in window || process.env.NODE_ENV === 'test'
     this.$swiper = this.$el.querySelector('.md-swiper-container')
+    this.$swiperBox = this.$el.querySelector('.md-swiper-box')
     this.$nextTick(() => {
       this.$_reInitItems()
       this.$_startPlay()
@@ -156,22 +165,26 @@ export default {
     $_initScroller() {
       const scroller = new Scroller(
         (left, top) => {
-          render(this.$swiper, left, top)
+          render(this.$swiper, left, top, this.useNativeDriver)
         },
         {
           scrollingY: this.isVertical,
           scrollingX: !this.isVertical,
           snapping: false,
           bouncing: false,
+          animationDuration: this.transitionDuration,
           // paging: true,
           scrollingComplete: () => {
             this.transitionEndHandler && this.transitionEndHandler()
+<<<<<<< HEAD
             this.transitionEndHandler = null
+=======
+>>>>>>> 18544c76be38dcf6854e44bbdbdef665e1379462
           },
         },
       )
 
-      const container = this.$swiper
+      const container = this.$swiperBox
       const contentWidth = this.isVertical ? container.clientWidth : container.clientWidth * this.rItemCount
       const contentHeight = this.isVertical ? container.clientHeight * this.rItemCount : container.clientHeight
       scroller.setPosition(container.clientLeft, container.clientTop)
@@ -320,6 +333,12 @@ export default {
 
       let isTouchEvent
       const _onTouchStart = event => {
+        /**
+         * Consume unfinished transition handler first
+         * Otherwise the offset calculation will be abnormal
+         */
+        this.transitionEndHandler && this.transitionEndHandler()
+
         if (event.originalEvent) {
           event = event.originalEvent
         }
@@ -368,10 +387,12 @@ export default {
         element.addEventListener('mousedown', _onTouchStart)
         element.addEventListener('mousemove', _onTouchMove)
         element.addEventListener('mouseup', _onTouchEnd)
+        element.addEventListener('mouseleave', _onTouchEnd)
       } else {
         element.addEventListener('touchstart', _onTouchStart)
         element.addEventListener('touchmove', _onTouchMove)
         element.addEventListener('touchend', _onTouchEnd)
+        element.addEventListener('touchcancel', _onTouchEnd)
       }
     },
 
@@ -451,6 +472,7 @@ export default {
       }
 
       setTimeout(() => {
+<<<<<<< HEAD
         this.transitionEndHandler = () => {
           if (this.isLastItem && this.isLoop) {
             const x = this.isVertical ? 0 : this.firstIndex * this.dimension
@@ -467,8 +489,35 @@ export default {
           }
 
           this.$emit('after-change', this.fromIndex, this.toIndex)
+=======
+        const isFirstItem = this.isFirstItem && this.isLoop
+        const isLastItem = this.isLastItem && this.isLoop
+
+        this.transitionEndHandler = () => {
+          // Recover first and last page
+          if (isLastItem) {
+            const x = this.isVertical ? 0 : this.firstIndex * this.dimension
+            const y = this.isVertical ? this.firstIndex * this.dimension : 0
+            this.scroller.scrollTo(x, y, false)
+          }
+          if (isFirstItem) {
+            const x = this.isVertical ? 0 : this.lastIndex * this.dimension
+            const y = this.isVertical ? this.lastIndex * this.dimension : 0
+            this.scroller.scrollTo(x, y, false)
+          }
+
+          this.$emit('after-change', this.fromIndex, this.toIndex)
+          this.transitionEndHandler = null
+>>>>>>> 18544c76be38dcf6854e44bbdbdef665e1379462
         }
         this.$_translate(this.$swiper, -this.dimension * this.index)
+
+        // Recover first and last indicator
+        if (isFirstItem) {
+          this.index = this.lastIndex
+        } else if (isLastItem) {
+          this.index = this.firstIndex
+        }
       }, 10)
     },
 
@@ -494,6 +543,7 @@ export default {
       if (this.noDrag) {
         return
       }
+
       const point = this.hasTouch ? event.touches[0] : event
       let dragState = this.dragState
 
@@ -548,13 +598,13 @@ export default {
       }
 
       if (this.isVertical) {
-        if (Math.abs(offsetTop) > itemHeight / 6) {
+        if (Math.abs(offsetTop) > itemHeight / 10) {
           towards = offsetTop < 0 ? 'next' : 'prev'
         } else {
           this.$_translate(this.$swiper, -this.dimension * index, true)
         }
       } else {
-        if (Math.abs(offsetLeft) > itemWidth / 6) {
+        if (Math.abs(offsetLeft) > itemWidth / 10) {
           towards = offsetLeft < 0 ? 'next' : 'prev'
         } else {
           if (this.isSlide) {
@@ -653,59 +703,61 @@ export default {
 </script>
 
 <style lang="stylus">
-  .md-swiper-box
-    overflow hidden
-  .md-swiper, .md-swiper-box
-    width 100%
-    height 100%
-    position relative
-    will-change transform
-    &.disabled
-      visibility hidden
-    &.md-swiper-fade
-      .md-swiper-item
-        position absolute
-        opacity 0
-        top 0
-        left 0
-    &.md-swiper-vertical
-      .md-swiper-container
-        width 100%
-        height auto
-        box-orient vertical
-        flex-direction column
-      .md-swiper-indicators
-        flex-direction column
-        width 6px
-        right 10px
-        left auto
-        bottom auto
-        top 50%
-        transform translate(0, -50%)
-        &.disabled
-          visibility hidden
-        .md-swiper-indicator
-          margin 5px 0
+.md-swiper-box
+  overflow hidden
+  will-change tranform
+.md-swiper, .md-swiper-box
+  width 100%
+  height 100%
+  position relative
+  &.disabled
+    visibility hidden
+  &.md-swiper-fade
+    .md-swiper-item
+      position absolute
+      opacity 0
+      top 0
+      left 0
+  &.md-swiper-vertical
     .md-swiper-container
-      height 100%
-      width auto
-      position relative
-      display flex
-      box-sizing content-box
+      width 100%
+      height auto
+      box-orient vertical
+      flex-direction column
     .md-swiper-indicators
-        position absolute
-        bottom 10px
-        left 50%
-        display flex
-        transform translateX(-50%)
-        .md-swiper-indicator
-          width 6px
-          height 6px
-          display inline-block
-          border-radius 100%
-          background #999
-          opacity .5
-          margin 0 5px
-          &.md-swiper-indicator-active
-            background #333
+      flex-direction column
+      right 20px
+      left auto
+      bottom auto
+      top 50%
+      transform translate(0, -50%)
+      &.disabled
+        visibility hidden
+      .md-swiper-indicator
+        width 4px
+        height 16px
+        margin 2.5px 0
+
+.md-swiper-container
+  height 100%
+  width auto
+  position relative
+  display flex
+  box-sizing content-box
+
+.md-swiper-indicators
+    position absolute
+    bottom 20px
+    left 50%
+    display flex
+    transform translateX(-50%)
+
+.md-swiper-indicator
+  width 16px
+  height 4px
+  display inline-block
+  background #ddd
+  margin 0 3px
+  &.md-swiper-indicator-active
+    background swiper-indicator-fill
 </style>

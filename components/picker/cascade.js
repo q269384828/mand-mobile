@@ -1,10 +1,26 @@
-import {warn} from '../_util'
+import {extend, warn} from '../_util'
 
 const defaultOptions = {
   currentLevel: 0,
   maxLevel: 0,
   values: [],
   defaultIndex: [],
+  defaultValue: [],
+}
+
+function getDefaultIndex(data, defaultIndex, defaultValue) {
+  let activeIndex = 0
+  if (defaultIndex !== undefined) {
+    return defaultIndex
+  } else if (defaultValue !== undefined) {
+    data.some((item, index) => {
+      if (item.text === defaultValue || item.label === defaultValue || item.value === defaultValue) {
+        activeIndex = index
+        return true
+      }
+    })
+  }
+  return activeIndex
 }
 
 /**
@@ -14,8 +30,7 @@ const defaultOptions = {
  * @param {*} fn 
  */
 export default function(picker, options = {}, fn) {
-  // options = {...defaultOptions, ...options}
-  options = Object.assign({}, defaultOptions, options)
+  options = extend(defaultOptions, options)
 
   /* istanbul ignore if */
   if (!picker) {
@@ -27,9 +42,9 @@ export default function(picker, options = {}, fn) {
 
   /* istanbul ignore next */
   for (let i = options.currentLevel + 1; i < options.maxLevel; i++) {
-    const activeIndex = options.defaultIndex[i] || 0
-    const columnValues = values.children || []
+    const columnValues = (!i ? values[i] : values.children) || []
     picker.setColumnValues(i, columnValues)
+    const activeIndex = getDefaultIndex(columnValues, options.defaultIndex[i], options.defaultValue[i])
     values = columnValues[activeIndex] || []
   }
 

@@ -24,12 +24,14 @@ Vue.component(SwiperItem.name, SwiperItem)
 |属性|说明|类型|默认值|可选值/备注|
 |---|---|---|---|---|
 |autoplay|自动切换间隔时长(毫秒), 禁用可设置为`0`|Number|`3000`|`0`, `[500, +Int.Max)`|
-|transition|面板切换动画效果|String|`slide`|`slide`, `slideY`, `fade`, `fade`|
+|transition|面板切换动画效果|String|`slide`|`slide`, `slideY`, `fade`|
+|transition-duration|面板切换动画时长|Number|`250`|单位`ms`|
 |default-index|第一屏面板索引值|Number|`0`|`[0, length - 1]`|
 |has-dots|控制面板指示点|Boolean|`true`|-|
-|is-prevent|是否阻止默认的事件，如页面滚动事件|Boolean|`true`|为`swiper-item`绑定点击事件需将其设置为`false`|
-|is-loop|是否循环播放|Boolean|`true`|-|
-|dragable|是否禁用触摸滑动|Boolean|`true`|-|
+|is-prevent|阻止默认的事件，如页面滚动事件|Boolean|`true`|为`swiper-item`绑定点击事件需将其设置为`false`|
+|is-loop|循环播放|Boolean|`true`|-|
+|dragable|禁用触摸滑动|Boolean|`true`|-|
+|use-native-driver|开启3D加速|Boolean|`true`|-|
 
 #### Swiper Methods
 

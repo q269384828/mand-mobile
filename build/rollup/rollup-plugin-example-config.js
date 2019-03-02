@@ -6,13 +6,16 @@ const jsonPlugin = require('rollup-plugin-json')
 const urlPlugin = require('rollup-plugin-url')
 const nodeResolvePlugin = require('rollup-plugin-node-resolve')
 const vuePlugin = require('rollup-plugin-vue')
+const css = require('rollup-plugin-css-only')
 const babel = require('rollup-plugin-babel')
+const stylus = require('stylus')
 const stylusMixin = require('../stylus-mixin')
 const uglify = require('rollup-plugin-uglify')
 const progress = require('rollup-plugin-progress')
 const fillHtmlPlugin = require('rollup-plugin-template-html')
 const filesize = require('rollup-plugin-filesize')
 const postcss = require('rollup-plugin-postcss')
+const postcssConfig = require('../../postcss.config')
 const common = require('rollup-plugin-commonjs')
 const svgSpritePlugin = require('./rollup-plugin-svg-sprite')
 const stylusCompilerPlugin = require('./rollup-plugin-stylus-compiler')
@@ -31,29 +34,41 @@ const EXAMPLE_OUTPUT_DIR = resolve('docs/examples')
 function vueWarpper() {
   const distDir = EXAMPLE_OUTPUT_DIR
   const fileName = 'mand-mobile-example.css'
-  return vuePlugin({
-    css: path.resolve(distDir, fileName),
-    stylus: {
-      use: [stylusMixin],
-    },
-    postcss: [
-      px2rem({ rootValue: 100, propWhiteList: [] })
-    ]
-  })
+  return [
+    css({
+      output: path.resolve(distDir, fileName)
+    }),
+    vuePlugin({
+      css: false,
+      style: {
+        postcssPlugins: [
+          ...postcssConfig({env: process.env.NODE_ENV}).plugins,
+          px2rem({ rootValue: 100, minPixelValue: 2, propWhiteList: [] })
+        ],
+        preprocessOptions: {
+          stylus: {
+            use: [stylusMixin, styl => {
+              styl.define('url', stylus.url())
+            }],
+          },
+        }
+      }
+    })
+  ]
 }
 
 const vue = vueWarpper()
 // const css = cssWarpper()
 
-
 const rollupPlugin = [
   // resolve
   aliasPlugin({
-    resolve: ['.js', '/index.js', '.css', '.vue', '.svg'], // @TODO '/index.js' hack
+    resolve: ['.js', '.json', '/index.js', '.css', '.vue', '.svg'], // @TODO '/index.js' hack
     'mand-mobile/components': resolve('components'),
     'mand-mobile/lib': resolve('lib'),
     'mand-mobile': resolve('components'),
-    '@examples/assets/images/bank-zs.svg': resolve('examples/assets/images/bank-zs.svg')
+    '@examples/assets/images/bank-zs.svg': resolve('examples/assets/images/bank-zs.svg'),
+    '@examples/assets/images/tip-package.svg': resolve('examples/assets/images/tip-package.svg')
   }),
   nodeResolvePlugin({
     extensions: [ '.js', '.json', '.vue' ],
@@ -74,7 +89,7 @@ const rollupPlugin = [
     limit: 10 * 1024,
   }),
   jsonPlugin(),
-  vue,
+  ...vue,
   stylusCompilerPlugin({
     fn: stylusMixin,
   }),
@@ -91,6 +106,7 @@ const rollupPlugin = [
   }),
   fillHtmlPlugin({
     template: resolve('examples/index.html'),
+    // publicPath: '/mand-mobile/examples/',
     publicPath: '/mand-mobile/examples/',
     destFile: path.resolve(EXAMPLE_OUTPUT_DIR, 'index.html')
   }),

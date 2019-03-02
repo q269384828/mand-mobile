@@ -7,8 +7,10 @@ const jsonPlugin = require('rollup-plugin-json')
 const urlPlugin = require('rollup-plugin-url')
 const nodeResolvePlugin = require('rollup-plugin-node-resolve')
 const vuePlugin = require('rollup-plugin-vue')
+const css = require('rollup-plugin-css-only')
 const babel = require('rollup-plugin-babel')
 const common = require('rollup-plugin-commonjs')
+const stylus = require('stylus')
 const stylusMixin = require('../stylus-mixin')
 const builtins = require('rollup-plugin-node-builtins')
 const uglify = require('rollup-plugin-uglify')
@@ -19,6 +21,7 @@ const fillHtmlPlugin = require('rollup-plugin-template-html')
 const filesize = require('rollup-plugin-filesize')
 const stylusCompilerPlugin = require('./rollup-plugin-stylus-compiler')
 const postcss = require('rollup-plugin-postcss')
+const postcssConfig = require('../../postcss.config')
 const svgSpritePlugin = require('./rollup-plugin-svg-sprite')
 const pkg = require('../../package.json')
 
@@ -29,7 +32,7 @@ const babelrc = require('babelrc-rollup').default
 const isProduction = process.env.NODE_ENV === 'production'
 const isTest = process.env.NODE_ENV === 'testing'
 const isDev = !(isProduction || isTest)
-const isSpecial = process.env.BUILD_TYPE === 'special'
+// const isSpecial = process.env.BUILD_TYPE === 'special'
 
 function resolve(dir) {
   return path.resolve(__dirname, '../..', dir)
@@ -49,22 +52,30 @@ function vueWarpper() {
     distDir = DEV_OUTPUT_DIR
     fileName = 'mand-mobile-dev.css'
   } else if (isProduction) {
-    if (isSpecial) {
-      fileName = 'mand-mobile.variable.css'
-    } else {
-      fileName = 'mand-mobile.css'
-    }
+    fileName = process.env.BUILD_TYPE !== 'variables' ? 'mand-mobile.css' : 'mand-mobile.variable.css'
     distDir = LIB_DIR
   } else if (isTest) {
     distDir = TEST_OUTPUT_DIR
     fileName = 'mand-mobile-test.css'
   }
-  return vuePlugin({
-    css: path.resolve(distDir, fileName),
-    stylus: {
-      use: [stylusMixin],
-    },
-  })
+  return [
+    css({
+      output: path.resolve(distDir, fileName)
+    }),
+    vuePlugin({
+      css: false,
+      style: {
+        postcssPlugins: postcssConfig({env: process.env.NODE_ENV}).plugins,
+        preprocessOptions: {
+          stylus: {
+            use: [stylusMixin, styl => {
+              styl.define('url', stylus.url())
+            }],
+          },
+        }
+      }
+    })
+  ]
 }
 
 const vue = vueWarpper()
@@ -74,25 +85,24 @@ function conditionHelper(condition, plugins) {
   return condition ? plugins : []
 }
 
+const basicAlias = {
+  resolve: ['.js', '.json', '/index.js', '.css', '.vue', '.svg'], // @TODO '/index.js' hack
+  'mand-mobile/components': resolve('components'),
+  'mand-mobile/lib': resolve('lib'),
+  '@examples/assets/images/bank-zs.svg': resolve('examples/assets/images/bank-zs.svg'),
+  '@examples/assets/images/tip-package.svg': resolve('examples/assets/images/tip-package.svg')
+}
 const rollupPlugin = [
   // resolve
   ...(conditionHelper(!isDev, [
-    aliasPlugin({
-      resolve: ['.js', '/index.js', '.css', '.vue', '.svg'], // @TODO '/index.js' hack
-      'mand-mobile/components': resolve('components'),
-      'mand-mobile/lib': resolve('lib'),
+    aliasPlugin(Object.assign(basicAlias, {
       'mand-mobile': resolve('lib/mand-mobile.esm.js'),
-      '@examples/assets/images/bank-zs.svg': resolve('examples/assets/images/bank-zs.svg')
-    }),
+    })),
   ])),
   ...(conditionHelper(isDev, [
-    aliasPlugin({
-      resolve: ['.js', '/index.js', '.css', '.vue', '.svg'], // @TODO '/index.js' hack
-      'mand-mobile/components': resolve('components'),
-      'mand-mobile/lib': resolve('lib'),
+    aliasPlugin(Object.assign(basicAlias, {
       'mand-mobile': resolve('components'),
-      '@examples/assets/images/bank-zs.svg': resolve('examples/assets/images/bank-zs.svg')
-    }),
+    })),
   ])),
   nodeResolvePlugin({
     extensions: [ '.js', '.json', '.vue' ],
@@ -100,7 +110,7 @@ const rollupPlugin = [
   ...(conditionHelper(isTest, [
     common({
       exclude: ['components/_util/*.js'],
-      namedExports: { 'avoriaz': ['mount', 'shallow'] },
+      namedExports: { '@vue/test-utils': ['mount', 'shallow'] },
     }),
     glob(),
   ])),
@@ -122,12 +132,15 @@ const rollupPlugin = [
   ...(conditionHelper(isDev, [
     svgSpritePlugin(),
   ])),
+  ...(conditionHelper(isProduction, [
+    common(),
+  ])),
   // resource
   urlPlugin({
     limit: 10 * 1024,
   }),
   jsonPlugin(),
-  vue,
+  ...vue,
   stylusCompilerPlugin({
     fn: stylusMixin,
   }),

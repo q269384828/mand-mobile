@@ -3,7 +3,7 @@ title: ScrollView
 preview: https://didi.github.io/mand-mobile/examples/#/scroll-view
 ---
 
-Used to simulate native scrolling areas and support pull-down refresh and load more <sup class="version-after">1.5.0+</sup>
+Used to simulate native scrolling areas and support pull-down refresh and load more
 
 ### Import
 
@@ -30,13 +30,16 @@ Vue.component(ScrollView.name, ScrollView)
 |scrolling-x | horizontal scrolling | Boolean | `true` | -|
 |scrolling-y | vertical scrolling | Boolean | `true` | -|
 |bouncing | - | Boolean | `true` | -|
-|autoReflow <sup class="version-after">1.5.3+</sup> | automatically reset scroller size when content changes | Boolean | `false` | manually call `reflowScroller` when set to `false` |
-|endReachedThreshold | threshold for emitting `endReached`. | Number | 0 | unit `px` |
+|auto-reflow| automatically reset scroller size when content changes | Boolean | `false` | manually call `reflowScroller` when set to `false` |
+|manual-init | manual initialization | Boolean | `false` | generally used for asynchronous initialization scenarios, you need to manually call the `init` method to complete the initialization |
+|end-reached-threshold | threshold for emitting `endReached`. | Number | 0 | unit `px` |
+|immediate-check-end-reaching | check if it reaches the bottom at initialization | Boolean | `false` | - |
+|touch-angle | angle value range that triggers scrolling | Number | 45 | unit `deg` |
 
 #### ScrollViewRefresh Props
 |Props | Description | Type | Default | Note |
 |----|-----|------|------|------|
-|scroll-top | distance from top | Number | 0 | unit `px` |
+|scroll-top | distance from top | Number | `0` | unit `px` |
 |is-refresh-active | release refreshable state | Boolean | `false` | - |
 |is-refreshing | refreshing state | Boolean | `false` | - |
 |refresh-text | - | String | `下拉刷新` | - |
@@ -77,6 +80,9 @@ header slot
 footer slot
 
 #### ScrollView Methods
+
+##### init()
+Initialize the scroll area, used when `manual-init` is set to `true`.
 
 ##### reflowScroller()
 Reset the scroll area, which needs to be called after the content in the general scroll area changes.

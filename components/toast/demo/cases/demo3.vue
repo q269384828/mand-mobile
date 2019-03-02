@@ -17,7 +17,7 @@ export default {
   },
   methods: {
     showLoadingToast() {
-      Toast.loading('载入中')
+      Toast.loading('加载中...')
       setTimeout(() => {
         Toast.hide()
       }, 3000)

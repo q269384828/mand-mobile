@@ -1,5 +1,6 @@
-import Chart from '../index'
-import {mount} from 'avoriaz'
+import {Chart} from 'mand-mobile'
+import sinon from 'sinon'
+import {shallowMount} from '@vue/test-utils'
 
 describe('Chart', () => {
   let wrapper
@@ -9,7 +10,7 @@ describe('Chart', () => {
   })
 
   it('create a simple chart', () => {
-    wrapper = mount(Chart, {
+    wrapper = shallowMount(Chart, {
       propsData: {
         labels: ['周一', '周二', '周三', '周四', '周五', '周六', '周日'],
         datasets: [
@@ -19,11 +20,11 @@ describe('Chart', () => {
         ],
       },
     })
-    expect(wrapper.contains('.md-chart-graph')).to.be.true
+    expect(wrapper.contains('.md-chart-graph')).toBe(true)
   })
 
   it('create a chart with multiple datasets', () => {
-    wrapper = mount(Chart, {
+    wrapper = shallowMount(Chart, {
       propsData: {
         size: ['7rem', '4rem'],
         max: 60,
@@ -44,11 +45,11 @@ describe('Chart', () => {
         ],
       },
     })
-    expect(wrapper.vm.paths.length).to.equal(2)
+    expect(wrapper.vm.paths.length).toEqual(2)
   })
 
   it('create a heat chart', () => {
-    wrapper = mount(Chart, {
+    wrapper = shallowMount(Chart, {
       propsData: {
         size: ['7rem', '4rem'],
         max: 60,
@@ -66,11 +67,11 @@ describe('Chart', () => {
         ],
       },
     })
-    expect(wrapper.contains('#path-fill-gradient-red')).to.be.true
+    expect(wrapper.contains('#path-fill-gradient-red')).toBe(true)
   })
 
   it('create a region chart', () => {
-    wrapper = mount(Chart, {
+    wrapper = shallowMount(Chart, {
       propsData: {
         size: ['7rem', '4rem'],
         max: 60,
@@ -87,6 +88,6 @@ describe('Chart', () => {
         ],
       },
     })
-    expect(wrapper.contains('.md-chart-path-area')).to.be.true
+    expect(wrapper.contains('.md-chart-path-area')).toBe(true)
   })
 })

@@ -1,5 +1,5 @@
-import TabBar from '../index'
-import {mount} from 'avoriaz'
+import {TabBar} from 'mand-mobile'
+import {mount} from '@vue/test-utils'
 
 describe('TabBar', () => {
   let wrapper
@@ -8,67 +8,90 @@ describe('TabBar', () => {
     wrapper && wrapper.destroy()
   })
 
-  it('create an empty tab-bar', () => {
-    wrapper = mount(TabBar)
-
-    expect(wrapper.hasClass('md-tab-bar')).to.be.true
-  })
-
-  it('create a tab-bar with title list', () => {
+  it('switch menu by parent', done => {
     wrapper = mount(TabBar, {
       propsData: {
-        titles: ['标题一', '标题二', '标题三'],
+        items: [{name: '1', label: '标题一'}, {name: '2', label: '标题二'}, {name: '3', label: '标题三'}],
       },
+      sync: false,
     })
 
-    expect(wrapper.find('.md-tab-title').length).to.equal(3)
-  })
-
-  it('switch index by changing default index', done => {
-    wrapper = mount(TabBar, {
-      propsData: {
-        titles: ['标题一', '标题二', '标题三'],
-      },
-    })
-
-    expect(wrapper.find('.md-tab-title')[0].hasClass('active')).to.be.true
-
-    wrapper.vm.defaultIndex = 2
-    wrapper.vm.$nextTick(() => {
-      expect(wrapper.find('.md-tab-title')[2].hasClass('active')).to.be.true
+    wrapper.setProps({value: '2'})
+    setTimeout(() => {
+      expect(wrapper.vm.currentName).toBe('2')
       done()
-    })
+    }, 0)
   })
 
-  it('switch index by clicking', done => {
+  it('switch menu by click', done => {
     wrapper = mount(TabBar, {
       propsData: {
-        titles: ['标题一', '标题二', '标题三'],
-      },
-    })
-
-    expect(wrapper.find('.md-tab-title')[0].hasClass('active')).to.be.true
-    wrapper.find('.md-tab-title')[2].trigger('click')
-    wrapper.vm.$nextTick(() => {
-      expect(wrapper.find('.md-tab-title')[2].hasClass('active')).to.be.true
-      done()
-    })
-  })
-
-  it('create a tab-bar with customized titles', () => {
-    wrapper = mount(TabBar, {
-      slots: {
-        default: [
-          {
-            template: '<div>title A</div>',
-          },
-          {
-            template: '<div>title B</div>',
-          },
+        items: [
+          {name: '1', label: '标题一'},
+          {name: '2', label: '标题二'},
+          {name: '3', label: '标题三'},
+          {name: '4', label: '标题四'},
+          {name: '5', label: '标题五'},
+          {name: '6', label: '标题六'},
         ],
       },
+      sync: false,
     })
 
-    expect(wrapper.find('.md-tab-title').length).to.equal(2)
+    expect(
+      wrapper
+        .findAll('.md-tab-bar-item')
+        .at(0)
+        .classes('is-active'),
+    ).toBe(true)
+    wrapper
+      .findAll('.md-tab-bar-item')
+      .at(4)
+      .trigger('click')
+    setTimeout(() => {
+      expect(
+        wrapper
+          .findAll('.md-tab-bar-item')
+          .at(4)
+          .classes('is-active'),
+      ).toBe(true)
+      wrapper
+        .findAll('.md-tab-bar-item')
+        .at(1)
+        .trigger('click')
+    }, 100)
+    setTimeout(() => {
+      expect(
+        wrapper
+          .findAll('.md-tab-bar-item')
+          .at(1)
+          .classes('is-active'),
+      ).toBe(true)
+      done()
+    }, 200)
+  })
+
+  it('click disabled menu', done => {
+    wrapper = mount(TabBar, {
+      propsData: {
+        items: [{name: '1', label: '标题一'}, {name: '2', label: '标题二'}, {name: '3', label: '标题三', disabled: true}],
+      },
+      sync: false,
+    })
+
+    expect(
+      wrapper
+        .findAll('.md-tab-bar-item')
+        .at(0)
+        .classes('is-active'),
+    ).toBe(true)
+    wrapper
+      .findAll('.md-tab-bar-item')
+      .at(2)
+      .trigger('click')
+    setTimeout(() => {
+      expect(wrapper.vm.currentName).toBe('1')
+      done()
+    }, 0)
   })
 })

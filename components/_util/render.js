@@ -1,5 +1,14 @@
+import {root, inBrowser} from './env'
+
 /* istanbul ignore file */
 export const render = (function(global) {
+  // for ssr
+  if (!inBrowser) {
+    return function(content, left, top) {
+      content.style.marginLeft = left ? `${-left}px` : ''
+      content.style.marginTop = top ? `${-top}px` : ''
+    }
+  }
   const docStyle = document.documentElement.style
 
   let engine
@@ -26,13 +35,16 @@ export const render = (function(global) {
   const transformProperty = vendorPrefix + 'Transform'
 
   if (helperElem.style[perspectiveProperty] !== undefined) {
-    return function(content, left, top) {
-      // console.log(top)
-      content.style[transformProperty] = `translate3d(${-left}px,${-top}px,0)`
+    return function(content, left, top, useNativeDriver = true) {
+      if (useNativeDriver) {
+        content.style[transformProperty] = `translate3d(${-left}px,${-top}px,0)`
+      } else {
+        content.style[transformProperty] = `translate(${-left}px,${-top}px)`
+      }
     }
   } else if (helperElem.style[transformProperty] !== undefined) {
     return function(content, left, top) {
-      content.style[transformProperty] = `translate(${-left}px,${-top}px,0)`
+      content.style[transformProperty] = `translate(${-left}px,${-top}px)`
     }
   } else {
     return function(content, left, top) {
@@ -40,4 +52,4 @@ export const render = (function(global) {
       content.style.marginTop = top ? `${-top}px` : ''
     }
   }
-})(window)
+})(root)

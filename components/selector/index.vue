@@ -3,10 +3,11 @@
     class="md-selector"
     :class="{
       'is-normal': !isCheck,
-      'is-check': isCheck && isNeedConfirm
+      'is-check': isCheck
     }"
   >
     <md-popup
+      class="inner-popup"
       v-model="isSelectorShow"
       position="bottom"
       :mask-closable="maskClosable"
@@ -16,112 +17,158 @@
     >
       <md-popup-title-bar
         :title="title"
+        :describe="describe"
         :ok-text="okText"
         :cancel-text="cancelText"
         @confirm="$_onSelectorConfirm"
         @cancel="$_onSelectorCancel"
-      ></md-popup-title-bar>
-      <md-scroll-view
-        ref="scroll"
-        class="md-selector-container"
-        :scrolling-x="false"
-        :style="{maxHeight: `${maxHeight}px`}"
       >
-        <div class="md-selector-list">
-          <md-radio
+        <md-icon
+          v-if="!isCheck && !isNeedConfirm && !cancelText"
+          name="close"
+          size="lg"
+          slot="cancel"
+        ></md-icon>
+      </md-popup-title-bar>
+      <div
+        class="md-selector-container"
+      >
+        <md-scroll-view
+          ref="scroll"
+          :scrolling-x="false"
+          :style="{
+            maxHeight: `${maxHeight}`,
+            minHeight: `${minHeight}`
+          }"
+        >
+          <md-radio-list
+            class="md-selector-list"
             ref="radio"
             :key="radioKey"
+            :value="defaultValue"
             :options="data"
-            :default-index="defaultIndex"
-            :invalid-index="invalidIndex"
-            icon="circle-right"
-            icon-inverse="circle"
-            icon-size="md"
-            is-across-border
-            :optionRender="optionRender"
             :is-slot-scope="hasSlot"
+            :icon="icon"
+            :icon-disabled="iconDisabled"
+            :icon-inverse="iconInverse"
+            :icon-position="iconPosition"
+            :icon-size="iconSize"
+            :icon-svg="iconSvg"
             @change="$_onSelectorChoose"
           >
             <template slot-scope="{ option }">
               <slot :option="option"></slot>
             </template>
-          </md-radio>
-        </div>
-      </md-scroll-view>
+          </md-radio-list>
+        </md-scroll-view>
+      </div>
     </md-popup>
   </div>
 </template>
 
-<script>import Popup from '../popup'
+<script>import Icon from '../icon'
+import Popup from '../popup'
 import PopupTitlebar from '../popup/title-bar'
-import Radio from '../radio'
+import popupMixin from '../popup/mixins'
+import popupTitleBarMixin from '../popup/mixins/title-bar'
+import RadioList from '../radio-list'
+import radioMixin from '../radio/mixins'
 import ScrollView from '../scroll-view'
-import {noop} from '../_util'
 
 export default {
   name: 'md-selector',
 
+  mixins: [popupMixin, popupTitleBarMixin, radioMixin],
+
   components: {
-    [Radio.name]: Radio,
+    [Icon.name]: Icon,
+    [RadioList.name]: RadioList,
     [Popup.name]: Popup,
     [PopupTitlebar.name]: PopupTitlebar,
     [ScrollView.name]: ScrollView,
   },
 
   props: {
-    value: {
-      type: Boolean,
-      default: false,
-    },
     data: {
       type: Array,
       default() {
         return []
       },
     },
-    defaultIndex: {
-      type: Number,
-      default: -1,
-    },
-    invalidIndex: {
-      type: [Array, Number],
-      default() {
-        return -1
-      },
-    },
-    title: {
-      type: String,
+    defaultValue: {
       default: '',
-    },
-    okText: {
-      type: String,
-      default: '',
-    },
-    cancelText: {
-      type: String,
-      default: '取消',
-    },
-    maskClosable: {
-      type: Boolean,
-      default: true,
     },
     isCheck: {
       type: Boolean,
       default: false,
     },
-    optionRender: {
-      type: Function,
-      default: noop,
-    },
     maxHeight: {
-      type: Number,
-      default: 400,
+      type: [Number, String],
+      default: 'auto',
     },
+    minHeight: {
+      type: [Number, String],
+      default: 'auto',
+    },
+    cancelText: {
+      default() {
+        return this.okText ? '取消' : ''
+      },
+    },
+    iconPosition: {
+      default: 'right',
+    },
+
+    // Mixin Props
+    // value: {
+    //   type: Boolean,
+    //   default: false,
+    // },
+    // title: {
+    //   type: String,
+    //   default: '',
+    // },
+    // describe: {
+    //   type: String,
+    //   default: '',
+    // },
+    // okText: {
+    //   type: String,
+    //   default: '',
+    // },
+    // maskClosable: {
+    //   type: Boolean,
+    //   default: true,
+    // },
+    // icon: {
+    //   type: String,
+    //   default: 'checked',
+    // },
+    // iconInverse: {
+    //   type: String,
+    //   default: 'check',
+    // },
+    // iconDisabled: {
+    //   type: String,
+    //   default: 'check-disabled',
+    // },
+    // iconSvg: {
+    //   type: Boolean,
+    //   default: false,
+    // },
+    // iconSize: {
+    //   type: String,
+    //   default: 'md',
+    // },
+    // iconPosition: {
+    //   type: String,
+    //   default: 'left',
+    // },
   },
 
   data() {
     return {
-      isSelectorShow: false,
+      isSelectorShow: this.value,
       radioKey: Date.now(),
       activeIndex: -1,
       tmpActiveIndex: -1,
@@ -146,34 +193,11 @@ export default {
     },
   },
 
-  created() {
-    this.value && (this.isSelectorShow = this.value)
-    !this.isNeedConfirm && (this.activeIndex = this.defaultIndex)
-    this.activeIndex = this.tmpActiveIndex = this.defaultIndex
-  },
-
   methods: {
     // MARK: private methods
-    $_getItemText(item) {
-      const renderText = this.itemRender(item)
-      return renderText || item.text || item.label
-    },
-    $_isActive(index) {
-      const activeIndex = this.tmpActiveIndex
-      if (activeIndex > -1) {
-        return activeIndex === index
-      } else {
-        return this.defaultIndex === index
-      }
-    },
-    $_isInvalid(index) {
-      const invalidIndex = this.invalidIndex
-      return Array.isArray(invalidIndex) ? !!~invalidIndex.indexOf(index) : index === invalidIndex
-    },
     $_setScroller() {
       this.$refs.scroll.reflowScroller()
     },
-
     // MARK: events handler
     $_onSelectorConfirm() {
       if (this.tmpActiveIndex > -1) {
@@ -220,22 +244,37 @@ export default {
 <style lang="stylus">
 .md-selector
   .md-popup
-    z-index selector-zindex !important
-    .md-popup-box
-      background-color color-bg-base
-    .md-selector-container
-      background color-bg-base
-      overflow hidden
-  .md-field-item.selected
-    color selector-active-color !important
+    z-index selector-zindex
+  .md-popup-title-bar .md-popup-cancel
+    .md-icon
+      align-self flex-start
+      margin-left h-gap-lg
+  .md-radio-item
+    padding-left h-gap-sl
+    padding-right h-gap-sl
+    transition background-color .3s
+    .md-cell-item-body.multilines .md-cell-item-title
+      font-weight font-weight-normal
+    &.is-selected
+      .md-cell-item-title
+        color color-primary
+    &:active
+      background-color color-bg-tap
   &.is-check
-    .md-field-item.selected .md-icon
-      fill selector-active-color !important
-      .md-field-item-content.left
-        padding-right 32px
+    .md-radio-item.is-selected
+      .md-cell-item-title
+        color inherit
+
+
+.md-selector-container
+  padding-bottom constant(safe-area-inset-bottom)
+  overflow hidden
+
+.md-selector
   &.is-normal
-    .md-field-item-content.left
-      justify-content center
-    .md-field-item .md-icon
-      display none
+    .md-radio-item
+      text-align center
+      .md-cell-item-left,
+      .md-cell-item-right
+        display none
 </style>

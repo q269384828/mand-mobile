@@ -1,8 +1,8 @@
 /* eslint comma-dangle: ["error", "always-multiline"] */
 
-// 组件引入
+// Import components core
 import './_style/global.styl'
-import {warn} from './_util'
+import {transformCamelCase, warn} from './_util'
 import Button from './button'
 import Icon from './icon'
 import Popup from './popup'
@@ -10,7 +10,6 @@ import PopupTitleBar from './popup-title-bar'
 import ActionBar from './action-bar'
 import ActionSheet from './action-sheet'
 import DropMenu from './drop-menu'
-import TabBar from './tab-bar'
 import Picker from './picker'
 import Selector from './selector'
 import Swiper from './swiper'
@@ -18,6 +17,8 @@ import SwiperItem from './swiper-item'
 import Toast from './toast'
 import Tip from './tip'
 import Tabs from './tabs'
+import TabPane from './tab-pane'
+import TabBar from './tab-bar'
 import Tag from './tag'
 import InputItem from './input-item'
 import Stepper from './stepper'
@@ -32,9 +33,11 @@ import TabPicker from './tab-picker'
 import Dialog from './dialog'
 import Field from './field'
 import FieldItem from './field-item'
+import CellItem from './cell-item'
 import Switch from './switch'
 import Agree from './agree'
 import Radio from './radio'
+import RadioList from './radio-list'
 import DatePicker from './date-picker'
 import Captcha from './captcha'
 import Codebox from './codebox'
@@ -42,15 +45,22 @@ import Cashier from './cashier'
 import Chart from './chart'
 import Amount from './amount'
 import ActivityIndicator from './activity-indicator'
+import Check from './check'
+import CheckBox from './check-box'
 import CheckGroup from './check-group'
 import CheckList from './check-list'
-import CheckBox from './check-box'
 import ScrollView from './scroll-view'
 import ScrollViewRefresh from './scroll-view-refresh'
 import ScrollViewMore from './scroll-view-more'
+import Bill from './bill'
+import WaterMark from './water-mark'
+import Transition from './transition'
+import DetailItem from './detail-item'
+import Slider from './slider'
+import Progress from './progress'
 /* @init<%import ${componentNameUpper} from './${componentName}'%> */
 
-// 全量引入提醒
+// Totally importing reminder
 warn(
   'You are using a whole package of mand-mobile, ' +
     'please use https://www.npmjs.com/package/babel-plugin-import to reduce app bundle size.',
@@ -60,7 +70,6 @@ warn(
 /* global MAN_VERSION */
 const version = /* @echo MAN_VERSION */ MAN_VERSION
 
-// 单个组件暴露
 export const components = {
   Button,
   Icon,
@@ -90,9 +99,11 @@ export const components = {
   Dialog,
   Field,
   FieldItem,
+  CellItem,
   Switch,
   Agree,
   Radio,
+  RadioList,
   DatePicker,
   Captcha,
   Codebox,
@@ -100,27 +111,44 @@ export const components = {
   Chart,
   Amount,
   ActivityIndicator,
+  Check,
+  CheckBox,
   CheckGroup,
   CheckList,
-  CheckBox,
   ScrollView,
   ScrollViewRefresh,
   ScrollViewMore,
+  Bill,
+  WaterMark,
+  TabPane,
+  Transition,
+  DetailItem,
+  Slider,
+  Progress,
   /* @init<%${componentNameUpper},%> */
 }
 
-// 定义插件安装方法
+// Define plugin installation method
 const install = function(Vue) {
   if (!Vue || install.installed) {
     return
   }
+
+  // Register global components
   const componentsNames = Object.keys(components)
   componentsNames.forEach(name => {
     const component = components[name]
-    component.name && Vue.component(component.name, component)
+    if (component.name) {
+      Vue.component(component.name, component) // kebab-case
+      Vue.component(transformCamelCase(`-${component.name}`), component) // PascalCase
+    }
   })
 
+<<<<<<< HEAD
   // 全局服务注入
+=======
+  // Mount to prototype
+>>>>>>> 18544c76be38dcf6854e44bbdbdef665e1379462
   Vue.prototype.$toast = Toast
   Vue.prototype.$dialog = Dialog
   Vue.prototype.$actionsheet = ActionSheet
@@ -130,7 +158,7 @@ if (typeof window !== 'undefined' && window.Vue) {
   install(window.Vue)
 }
 
-// 集合组件暴露
+// xport components
 export {
   install,
   version,
@@ -163,9 +191,11 @@ export {
   Dialog,
   Field,
   FieldItem,
+  CellItem,
   Switch,
   Agree,
   Radio,
+  RadioList,
   DatePicker,
   Captcha,
   Codebox,
@@ -173,12 +203,20 @@ export {
   Chart,
   Amount,
   ActivityIndicator,
+  Check,
+  CheckBox,
   CheckGroup,
   CheckList,
-  CheckBox,
   ScrollView,
   ScrollViewRefresh,
   ScrollViewMore,
+  Bill,
+  WaterMark,
+  TabPane,
+  Transition,
+  DetailItem,
+  Slider,
+  Progress,
   /* @init<%${componentNameUpper},%> */
 }
 

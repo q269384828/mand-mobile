@@ -3,7 +3,7 @@
     <md-amount
       :value="val"
       :duration="800"
-      is-animated
+      transition
     ></md-amount>
 	</div>
 </template>
@@ -13,8 +13,8 @@
 export default {
   name: 'amount-demo',
   /* DELETE */
-  title: '变化动画',
-  titleEnUS: 'Animation',
+  title: '变化动效',
+  titleEnUS: 'Transition',
   /* DELETE */
   components: {
     [Amount.name]: Amount,

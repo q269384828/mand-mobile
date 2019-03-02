@@ -1,140 +1,121 @@
 <template>
-  <div
+  <md-field-item
     class="md-input-item"
     :class="[
       isHighlight ? 'is-highlight' : '',
       isTitleLatent ? 'is-title-latent' : '',
-      isInputActive ? 'active' : '',
-      isInputFocus ? 'focus' : '',
-      isInputError ? 'error' : '',
+      isInputActive ? 'is-active' : '',
+      isInputFocus ? 'is-focus' : '',
+      isInputError ? 'is-error' : '',
+      isInputBrief ? 'with-brief' : '',
+      isDisabled ? 'is-disabled': '',
+      isAmount ? 'is-amount': '',
       clearable ? 'is-clear' : '',
       inputEnv,
       align,
       size
-    ]">
-    <div class="md-input-item-container">
-      <!-- ------------ -->
-      <!--   LEFT SLOT  -->
-      <!-- ------------ -->
-      <div class="md-input-item-extra" v-if="$slots.left">
-        <slot name="left"></slot>
+    ]"
+    :title="title"
+    :solid="!isTitleLatent"
+  >
+    <template slot="left">
+      <slot name="left"></slot>
+    </template>
+    <!-- ------------ -->
+    <!--    INPUT     -->
+    <!-- ------------ -->
+    <!-- Native Input -->
+    <template v-if="!isVirtualKeyboard">
+      <input
+        class="md-input-item-input"
+        :type="inputType"
+        :name="name"
+        v-model="inputBindValue"
+        :placeholder="inputPlaceholder"
+        :disabled="isDisabled"
+        :readonly="readonly"
+        :maxlength="isFormative ? '' : maxlength"
+        autocomplete="off"
+        @focus="$_onFocus"
+        @blur="$_onBlur"
+        @keyup="$_onKeyup"
+        @keydown="$_onKeydown"
+        @input="$_onInput"
+      />
+    </template>
+    <!-- Fake Input -->
+    <template v-else>
+      <div
+        class="md-input-item-fake"
+        :class="{
+          'is-focus': isInputFocus,
+          'disabled': isDisabled,
+          'readonly': readonly
+        }"
+        @click="$_onFakeInputClick"
+      >
+        <span v-text="inputValue"></span>
+        <span
+          class="md-input-item-fake-placeholder"
+          v-if="inputValue === '' && inputPlaceholder !== ''"
+          v-text="inputPlaceholder"></span>
       </div>
+    </template>
 
+    <template slot="right">
       <!-- ------------ -->
-      <!--     TITLE    -->
+      <!--  CLEART BTN  -->
       <!-- ------------ -->
       <div
-        v-if="title !== ''"
-        class="md-input-item-title"
-        :class="{
-          fixed: !isTitleLatent
-        }"
-        v-html="title"
-      ></div>
-
-      <!-- ------------ -->
-      <!--   CONTROL    -->
-      <!-- ------------ -->
-      <div class="md-input-item-control">
-        <!-- ------------ -->
-        <!--    INPUT     -->
-        <!-- ------------ -->
-        <!-- Native Input -->
-        <template v-if="!isVirtualKeyboard">
-          <input
-            class="md-input-item-input"
-            :type="inputType"
-            :name="name"
-            v-model="inputBindValue"
-            :placeholder="inputPlaceholder"
-            :disabled="disabled"
-            :readonly="readonly"
-            :maxlength="isFormative ? '' : maxlength"
-            autocomplete="off"
-            @focus="$_onFocus"
-            @blur="$_onBlur"
-            @keyup="$_onKeyup"
-            @keydown="$_onKeydown"
-            @input="$_onInput"
-          />
-        </template>
-        <!-- Fake Input -->
-        <template v-else>
-          <div
-            class="md-input-item-fake"
-            :class="{
-              'focus': isInputFocus,
-              'disabled': disabled,
-              'readonly': readonly
-            }"
-            @click="$_onFakeInputClick"
-          >
-            <span v-text="inputValue"></span>
-            <span
-              class="md-input-item-fake-placeholder"
-              v-if="inputValue === '' && inputPlaceholder !== ''"
-              v-text="inputPlaceholder"></span>
-          </div>
-        </template>
-
-        <!-- -------------------- -->
-        <!-- ERROR TIP FOR NORMAL -->
-        <!-- -------------------- -->
-        <div
-          v-if="!isTitleLatent && error !== ''"
-          class="md-input-item-msg"
-          v-text="error"
-        ></div>
-
-        <!-- ------------ -->
-        <!--  CLEART BTN  -->
-        <!-- ------------ -->
-        <div
-          class="md-input-item-clear"
-          v-if="clearable && !disabled && !readonly"
-          v-show="!isInputEmpty && isInputFocus"
-          @click="$_clearInput($event)"
-        >
-          <md-icon name="circle-cross"></md-icon>
-        </div>
-
-        <!-- ------------ -->
-        <!--  RIGHT SLOT  -->
-        <!-- ------------ -->
-        <div
-          class="md-input-item-right"
-          v-if="$slots.right"
-        >
-          <slot name="right"></slot>
-        </div>
+        class="md-input-item-clear"
+        v-if="clearable && !isDisabled && !readonly"
+        v-show="!isInputEmpty && isInputFocus"
+        @click="$_clearInput"
+      >
+        <md-icon name="clear"></md-icon>
       </div>
-    </div>
-    <!-- -------------------- -->
-    <!-- ERROR TIP FOR LATENT -->
-    <!-- -------------------- -->
-    <div
-      v-if="isTitleLatent && error !== ''"
-      class="md-input-item-msg"
-      v-text="error"
-    ></div>
-    <!-- ------------ -->
-    <!--   KEYBORARD  -->
-    <!-- ------------ -->
-    <md-number-keyboard
-      v-if="isVirtualKeyboard"
-      ref="number-keyboard"
-      :id="`${name}-number-keyboard`"
-      class="md-input-item-number-keyboard"
-      :ok-text="virtualKeyboardOkText"
-      :disorder="virtualKeyboardDisorder"
-      @enter="$_onNumberKeyBoardEnter"
-      @delete="$_onNumberKeyBoardDelete"
-      @confirm="$_onNumberKeyBoardConfirm"
-    ></md-number-keyboard>
-  </div>
+
+      <!-- ------------ -->
+      <!--  RIGHT SLOT  -->
+      <!-- ------------ -->
+      <slot name="right"></slot>
+    </template>
+
+    <template slot="children">
+      <!-- -------------------- -->
+      <!-- BRIEF/ERROR TIP -->
+      <!-- -------------------- -->
+      <div
+        v-if="isInputError"
+        class="md-input-item-msg"
+      >
+        <p v-if="error !== ''" v-text="error"></p>
+        <slot name="error" v-else></slot>
+      </div>
+      <div
+        v-if="isInputBrief"
+        class="md-input-item-brief"
+      >
+        <p v-if="brief !== ''" v-text="brief"></p>
+        <slot name="brief" v-else></slot>
+      </div>
+      <!-- ------------ -->
+      <!--   KEYBORARD  -->
+      <!-- ------------ -->
+      <md-number-keyboard
+        v-if="isVirtualKeyboard && !virtualKeyboardVm"
+        ref="number-keyboard"
+        :id="`${name}-number-keyboard`"
+        class="md-input-item-number-keyboard"
+        :ok-text="virtualKeyboardOkText"
+        :disorder="virtualKeyboardDisorder"
+      ></md-number-keyboard>
+    </template>
+  </md-field-item>
 </template>
 
 <script>import Icon from '../icon'
+import FieldItem from '../field-item'
 import NumberKeyboard from '../number-keyboard'
 import {getCursorsPosition, setCursorsPosition} from './cursor'
 import {noop, isIOS, isAndroid, randomId} from '../_util'
@@ -145,7 +126,15 @@ export default {
 
   components: {
     [Icon.name]: Icon,
+    [FieldItem.name]: FieldItem,
     [NumberKeyboard.name]: NumberKeyboard,
+  },
+
+  inject: {
+    rootField: {
+      from: 'rootField',
+      default: () => ({}),
+    },
   },
 
   props: {
@@ -161,6 +150,10 @@ export default {
       },
     },
     title: {
+      type: String,
+      default: '',
+    },
+    brief: {
       type: String,
       default: '',
     },
@@ -212,6 +205,9 @@ export default {
     virtualKeyboardOkText: {
       type: String,
     },
+    virtualKeyboardVm: {
+      type: Object,
+    },
     isTitleLatent: {
       type: Boolean,
       default: false,
@@ -224,6 +220,10 @@ export default {
       },
     },
     isHighlight: {
+      type: Boolean,
+      default: false,
+    },
+    isAmount: {
       type: Boolean,
       default: false,
     },
@@ -257,6 +257,8 @@ export default {
       let inputType = this.type || 'text'
       if (inputType === 'bankCard' || inputType === 'phone' || inputType === 'digit') {
         inputType = 'tel'
+      } else if (inputType === 'money') {
+        inputType = 'text'
       }
       return inputType
     },
@@ -277,7 +279,13 @@ export default {
       return !this.inputValue.length
     },
     isInputError() {
-      return !!this.error
+      return this.$slots.error || this.error !== ''
+    },
+    isInputBrief() {
+      return (this.$slots.brief || this.brief !== '') && !this.isInputError
+    },
+    isDisabled() {
+      return this.rootField.disabled || this.disabled
     },
   },
 
@@ -295,7 +303,7 @@ export default {
       this.$emit('change', this.name, val)
     },
     isInputFocus(val) {
-      if (!this.isVirtualKeyboard) {
+      if (!this.isVirtualKeyboard || !this.inputNumberKeyboard) {
         return
       }
       if (val) {
@@ -312,7 +320,10 @@ export default {
     this.inputValue = this.$_formateValue(this.$_subValue(this.value + '')).value
   },
   mounted() {
-    this.isVirtualKeyboard && this.$_initNumberKeyBoard()
+    this.isVirtualKeyboard &&
+      this.$nextTick(() => {
+        this.$_initNumberKeyBoard()
+      })
   },
   beforeDestroy() {
     const keyboard = this.inputNumberKeyboard
@@ -378,6 +389,7 @@ export default {
           curValue = this.$_subValue(trimValue(curValue.replace(/\D/g, '')))
           formateValue.value = curValue
           break
+        /* istanbul ignore next */
         default:
           break
       }
@@ -396,15 +408,15 @@ export default {
       }
     },
     $_clearInput() {
-      event.stopImmediatePropagation()
       this.inputValue = ''
+      !this.isTitleLatent && this.focus()
     },
     $_focusFakeInput() {
       this.isInputFocus = true
 
-      this.$nextTick(() => {
+      setTimeout(() => {
         this.$_addBlurListener()
-      })
+      }, 0)
     },
     $_blurFakeInput() {
       this.isInputFocus = false
@@ -417,14 +429,20 @@ export default {
       document.removeEventListener('click', this.$_blurFakeInput, false)
     },
     $_initNumberKeyBoard() {
-      const keyboard = this.$refs['number-keyboard']
+      const keyboard = this.virtualKeyboardVm || this.$refs['number-keyboard']
+      keyboard.$on('enter', this.$_onNumberKeyBoardEnter)
+      keyboard.$on('delete', this.$_onNumberKeyBoardDelete)
+      keyboard.$on('confirm', this.$_onNumberKeyBoardConfirm)
       this.inputNumberKeyboard = keyboard
       document.body.appendChild(keyboard.$el)
     },
 
     // MARK: events handler
     $_onInput(event) {
-      const formateValue = this.$_formateValue(event.target.value, getCursorsPosition(event.target))
+      const formateValue = this.$_formateValue(
+        event.target.value,
+        this.isFormative ? getCursorsPosition(event.target) : 0,
+      )
 
       this.inputValue = formateValue.value
       this.inputBindValue = formateValue.value
@@ -449,11 +467,13 @@ export default {
       this.$emit('focus', this.name)
     },
     $_onBlur() {
-      this.isInputFocus = false
-      this.$emit('blur', this.name)
+      setTimeout(() => {
+        this.isInputFocus = false
+        this.$emit('blur', this.name)
+      }, 100)
     },
     $_onFakeInputClick(event) {
-      if (this.disabled || this.readonly) {
+      if (this.isDisabled || this.readonly) {
         return
       }
 
@@ -483,6 +503,9 @@ export default {
         this.$_onFakeInputClick()
       } else {
         this.$el.querySelector('.md-input-item-input').focus()
+        setTimeout(() => {
+          this.isInputFocus = true
+        }, 200)
       }
     },
     blur() {
@@ -490,6 +513,7 @@ export default {
         this.$_blurFakeInput()
       } else {
         this.$el.querySelector('.md-input-item-input').blur()
+        this.isInputFocus = false
       }
     },
     getValue() {
@@ -501,87 +525,103 @@ export default {
 
 <style lang="stylus">
 .md-input-item
-  display flex
-  flex 1
-  align-self stretch
-  position relative
-  min-height input-item-height
-  box-sizing border-box
-  clearfix()
-  .md-input-item-container
+  .md-field-item-content
+    padding-top 0
+    padding-bottom 0
+  .md-field-item-control
     display flex
-    flex 1
-  .md-input-item-extra, .md-input-item-title
-    display flex
-    position relative
-    height input-item-height
     align-items center
-    margin-right input-item-title-gap
-    font-size field-title-font-size
-    color field-title-color
-    word-break()
-    &.fixed
-      width input-item-title-width
-  .md-input-item-control
-    position relative
-    display flex
-    flex-direction column
-    flex 1
-    min-height input-item-height
-    .md-input-item-clear, .md-input-item-right
-      position absolute
-      z-index 2
-      top 0
-      right 0
-      width 50px
-      height input-item-height
-      display flex
-      align-items center
-      justify-content center
-    .md-input-item-clear
-      color input-item-icon
-      z-index 3
-      .md-icon
-        background color-bg-base
-        border-radius radius-circle
-    .md-input-item-input, .md-input-item-fake
-      // display flex
-      width 100%
-      height input-item-height
-      color input-item-color
-      font-size input-item-font-size
-      font-weight input-item-font-weight
-      -webkit-appearance none
-      border none
-      background transparent
-      outline none
-      box-sizing border-box
-      -webkit-tap-highlight-color transparent
-      appearance none
 
-    .md-input-item-input
-      &:disabled, &[disabled]
-        opacity input-item-color-disabled
-      &::-webkit-input-placeholder
-        color input-item-placeholder
-      &::-webkit-outer-spin-button, &::-webkit-inner-spin-button
-        -webkit-appearance none
-  &.left
-    .md-input-item-input, .md-input-item-fake
-      text-align left
-  &.center
-    .md-input-item-input, .md-input-item-fake
-      text-align center
-  &.right
-    .md-input-item-input, .md-input-item-fake
-      text-align right
-  &.is-clear .md-input-item-control
-    padding-right 50px !important
-  &.is-title-latent
+.md-input-item-clear
+  padding 10px 0
+  color input-item-icon
+  .md-icon
+    display flex
+    background color-bg-base
+    border-radius radius-circle
+
+.md-input-item-input,
+.md-input-item-fake
+  // display flex
+  width 100%
+  height input-item-height
+  color input-item-color
+  font-size input-item-font-size
+  font-weight input-item-font-weight
+  font-family font-family-normal
+  line-height 1
+  -webkit-appearance none
+  border none
+  background transparent
+  outline none
+  box-sizing border-box
+  -webkit-tap-highlight-color transparent
+  appearance none
+
+.md-input-item-input
+  &:disabled, &[disabled]
+    opacity 1
+  &::-webkit-input-placeholder
+    color input-item-placeholder
+    font-weight font-weight-normal
+  &::-webkit-outer-spin-button, &::-webkit-inner-spin-button
+    -webkit-appearance none
+
+.md-input-item-fake
+  line-height input-item-height
+  word-ellipsis()
+  cursor text
+  &::after
     position relative
-    padding-top 10px
-    // overflow hidden
-    .md-input-item-title
+    z-index 2
+    display none
+    content " "
+    height input-item-font-size
+    border-right solid 1.5px color-text-base
+    animation keyboard-cursor infinite 1s step-start
+  &.is-focus:after
+    display inline
+
+.md-input-item-fake-placeholder
+  position absolute
+  top 0
+  left 0
+  width 100%
+  color input-item-placeholder
+  font-weight font-weight-normal
+
+.md-input-item-msg,
+.md-input-item-brief
+  word-break()
+  &:not(:last-child)
+    margin-bottom 10px
+
+.md-input-item-brief
+  font-size input-item-font-size-brief
+  color input-item-color-brief
+
+.md-input-item-msg
+  font-size input-item-font-size-error
+  color input-item-color-error
+
+.md-input-item
+  &.left
+    .md-input-item-input,
+    .md-input-item-fake
+      text-align left
+
+  &.center
+    .md-input-item-input,
+    .md-input-item-fake
+      text-align center
+
+  &.right
+    .md-input-item-input,
+    .md-input-item-fake
+      text-align right
+
+  &.is-title-latent
+    .md-field-item-title
       position absolute
       top 50%
       left 0
@@ -592,83 +632,79 @@ export default {
       transition all .3s ease
       opacity 0
       will-change auto
-    .md-input-item-extra, .md-input-item-control
-      top 15px
-    .md-input-item-msg
-      position absolute
-      left 0
-      bottom 0
-      top auto !important
-      margin 0
-    &.active
-      .md-input-item-title
+    .md-field-item-content
+      min-height 115px
+    .md-field-item-content,
+    .md-field-item-left,
+    .md-field-item-right,
+    .md-input-item-input,
+    .md-input-item-fake
+      padding-top 20px
+    &.is-active
+      .md-field-item-title
         opacity 1
-        top 10px
+        top 20px
         transform translate3d(0, 0, 0)
-      // .md-input-item-input::-webkit-input-placeholder, .md-input-item-fake-placeholder
-      //   color transparent
-    &.error
-      padding-bottom 40px
+
   &.is-highlight
-    .md-input-item-input::-webkit-input-placeholder, .md-input-item-fake-placeholder
-      color input-item-placeholder-highlight
-  &.large .md-input-item-input
-    font-size input-item-font-size-large
-  &.error
-    .md-input-item-title
-      color input-item-color-error
+    &.is-focus
+      .md-field-item-content
+        hairline(bottom, input-item-color-highlight, 0, 4px)
 
-  .md-input-item-fake
-    line-height input-item-height
-    word-ellipsis()
-    cursor text
-    &:after
-      position relative
-      z-index 2
-      display none
-      content ""
-      height input-item-font-size
-      border-right solid 1.5px color-text-base
-      animation keyboard-cursor infinite 1s step-start
-    &.focus:after
-      display inline
-    &.disabled
-      opacity input-item-color-disabled
+  &.is-disabled
+    .md-input-item-input,
+    .md-input-item-fake,
     .md-input-item-fake-placeholder
-      position absolute
-      top 0
-      left 0
-      width 100%
-      color input-item-placeholder
+      -webkit-text-fill-color input-item-color-disabled
+      color input-item-color-disabled
 
-  .md-input-item-msg
-    position relative
-    top -10px
-    float left
-    width 100%
-    margin-bottom 10px
-    font-size input-item-font-size-error
-    color input-item-color-error
-    word-break()
+  &.is-amount
+    .md-input-item-input,
+    .md-input-item-fake
+      padding-top 5px
+      font-family font-family-number
+    &.large
+      .md-input-item-input,
+      .md-input-item-fake
+        padding-top v-gap-xs
 
-  &.is-ios .md-input-item-fake:after
-    border-right solid 6px #2C6CF5
-    border-radius 2px
-  &.is-android .md-input-item-fake:after
-    border-right solid 4px color-text-base
+  &.large
+    .md-input-item-input,
+    .md-input-item-fake
+      padding-bottom 15px
+      font-size input-item-font-size-large
+    .md-input-item-input::-webkit-input-placeholder
+        font-size 60px
+        line-height 100px
 
-  @-webkit-keyframes keyboard-cursor
-    0%
-      opacity 1
-    50%
-      opacity 0
-    to
-      opacity 1
-  @keyframes keyboard-cursor
-    0%
-      opacity 1
-    50%
-      opacity 0
-    to
-      opacity 1
+  &.is-error
+    .md-field-item-content
+      hairline(bottom, input-item-color-error, 0, 4px)
+
+  &.is-ios
+    .md-input-item-input::-webkit-input-placeholder
+      position relative
+      top 3px
+      overflow visible
+    .md-input-item-fake::after
+      border-right solid 6px #2C6CF5
+      border-radius 2px
+  &.is-android
+    .md-input-item-fake::after
+      border-right solid 4px color-text-base
+
+@-webkit-keyframes keyboard-cursor
+  0%
+    opacity 1
+  50%
+    opacity 0
+  to
+    opacity 1
+@keyframes keyboard-cursor
+  0%
+    opacity 1
+  50%
+    opacity 0
+  to
+    opacity 1
 </style>

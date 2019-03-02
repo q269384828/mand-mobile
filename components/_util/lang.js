@@ -1,4 +1,6 @@
 /* istanbul ignore file */
+import {inBrowser} from './env'
+
 export function noop() {}
 
 /**
@@ -42,7 +44,7 @@ export function getDpr() {
     return null
   }
 
-  const viewPort = document.querySelector('meta[name=viewport]')
+  const viewPort = inBrowser ? document.querySelector('meta[name=viewport]') : null
 
   if (!viewPort) {
     return 1
@@ -68,5 +70,51 @@ export function functionToUrl(fn) {
  * generate random id
  */
 export function randomId(prefix = '', length = 8) {
-  return `${prefix}-${parseInt(Math.pow(Math.random() * 10, length))}`
+  return process.env.NODE_ENV !== 'test' ? `${prefix}-${parseInt(Math.pow(Math.random() * 10, length))}` : ''
+}
+
+/**
+ * kebab-case -> camelCase
+ */
+export function transformCamelCase(str) {
+  var re = /-(\w)/g
+  return str.replace(re, function($0, $1) {
+    return $1.toUpperCase()
+  })
+}
+
+/**
+ * Creates a debounced function that delays invoking fn until after delay milliseconds
+ */
+export function debounce(fn = noop, delay = 300) {
+  let timer = null
+
+  return function() {
+    let context = this
+
+    if (timer) {
+      clearTimeout(timer)
+    }
+
+    timer = setTimeout(function() {
+      fn.apply(context, arguments)
+    }, delay)
+  }
+}
+
+/**
+ * Creates a throttled function that only invokes fn at most once per every interval milliseconds
+ */
+export function throttle(fn = noop, interval = 300) {
+  let last = 0
+
+  return function() {
+    let context = this
+    const now = Date.now()
+
+    if (now - last > interval) {
+      last = now
+      fn.apply(context, arguments)
+    }
+  }
 }

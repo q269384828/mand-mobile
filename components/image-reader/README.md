@@ -26,7 +26,7 @@ Vue.component(ImageReader.name, ImageReader)
 |size|图片尺寸限制|String/Number|-|单位`kb`|
 |mime|支持图片类型|Array|`*`|如`['jpeg','png']`|
 |is-camera-only|是否只支持拍照|Boolean|`false`|-|
-|is-multiple|是否支持选择多张|Boolean|`false`|-|
+|is-multiple|是否支持选择多张|Boolean|`false`|存在[兼容问题](https://caniuse.com/#feat=input-file-multiple)|
 |amount|选择多张|Number|-|只在`is-multiple`为`true`时有效|
 
 #### ImageReader Events
@@ -37,7 +37,7 @@ Vue.component(ImageReader.name, ImageReader)
 |属性 | 说明 | 类型| 备注|
 |-----|-----|-----|-----|
 |name|选择器标识|String|-|
-|files<sup class="version-after">1.3.1+</sup>|图片对象集合|Array<File>|-|
+|files|图片对象集合|Array<File>|-|
 
 ##### @complete(name, { dataUrl, blob, file })
 图片选择读取完成事件
@@ -47,7 +47,7 @@ Vue.component(ImageReader.name, ImageReader)
 |name|选择器标识|String|-|
 |dataUrl|图片Base64|String|-|
 |blob|图片Blob对象，可用于`formData`|Blob|-|
-|file<sup class="version-after">1.3.1+</sup>|图片对象|File|-|
+|file|图片对象|File|-|
 
 ##### @error(name, { code, msg })
 图片选择读取失败事件

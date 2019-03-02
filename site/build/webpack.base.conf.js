@@ -70,6 +70,7 @@ module.exports = {
   plugins: [
     new HtmlWebpackPlugin(Object.assign({}, htmlPluginOption, {
       filename: 'index.html',
+      // publicPath: '/mand-mobile/',
       publicPath: '/mand-mobile/',
     })),
     new HtmlWebpackPlugin(Object.assign({}, htmlPluginOption, {

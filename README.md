@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 **English** | [中文](./README.zh-CN.md)
 <div align="center">
   <a href="#">
@@ -18,6 +19,11 @@
 </div>
 
 # mand-mobile
+=======
+<img src="https://pt-starimg.didistatic.com/static/starimg/img/4bJIa4DLYE1544607705566.jpg">
+
+# mand-mobile 
+>>>>>>> 18544c76be38dcf6854e44bbdbdef665e1379462
 
 [![Build Status](https://img.shields.io/travis/didi/mand-mobile/master.svg?style=flat-square)](https://travis-ci.org/didi/mand-mobile)
 [![codecov](https://img.shields.io/codecov/c/github/didi/mand-mobile/master.svg?style=flat-square)](https://codecov.io/gh/didi/mand-mobile)
@@ -29,7 +35,11 @@
 
 A mobile UI toolkit, based on Vue.js 2, designed for financial scenarios.
 
+<<<<<<< HEAD
 ### 🎉🎉🎉 Mand Mobile 2.0, [experience immediately](https://mand-mobile.github.io/2x-doc/)
+=======
+**English** | [中文](./README.zh-CN.md)
+>>>>>>> 18544c76be38dcf6854e44bbdbdef665e1379462
 
 ## Links
 
@@ -44,7 +54,7 @@ A mobile UI toolkit, based on Vue.js 2, designed for financial scenarios.
 
 You can scan the following QR code to access the examples:
 
-<img src="https://manhattan.didistatic.com/static/manhattan/mand/docs/mand-doc-home-qrcode.png?v=2" alt="Mand Mobile Examples" width="200"/>
+<img src="https://manhattan.didistatic.com/static/manhattan/mand-mobile/2.0/docs/mand-doc-home-qrcode.png" alt="Mand Mobile Examples" width="200"/>
 
 ## Install & Usage
 

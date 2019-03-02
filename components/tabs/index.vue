@@ -1,3 +1,20 @@
+<template>
+  <div class="md-tabs">
+    <md-tab-bar
+      ref="tabBar"
+      :items="menus"
+      :value="currentName"
+      :has-ink="hasInk"
+      :ink-length="inkLength"
+      :immediate="immediate"
+      @change="$_handleTabClick"
+    />
+    <div class="md-tabs-content">
+      <slot></slot>
+    </div>
+  </div>
+</template>
+
 <script>import TabBar from '../tab-bar'
 
 export default {
@@ -8,185 +25,96 @@ export default {
   },
 
   props: {
-    titles: {
-      type: Array,
-      default() {
-        return []
-      },
-    },
-    showInkBar: {
+    value: String,
+    hasInk: {
       type: Boolean,
       default: true,
     },
-    inkBarLength: {
+    inkLength: {
       type: Number,
-      default: 70,
-      validator(length) {
-        return length > 0 && length <= 100
-      },
+      default: 80,
     },
-    inkBarAnimate: {
-      type: Boolean,
-      default: true,
-    },
-    defaultIndex: {
-      type: Number,
-      default: 0,
-    },
-    noslide: {
-      type: Boolean,
-      default: false,
-    },
-    upsideDown: {
-      type: Boolean,
-      default: false,
-    },
-    forceUseArray: {
-      type: Boolean,
-      default: undefined,
-    },
+    immediate: Boolean,
   },
 
   data() {
     return {
-      activeIndex: this.defaultIndex,
+      currentName: this.value,
+      prevIndex: 0,
+      panes: [],
     }
   },
 
   watch: {
-    activeIndex(val, preVal) {
-      this.$emit('change', val, preVal)
-      this.$emit('indexChanged', val, preVal)
+    value(val) {
+      if (val !== this.currentName) {
+        this.currentName = val
+      }
     },
+  },
+
+  computed: {
+    menus() {
+      return this.panes.map(pane => {
+        return {
+          name: pane.name,
+          label: pane.label,
+          disabled: pane.disabled,
+        }
+      })
+    },
+    currentIndex() {
+      for (let i = 0, len = this.menus.length; i < len; i++) {
+        if (this.menus[i].name === this.currentName) {
+          return i
+        }
+      }
+      return 0
+    },
+  },
+
+  provide() {
+    return {
+      rootTabs: this,
+    }
   },
 
   mounted() {
-    this.selectTab(this.activeIndex)
+    if (!this.currentName && this.menus.length) {
+      this.currentName = this.menus[0].name
+    }
   },
 
   methods: {
-    // MARK: public methods
-    selectTab(i) {
-      const index = parseInt(i)
-      if (index >= 0 && index < this.titleList().length) {
-        this.activeIndex = index
+    // MARK: private events
+    $_handleTabClick(tab, index, prevIndex) {
+      this.currentName = tab.name
+      this.prevIndex = prevIndex
+      this.$emit('input', tab.name)
+      this.$emit('change', tab)
+    },
+    // MARK: private methods
+    $_addPane(pane) {
+      if (this.panes.indexOf(pane) === -1) {
+        this.panes.push(pane)
       }
     },
-
-    titleList() {
-      if (this.titles && this.titles.length) {
-        return this.titles
-      } else if (this.$slots.title && this.$slots.title.length) {
-        return this.$slots.title.filter(el => el.tag)
-      } else {
-        return []
+    $_removePane(pane) {
+      const index = this.panes.indexOf(pane)
+      if (index >= 0) {
+        this.panes.splice(index, 1)
       }
     },
-
-    contentList() {
-      if (this.$slots.default) {
-        return this.$slots.default.filter(el => el.tag)
-      } else {
-        return []
-      }
+    reflowTabBar() {
+      this.$refs.tabBar.reflow()
     },
-  },
-
-  render(createElement) {
-    const self = this
-
-    const titleBarRenderer = createElement(
-      'md-tab-bar',
-      {
-        props: {
-          titles: self.titles,
-          defaultIndex: self.activeIndex,
-          showInkBar: self.showInkBar,
-          inkBarLength: self.inkBarLength,
-          inkBarAnimate: self.inkBarAnimate,
-          forceUseArray: self.forceUseArray,
-        },
-        class: {
-          'on-bottom': self.upsideDown,
-        },
-        on: {
-          indexChanged(i) {
-            self.selectTab(i)
-          },
-        },
-        scopedSlots: this.$scopedSlots,
-      },
-      this.$slots.title || [],
-    )
-
-    const contentRenderer = this.contentList().map((content, index) => {
-      return createElement(
-        'div',
-        {
-          class: {
-            'md-tab-content': true,
-          },
-          key: index,
-          attrs: {
-            key: index,
-          },
-        },
-        [content],
-      )
-    })
-
-    const contentWrapperRenderer = createElement(
-      'div',
-      {
-        class: {
-          'md-tab-content-wrapper': true,
-        },
-        style: {
-          transform: self.noslide ? '' : `translateX(${-this.activeIndex * 100}%)`,
-        },
-      },
-      [self.noslide ? contentRenderer[this.activeIndex] : contentRenderer],
-    )
-
-    return createElement(
-      'div',
-      {
-        class: {
-          'md-tabs': true,
-        },
-      },
-      self.upsideDown ? [contentWrapperRenderer, titleBarRenderer] : [titleBarRenderer, contentWrapperRenderer],
-    )
   },
 }
 </script>
 
 <style lang="stylus">
-.md-tabs
-  z-index tab-zindex
-  font-size tab-font-size
-  display flex
-  flex-direction column
+.md-tabs-content
+  position relative
+  width 100%
   overflow hidden
-  flex 1
-
-  .md-tab-bar
-    flex-shrink 0
-    hairline(bottom, tab-border-color)
-    &.on-bottom
-      border-bottom none
-      hairline(top, tab-border-color)
-
-  .md-tab-content-wrapper
-    position relative
-    min-height 100px
-    display flex
-    flex 1
-    transition transform .5s
-    .md-tab-content
-      width 100%
-      height 100%
-      top 0
-      overflow-y scroll
-      flex-shrink 0
 </style>

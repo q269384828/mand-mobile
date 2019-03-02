@@ -25,10 +25,13 @@ Vue.component(Picker.name, Picker)
 |data|数据源|Array<{value, lable, ...}>[]|`[]`|-|
 |cols|数据列数|Number|`1`|-|
 |default-index|选择器各列初始选中项索引|Array|`[]`|-|
+|default-value|选择器各列初始选中项值|Array|`[]`|可用字段`text/lable/value`|
 |invalid-index|选择器各列不可用选项索引|Array|`[]`|某列多个不可用项使用数组，单个使用数字, 如`[[1,2], 2]`|
+|line-height|选择器选项行高|Number|`45`|单位`px`|
 |is-view|是否内嵌在页面内展示，否则以弹层形式|Boolean|`false`|-|
 |is-cascade|各列数据是否级联|Boolean|`false`|级联数据格式见附录|
 |title|选择器标题|String|-|-|
+|describe|选择器描述|String|-|-|
 |ok-text|选择器确认文案|String|`确认`|-|
 |cancel-text|选择器取消文案|String|`取消`|-|
 |mask-closable|点击蒙层是否可关闭弹出层|Boolean|`true`|-|
@@ -36,7 +39,7 @@ Vue.component(Picker.name, Picker)
 #### Picker Methods
 
 ##### refresh(callback, startColumnIndex)
-重新初始化选择器，如更新`data`, `default-index`或`invalid-index`
+重新初始化选择器，如更新`data`、`default-index`、`invalid-index`或调用`setColumnValues`，该方法也可以使用[key](https://cn.vuejs.org/v2/api/#key)代替
 
 |参数 | 说明 | 类型|
 |----|-----|------|

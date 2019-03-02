@@ -80,15 +80,19 @@ export default {
       this.tableShow = false
     },
     jump (item) {
-      this.$router.push({
-        path: `${item.path}?anchor=${item.hash || ''}`,
-      })
+      if (/[a-zA-z]+:\/\/[^\s]*/.test(item.path)) {
+        location.href = item.path
+      } else {
+        this.$router.push({
+          path: `${item.path}?anchor=${item.hash || ''}`,
+        })
+      }
     }
   }
 }
 </script>
 
-<style lang="stylus" scoped>
+<style lang="stylus">
 .default-table
   position absolute
   z-index 2
@@ -161,6 +165,6 @@ export default {
   .table-item
     a
       em
-        color #048efa
+        color #2F86F6
         font-style normal
 </style>

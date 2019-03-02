@@ -3,9 +3,7 @@
     <div class="md-home-logo">
       <img src="//manhattan.didistatic.com/static/manhattan/mand/docs/mand-logo-black.svg" alt="">
     </div>
-    <div class="md-home-name" data-in-effect="fadeInLeftBig">
-      Mand Mobile
-    </div>
+    <div class="md-home-name" data-in-effect="fadeInLeftBig">Mand Mobile 2</div>
     <div class="md-home-time">0%</div>
     <h1 class="md-home-copyright">Produced By DiDi - FDC &times; MFE</h1>
   </div>
@@ -19,7 +17,6 @@ export default {
     }
   },
   mounted() {
-    require.ensure(['./category'], () => {}, 'category')
     $('.md-home-name')
       .textillate()
       .on('end.tlt')
@@ -40,7 +37,9 @@ export default {
           $('.md-home-time').text(`${parseInt(percent)}%`)
         } else {
           clearInterval(time)
-          fn()
+          setTimeout(() => {
+            fn()
+          }, 300)
         }
       }, tick)
     },
@@ -58,29 +57,31 @@ export default {
     position absolute
     top 30%
     left 50%
-    transform translateX(-50%)
+    width 96px
+    height 96px
+    margin-left -48px
+    animation blur-out 2s ease-in-out-quint forwards
+    img
+      width 100%
   .md-home-name
     position absolute
     width 100%
     top 45%
     left 0
     font-size font-heading-medium
-    font-weight 300
-    color color-text-minor
+    font-family DINAlternate-Bold
+    color color-text-base
     text-align center
-    span.word5
-      .char1, .char2, .char3
-        color color-text-base
-    span.word6 .char1
-        color color-text-base
-    span.word7 .char1
-        color color-text-base
+    span.word3
+        color color-primary
+        font-family DINAlternate-Bold
   .md-home-time
     position absolute
     width 100%
     top 50%
     left 0
     font-size font-minor-normal
+    font-weight font-weight-light
     color color-text-minor
     text-align center
   .md-home-copyright
@@ -92,4 +93,12 @@ export default {
     font-size font-minor-normal
     font-weight 300
     color color-text-caption
+
+@keyframes blur-out
+  from
+    transform scale(2)
+    filter blur(100px)
+  to
+    filter blur(0)
+    transform scale(1)
 </style>

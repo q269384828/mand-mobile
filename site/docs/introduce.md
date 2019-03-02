@@ -8,15 +8,25 @@ title: Mand Mobile
 
 * <b>丰富的组件</b>
 
+<<<<<<< HEAD
     40+的实用组件，能够满足移动端开发的基本需求，尤其是对金融场景的需求进行了特别支持
+=======
+   40+的实用组件，能够满足移动端开发的基本需求，尤其是对金融场景的需求进行了特别支持
+>>>>>>> 18544c76be38dcf6854e44bbdbdef665e1379462
 
 * <b>统一的视觉规范</b>
 
-    由滴滴战略事业群设计师设计并维护，保证了应用的项目内部、项目之间都能保持高度的视觉一致性
+    由滴滴金融设计师设计并维护，保证了应用的项目内部、项目之间都能保持高度的视觉一致性
 
+<<<<<<< HEAD
 * <b>严格控制的Bundle体积 </b>
 
     提供按需加载能力，使用灵活，避免引入无用代码，同时导出`es`，`umd`两种格式包，其中`es`打包大小仅为`169kb (gzip 41kb)`，`umd`格式最终大小仅为`163kb (gzip 40kb)`
+=======
+* <b>适用于多场景的产生</b> 
+
+    提供按需加载能力，使用灵活，避免引入无用代码，导出`es`，`umd`两种格式以及`px`, `vh/vw`两种样式单位
+>>>>>>> 18544c76be38dcf6854e44bbdbdef665e1379462
 
 * <b>灵活转换的样式主题</b>
 
@@ -24,17 +34,30 @@ title: Mand Mobile
 
 * <b>支持TypeScript</b>
 
+* <b>支持服务端渲染</b> 
+
 #### 版本
-- [![npm package](http://img.shields.io/npm/v/mand-mobile.svg?style=flat-square)](http://npmjs.com/package/mand-mobile)
+
+[![npm package](https://img.shields.io/npm/v/mand-mobile.svg?style=flat-square)](http://npmjs.com/package/mand-mobile)
+
+> 订阅稳定版发布的通知：https://github.com/didi/mand-mobile/releases.atom
 
 #### 浏览器支持
 
+* 现代浏览器
 * iOS 6+
 * Android 4.0+
 
 #### 快速上手
 
 请参考<a href="#/docs/started">快速上手</a>
+
+#### 链接
+
+* <a href="https://github.com/mand-mobile" target="_blank">🎨 调色板</a>
+* <a href="https://github.com/mand-mobile/vue-cli3-example" target="_blank">🍭 vue-cli3-example</a>
+* <a href="https://github.com/mand-mobile/vue-cli-plugin-mand" target="_blank">🍄 vue-cli-plugin-mand</a>
+* <a href="https://github.com/mand-mobile/mand-mobile-template" target="_blank">🛍 mand-mobile-template</a>
 
 #### 谁在使用
 
@@ -44,5 +67,8 @@ title: Mand Mobile
 
 在以任何形式的参与前，请先阅读<a href="#/docs/development">开发指南</a>。如有任何的意见或建议，欢迎您通过创建<a href="https://github.com/didi/mand-mobile/issues" targe="_blank">Issue</a>或<a href="https://github.com/didi/mand-mobile/pulls" targe="_blank">Pull Request</a>的方式告知我们。
 
+#### 社区互助
 
+如果您在使用的过程中碰到问题，可以扫描下方二维码加入官方群寻求帮助，同时期待您能够分享个人使用经验给予他人帮助。   
 
+<img src="https://pt-starimg.didistatic.com/static/starimg/img/KitzF6QlrR1543994331272.jpg" alt="Mand Mobile Community" width="200"/>

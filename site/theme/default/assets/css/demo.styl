@@ -10,12 +10,22 @@
 
 .md-example-child-button
   .md-button
-    float left
     margin-bottom 10px
+  &.md-example-child-button-3
+    .md-button
+      float left
+      margin-right 10px
+    br
+      float left
+      width 100%
 .md-example-child-agree
   margin-top 70px
   padding 0 h-gap-lg
   font-size font-minor-large
+  .md-agree-content
+    color #858B9C
+    a
+      color #5878B4
 .md-example-child-drop-menu
   position absolute
   width 100%
@@ -40,6 +50,8 @@
     padding 15px 0
     color #333
     text-align center
+    .md-icon
+      margin 0 auto
     p
       text-align center
       font-size font-body-normal
@@ -60,14 +72,20 @@
 .md-example-child-steps
   position relative
   top 40px
+  .bar.horizontal-bar, .horizontal-bar .bar-inner
+    height 2px !important
+  .bar.vertical-bar, .vertical-bar .bar-inner
+    width 2px !important
 .md-example-child-switch
   display flex
   align-items center
   justify-content center
   height 194px
 .md-example-child-tabs
+  .md-tab-bar
+    background #FFF
   .md-tab-content
-    background #f
+    background #FFF
     height 100px
     line-height 100px
     text-align center
@@ -102,6 +120,7 @@
   height 194px
   .md-notice-bar
     flex 1
+    width 100%
 .md-example-child-codebox
   display flex
   align-items center
@@ -110,6 +129,15 @@
 .md-example-chart-child
   svg
     width 100% !important
+.md-example-child-result-page
+  background-color #fff
+.md-example-child-check
+  &.md-example-child-check-2, &.md-example-child-check-3
+    padding 32px 0
+.md-example-child-slider
+  padding 52px 0 0
+.md-example-child-amount
+  font-size 48px
 
 .md-image-viewer
   position absolute !important
@@ -143,16 +171,24 @@
   .md-number-keyboard .md-popup-box
     position fixed !important
     zoom .6
-  .md-dialog .md-popup-box
-    top 30% !important
+  // .md-dialog .md-popup-box
+  //   top 30% !important
 .md-landscape
-  .md-popup.with-mask, .md-popup-box, .close
+  .md-popup
+    position static !important
+  .md-popup.with-mask, .md-popup-box, .landscape-close
     position absolute !important
-  .close
+  .landscape-close
     bottom 5% !important
 .md-picker
   .md-popup
     position absolute !important
+  .md-picker-column-masker
+    &::before, &::after
+      transform none !important
 .md-cashier 
   .md-popup.with-mask
     position absolute !important
+
+ .md-popup.with-mask
+    z-index 1111 !important

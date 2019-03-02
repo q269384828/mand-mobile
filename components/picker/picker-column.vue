@@ -13,11 +13,14 @@
               <template v-for="(item, j) in colunm">
                 <li
                   class="column-item"
-                  :class="{'disabled': $_isColumnIndexInvalid(i, j)}"
+                  :class="{
+                    'active': $_isColumnIndexActive(i, j),
+                    'disabled': $_isColumnIndexInvalid(i, j)
+                  }"
                   :style="{
                     'height': `${style.indicatorHeight}px`,
                     'line-height': `${style.indicatorHeight}px`
-                    }"
+                  }"
                   :key="j"
                   v-text="item.text || item.label"
                   >
@@ -26,16 +29,21 @@
             </ul>
           </div>
         </template>
-        <template v-for="n in (cols - columnValues.length)">
-          <div class="md-picker-column-item" :key="n + columnValues.length - 1">
+        <template v-if="cols">
+          <div
+            class="md-picker-column-item"
+            v-for="n in (cols - columnValues.length)"
+            :key="n + columnValues.length - 1"
+          >
             <ul class="column-list" :style="{ 'padding-top': `${style.maskerHeight}px` }"></ul>
           </div>
         </template>
       </div>
       <div class="md-picker-column-hooks">
-        <template v-for="n in cols">
+        <template v-if="cols">
           <div
             class="md-picker-column-hook"
+            v-for="n in cols"
             :key="n - 1"
             @touchstart="$_onColumnTouchStart($event, n - 1)"
             @mousedown="$_onColumnTouchStart($event, n - 1, true)"
@@ -52,7 +60,7 @@
 
 <script>import Scroller from '../_util/scroller'
 import {render} from '../_util/render'
-import {noop, getDpr, traverse, inArray, warn} from '../_util'
+import {noop, getDpr, traverse, inArray, extend, warn} from '../_util'
 
 const dpr = getDpr()
 const API_LIST = [
@@ -73,6 +81,7 @@ export default {
     data: {
       type: Array,
       default() {
+        /* istanbul ignore next */
         return []
       },
     },
@@ -83,29 +92,32 @@ export default {
     defaultValue: {
       type: Array,
       default() {
+        /* istanbul ignore next */
         return []
       },
     },
     defaultIndex: {
       type: Array,
       default() {
+        /* istanbul ignore next */
         return []
       },
     },
     invalidIndex: {
       type: Array,
       default() {
+        /* istanbul ignore next */
         return []
       },
+    },
+    lineHeight: {
+      type: Number,
+      default: 45,
     },
   },
 
   data() {
     return {
-      style: {
-        maskerHeight: 81 * dpr,
-        indicatorHeight: 36 * dpr,
-      },
       columnValues: [],
       scrollers: [],
       scrollDirect: 1,
@@ -118,34 +130,42 @@ export default {
     }
   },
 
+  computed: {
+    hooks() {
+      const _hooks = this.$el.querySelectorAll('.md-picker-column-hook')
+      /* istanbul ignore if */
+      if (!_hooks) {
+        return []
+      }
+      return Array.isArray(_hooks) ? _hooks : Array.prototype.slice.call(_hooks)
+    },
+    style() {
+      return {
+        maskerHeight: (this.lineHeight * 2 + 10) * dpr,
+        indicatorHeight: this.lineHeight * dpr,
+      }
+    },
+  },
+
   watch: {
     data: {
       handler(val) {
-        this.columnValues = [...val]
+        this.columnValues = extend([], val)
       },
       deep: true,
     },
   },
 
   created() {
-    this.columnValues = [...this.data]
+    this.columnValues = extend([], this.data)
   },
 
   methods: {
     // MARK: private methods
     // initial scroller for each column
     $_initColumnsScroller(startIndex = 0) {
-      let hooks = this.$el.querySelectorAll('.md-picker-column-hook')
-
-      /* istanbul ignore if */
-      if (!hooks) {
-        return
-      }
-
-      hooks = Array.isArray(hooks) ? hooks : Array.prototype.slice.call(hooks)
-
-      for (let i = startIndex, len = hooks.length; i < len; i++) {
-        const container = hooks[i]
+      for (let i = startIndex, len = this.hooks.length; i < len; i++) {
+        const container = this.hooks[i]
         container && this.$_initSingleColumnScroller(container, i)
       }
 
@@ -181,6 +201,8 @@ export default {
         {
           scrollingX: false,
           snapping: true,
+          snappingVelocity: 1,
+          animationDuration: 350,
           scrollingComplete: () => {
             this.$_onColumnScrollEnd(index)
           },
@@ -242,7 +264,7 @@ export default {
         let itemDefaultIndex = defaultIndex[columnIndex]
         const itemDefaultValue = defaultValue[columnIndex]
 
-        /* 
+        /*
          * given a default itemIndex when both defaultIndex & defaultValue are undefined
          * avoid activieIndexs failing to initialize
          */
@@ -267,6 +289,10 @@ export default {
     $_getColumnOffsetByIndex(index) {
       return index * this.style.indicatorHeight
     },
+    $_isColumnIndexActive(columnIndex, itemIndex) {
+      const activeIndex = this.activedIndexs[columnIndex]
+      return activeIndex === itemIndex
+    },
     $_isColumnIndexInvalid(columnIndex, itemIndex) {
       const invalidIndex = this.invalidIndex[columnIndex]
       return inArray(invalidIndex, itemIndex)
@@ -277,6 +303,10 @@ export default {
           return true
         }
       }
+<<<<<<< HEAD
+=======
+      /* istanbul ignore next */
+>>>>>>> 18544c76be38dcf6854e44bbdbdef665e1379462
       warn(`hasValidIndex: has no valid items in column index ${columnIndex}`)
       return false
     },
@@ -432,12 +462,20 @@ export default {
       this.$set(this.activedIndexs, index, 0) // reset active index
       this.$set(this.columnValues, index, values)
       this.$nextTick(() => {
-        this.$_initSingleColumnScroller(index)
-        callback()
+        // this.$_initSingleColumnScroller(index)
+        callback(this)
       })
     },
     refresh(callback, startIndex = 0) {
-      // this.activedIndexs = []
+      // const _callback = () => {
+      //   this.$_initColumnsScroller(startIndex)
+      //   callback && callback(this)
+      // }
+      // if (microTask) {
+      //   this.$nextTick(_callback)
+      // } else {
+      //   setTimeout(_callback, 0)
+      // }
       this.$nextTick(() => {
         this.$_initColumnsScroller(startIndex)
         callback && callback()
@@ -451,63 +489,75 @@ export default {
 .md-picker-column
   position relative
   width 100%
+  padding 0 picker-padding-h
   padding-bottom constant(safe-area-inset-bottom)
-  background color-bg-base
+  background color-bg-inverse
+  box-sizing border-box
   transform translate3d(0, 0, 0)
-  .md-picker-column-container
-    height 100%
-    .md-picker-column-masker
-      position absolute !important
-      z-index 2
-      left 0
-      right 0
-      transform translate3d(0, 0, 0)
-      &.top
-        top 0
-        background -webkit-gradient(linear,left bottom,left top,from(hsla(0, 0%,100%,.2)),to(hsla(0,0%,100%,1)))
-        hairline(bottom, picker-border-color)
-        // border-bottom solid 1px picker-border-color
-      &.bottom
-        bottom 0
-        bottom constant(safe-area-inset-bottom)
-        background -webkit-gradient(linear,left top,left bottom,from(hsla(0, 0%,100%,.2)),to(hsla(0,0%,100%,1)))
-        hairline(top, picker-border-color)
-        // border-top solid 1px picker-border-color
-    .md-picker-column-hooks
-      display flex
-      position absolute
-      z-index 3
-      absolute-pos()
-      .md-picker-column-hook
-        display flex
-        flex 1
-        height 100%
-    .md-picker-column-list
-      display flex
-      height 100%
-      .md-picker-column-item
-        position relative
-        display flex
-        flex 1
-        clearfix()
-        overflow hidden
-        ul.column-list
-          position absolute
-          top 0
-          left 0
-          width 100%
-          transform-origin left top
-          box-sizing border-box
-          transform translate3d(0, 0, 0)
-          li.column-item
-            float left
-            width 100%
-            padding 0 h-gap-md
-            box-sizing border-box
-            color picker-color
-            font-size picker-font-size
-            text-align center
-            word-ellipsis()
-            &.disabled
-              opacity picker-disabled-opacity
+
+.md-picker-column-container
+  height 100%
+
+.md-picker-column-masker
+  position absolute !important
+  z-index 2
+  left picker-padding-h
+  right picker-padding-h
+  transform translate3d(0, 0, 0)
+  &.top
+    top 0
+    // background -webkit-gradient(linear,left bottom,left top,from(hsla(0, 0%,100%,.2)),to(hsla(0,0%,100%,1)))
+    hairline(bottom, picker-border-color, 0, 3px)
+    // border-bottom solid 1px picker-border-color
+  &.bottom
+    bottom 0
+    // bottom constant(safe-area-inset-bottom)
+    // background -webkit-gradient(linear,left top,left bottom,from(hsla(0, 0%,100%,.2)),to(hsla(0,0%,100%,1)))
+    hairline(top, picker-border-color, 0, 3px)
+    // border-top solid 1px picker-border-color
+
+.md-picker-column-hooks
+  display flex
+  position absolute
+  z-index 3
+  absolute-pos()
+  padding 0 picker-padding-h
+
+.md-picker-column-hook
+  display flex
+  flex 1
+  height 100%
+
+.md-picker-column-list
+  display flex
+  height 100%
+
+.md-picker-column-item
+  position relative
+  display flex
+  flex 1
+  clearfix()
+  overflow hidden
+  .column-list
+    position absolute
+    top 0
+    left 0
+    width 100%
+    transform-origin left top
+    box-sizing border-box
+    transform translate3d(0, 0, 0)
+    .column-item
+      float left
+      width 100%
+      padding 0 h-gap-md
+      box-sizing border-box
+      color picker-color
+      font-size picker-font-size
+      text-align center
+      word-ellipsis()
+      &.active
+        color picker-color-active
+        font-weight picker-font-weight-active
+      &.disabled
+        opacity picker-disabled-opacity
 </style>

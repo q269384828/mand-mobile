@@ -87,11 +87,16 @@ module.exports = {
           text: '主题定制',
           markdown: resolve('site/docs/theme.md'),
         },
+        // {
+        //   name: 'preview',
+        //   text: '组件概览',
+        //   template: resolve('site/theme/default/Preview.vue'),
+        //   markdown: resolve('README.md'),
+        // },
         {
-          name: 'preview',
-          text: '组件概览',
-          template: resolve('site/theme/default/Preview.vue'),
-          markdown: resolve('README.md'),
+          name: 'migration',
+          text: '从1.x迁移',
+          markdown: resolve('site/docs/migration.md'),
         },
         {
           name: 'components',
@@ -103,35 +108,54 @@ module.exports = {
     {
       name: 'design',
       text: '设计',
-      src: '/zh-CN/design/resource',
-      menu: [
-        {
-          name: 'resource',
-          text: '设计资源',
-          markdown: resolve('site/docs/design/resource.md'),
-        },
-        {
+      src: '/zh-CN/design/principle/intuition',
+      menu: [{
+        name: 'principle',
+        text: '原则',
+        menu: [{
+          name: 'intuition',
+          text: '直观简单',
+          markdown: resolve('site/docs/design/principle/intuition.md'),
+        }, {
+          name: 'security',
+          text: '安全可控',
+          markdown: resolve('site/docs/design/principle/security.md'),
+        }, {
+          name: 'professional',
+          text: '体贴专业',
+          markdown: resolve('site/docs/design/principle/professional.md'),
+        }],
+      }, {
+        name: 'vision',
+        text: '视觉',
+        menu: [{
           name: 'color',
-          text: '颜色',
-          markdown: resolve('site/docs/design/color.md'),
-        },
-        {
+          text: '色彩',
+          markdown: resolve('site/docs/design/vision/color.md'),
+        }, {
+          name: 'layout',
+          text: '布局',
+          markdown: resolve('site/docs/design/vision/layout.md'),
+        }, {
           name: 'font',
           text: '字体',
-          markdown: resolve('site/docs/design/font.md'),
-        },
-        {
-          name: 'other',
-          text: '其他',
-          markdown: resolve('site/docs/design/other.md'),
-        }
-      ]
+          markdown: resolve('site/docs/design/vision/font.md'),
+        }],
+      }, {
+        name: 'other',
+        text: '其它',
+        menu: [{
+          name: 'resource',
+          text: '资源',
+          markdown: resolve('site/docs/design/other/resource.md'),
+        }],
+      }]
     },
     {
-      name: 'palatte',
+      name: 'palette',
       text: '调色板',
       src: 'https://mand-mobile.github.io/palette',
-      dot: true
+      // dot: true
     }]
   }, {
     name: 'en-US',
@@ -167,11 +191,16 @@ module.exports = {
           text: 'Custom Theme',
           markdown: resolve('site/docs/theme.en-US.md'),
         },
+        // {
+        //   name: 'preview',
+        //   text: 'Component Preview',
+        //   template: resolve('site/theme/default/Preview.vue'),
+        //   markdown: resolve('README.md'),
+        // },
         {
-          name: 'preview',
-          text: 'Component Preview',
-          template: resolve('site/theme/default/Preview.vue'),
-          markdown: resolve('README.md'),
+          name: 'migration',
+          text: 'Migration from 1.x',
+          markdown: resolve('site/docs/migration.en-US.md'),
         },
         {
           name: 'components',
@@ -183,35 +212,53 @@ module.exports = {
     {
       name: 'design',
       text: 'Design',
-      src: '/en-US/design/resource',
-      menu: [
-        {
-          name: 'resource',
-          text: 'Resource',
-          markdown: resolve('site/docs/design/resource.en-US.md'),
-        },
-        {
+      src: '/en-US/design/principle/intuition',
+      menu: [{
+        name: 'principle',
+        text: 'Principle',
+        menu: [{
+          name: 'intuition',
+          text: 'Intuitive and simple',
+          markdown: resolve('site/docs/design/principle/intuition.en-US.md'),
+        }, {
+          name: 'security',
+          text: 'Safe and controllable',
+          markdown: resolve('site/docs/design/principle/security.en-US.md'),
+        }, {
+          name: 'professional',
+          text: 'Thoughtful and professional',
+          markdown: resolve('site/docs/design/principle/professional.en-US.md'),
+        }],
+      }, {
+        name: 'vision',
+        text: 'Vision',
+        menu: [{
           name: 'color',
           text: 'Color',
-          markdown: resolve('site/docs/design/color.en-US.md'),
-        },
-        {
+          markdown: resolve('site/docs/design/vision/color.en-US.md'),
+        }, {
+          name: 'layout',
+          text: 'Layout',
+          markdown: resolve('site/docs/design/vision/layout.en-US.md'),
+        }, {
           name: 'font',
           text: 'Font',
-          markdown: resolve('site/docs/design/font.en-US.md'),
-        },
-        {
-          name: 'other',
-          text: 'Other',
-          markdown: resolve('site/docs/design/other.en-US.md'),
-        }
-      ]
+          markdown: resolve('site/docs/design/vision/font.en-US.md'),
+        }],
+      }, {
+        name: 'other',
+        text: 'Other',
+        menu: [{
+          name: 'resource',
+          text: 'Resource',
+          markdown: resolve('site/docs/design/other/resource.en-US.md'),
+        }],
+      }]
     },
     {
       name: 'palette',
       text: 'Palette',
       src: 'https://mand-mobile.github.io/palette',
-      dot: true
     }]
   }],
   components: generateSource(),
@@ -227,7 +274,7 @@ module.exports = {
         link: [
           {
             text: 'GitHub',
-            src: 'https://github.com/didi/mand-mobile',
+            src: 'https://github.com/mand-mobile',
           },
           {
             text: '更新日志',
@@ -245,10 +292,6 @@ module.exports = {
             text: '调色板',
             src: 'https://mand-mobile.github.io/palette'
           },
-          {
-            text: '国内镜像 🇨🇳',
-            src: 'https://mand-mobile.gitee.io/docs/index.gitee.html',
-          }
         ],
       },
       {
@@ -280,12 +323,16 @@ module.exports = {
             src: 'https://github.com/didi/pile.js',
           },
           {
-            text: 'VirtualAPK <span>- Android插件化框架</span>',
-            src: 'https://didi.github.io/virtual-apk.html',
+            text: 'MPX <span>- 增强型小程序框架</span>',
+            src: 'https://github.com/didi/mpx/',
           },
           {
-            text: 'Gendry <span>- Go数据库操作工具集</span>',
-            src: 'https://github.com/didi/gendry/',
+            text: 'DoraemonKit <span>- iOS开发助手</span>',
+            src: 'https://github.com/didi/doraemonKit/',
+          },
+          {
+            text: 'VirtualAPK <span>- Android插件化框架</span>',
+            src: 'https://didi.github.io/virtual-apk.html',
           }
         ],
       },
@@ -296,7 +343,7 @@ module.exports = {
         link: [
           {
             text: 'GitHub',
-            src: 'https://github.com/didi/mand-mobile',
+            src: 'https://github.com/mand-mobile',
           },
           {
             text: 'Change Log',
@@ -314,10 +361,6 @@ module.exports = {
             text: 'Palette',
             src: 'https://mand-mobile.github.io/palette'
           },
-          {
-            text: 'China Mirror 🇨🇳',
-            src: 'https://mand-mobile.gitee.io/docs/index.gitee.html',
-          }
         ],
       },
       {
@@ -349,18 +392,22 @@ module.exports = {
             src: 'https://github.com/didi/pile.js',
           },
           {
+            text: 'MPX <span>- Enhanced Miniprogram Framework</span>',
+            src: 'https://github.com/didi/mpx/',
+          },
+          {
             text: 'VirtualAPK <span>- Android Plugin Framework</span>',
             src: 'https://didi.github.io/virtual-apk.html',
           },
           {
-            text: 'Gendry <span>- Golang SQL Build Library</span>',
-            src: 'https://github.com/didi/gendry/',
+            text: 'DoraemonKit <span>- iOS Development Assistant</span>',
+            src: 'https://github.com/didi/doraemonKit/',
           }
         ],
       },
     ]
   },
-  copyRight: '2012-2018 Didi Chuxing. All Rights Reserved',
+  copyRight: '2012-2019 Didi Chuxing. All Rights Reserved',
   routePrefix: '/mand-mobile',
   // staticPrefix: '//manhattan.didistatic.com/static/manhattan/mand-mobile',
 }

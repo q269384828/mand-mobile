@@ -11,8 +11,8 @@
 
 <script>import createDemoModule from '../../../examples/create-demo-module'
 import Demo0 from './cases/demo0'
-// import Demo1 from './cases/demo1'
-export default {...createDemoModule('captcha', [Demo0])}
+import Demo1 from './cases/demo1'
+export default {...createDemoModule('captcha', [Demo0, Demo1])}
 </script>
 
 <style lang="stylus">
@@ -25,10 +25,11 @@ export default {...createDemoModule('captcha', [Demo0])}
     margin-bottom 10px
     h1
       margin-bottom 10px
-      color color-gray-1
+      color #111A34
       font-size font-heading-normal
       font-weight normal
     .md-example-box
+      position relative
       float left
       width 100%
       hairline(top)

@@ -1,10 +1,16 @@
 import Vue from 'vue'
 import ToastOptions from './toast'
-const ToastConstructor = Vue.extend(ToastOptions)
 
-function Toast({
+/**
+ * Toast factory
+ *
+ * @param {Object} props
+ * @return {Toast}
+ */
+const Toast = function({
   content = '',
   icon = '',
+  iconSvg = false,
   duration = 3000,
   position = 'center',
   hasMask = false,
@@ -13,23 +19,31 @@ function Toast({
   let vm = Toast._instance
 
   if (!vm) {
+    const ToastConstructor = Vue.extend(ToastOptions)
     vm = Toast._instance = new ToastConstructor({
       propsData: {
         content,
         icon,
+        iconSvg,
         duration,
         position,
         hasMask,
       },
     }).$mount()
+  }
+
+  if (!vm.$el.parentNode) {
     parentNode.appendChild(vm.$el)
   }
 
   vm.content = content
   vm.icon = icon
+  vm.iconSvg = iconSvg
   vm.duration = duration
+  vm.position = position
   vm.hasMask = hasMask
   vm.visible = true
+  vm.fire()
 
   return vm
 }
@@ -41,6 +55,7 @@ Toast._instance = null
  * Hide toast
  */
 Toast.hide = () => {
+  const ToastConstructor = Vue.extend(ToastOptions)
   if (Toast._instance instanceof ToastConstructor && Toast._instance.visible) {
     Toast._instance.hide()
   }
@@ -76,7 +91,7 @@ Toast.info = (content = '', duration = 3000, hasMask = false, parentNode = docum
 
 Toast.succeed = (content = '', duration = 3000, hasMask = false, parentNode = document.body) => {
   return Toast({
-    icon: 'circle-right',
+    icon: 'success',
     content,
     duration,
     hasMask,
@@ -95,7 +110,7 @@ Toast.succeed = (content = '', duration = 3000, hasMask = false, parentNode = do
 
 Toast.failed = (content = '', duration = 3000, hasMask = false, parentNode = document.body) => {
   return Toast({
-    icon: 'circle-cross',
+    icon: 'fail',
     content,
     duration,
     hasMask,
@@ -114,6 +129,7 @@ Toast.failed = (content = '', duration = 3000, hasMask = false, parentNode = doc
 Toast.loading = (content = '', duration = 0, hasMask = true, parentNode = document.body) => {
   return Toast({
     icon: 'spinner',
+    iconSvg: true,
     content,
     duration,
     hasMask,

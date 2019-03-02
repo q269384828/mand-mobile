@@ -1,8 +1,8 @@
 <template>
   <div class="md-example-child md-example-child-notice-bar md-example-child-notice-bar-1">
     <md-notice-bar
-      :closable="false"
-      icon="right"
+      mode="closable"
+      icon="security"
     >
       为了确保您的资金安全，请设置支付密码
     </md-notice-bar>
@@ -16,7 +16,6 @@ export default {
   /* DELETE */
   title: '设置图标',
   titleEnUS: 'With icon',
-  codeSandBox: 'https://codesandbox.io/s/53zlz1nj24',
   /* DELETE */
   components: {
     [NoticeBar.name]: NoticeBar,

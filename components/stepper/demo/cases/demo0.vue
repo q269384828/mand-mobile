@@ -1,16 +1,8 @@
 <template>
   <div class="md-example-child md-example-child-stepper md-example-child-stepper-0">
     <md-field>
-      <md-field-item
-        name="arrow1"
-        title="禁用"
-        customized
-        align="right">
-        <div class="normal-tip">
-          <md-stepper
-            disabled
-          ></md-stepper>
-        </div>
+      <md-field-item title="禁用">
+        <md-stepper slot="right" disabled />
       </md-field-item>
     </md-field>
   </div>
@@ -23,7 +15,6 @@ export default {
   /* DELETE */
   title: '禁用',
   titleEnUS: 'Disabled',
-  codeSandBox: 'https://codesandbox.io/s/j473o4l30w',
   /* DELETE */
   components: {
     [Field.name]: Field,

@@ -3,7 +3,7 @@ const path = require('path')
 const mkdirp = require('mkdirp')
 const highlight = require('./markdown').highlight
 const markdown = require('./markdown').markdown
-const {mbConfig, traverseSource, kebabToCamel, info, warn, error} = require('./utils')
+const {mbConfig, traverseSource, kebabToCamel, info, warn, error, stdout} = require('./utils')
 
 let views, routes
 
@@ -184,6 +184,8 @@ function makeJavascriptModule(imports = {}, exports = {}) {
 function startGenerate() {
   const source = mbConfig.source
   const startTmp = Date.now()
+  const specFile = process.env.BUILD_FILE
+  let count = 0
 
   views = []
   routes = []
@@ -208,15 +210,39 @@ function startGenerate() {
     const demoPath = item.demo
     const outputPath = `${mbConfig.output}/${path.join('/')}`
 
+    let needBreak = false
+    
+    if (specFile) {
+      if (markdownPath === specFile ||
+          templatePath === specFile ||
+          demoPath === specFile
+      ) {
+        needBreak = true
+      } else {
+        return 1 // continue
+      }
+    }
+    
     mkdirp.sync(outputPath)
 
     if (markdownPath) {
       generateSourceData(markdownPath, outputPath)
       generateDemoVue(outputPath, demoPath)
       generateDocVue(templatePath, outputPath)
-      info(`${markdownPath}`)
+
+      count++
+
+      stdout(
+        `(${parseInt(count)})`,
+        markdownPath
+      )
     }
     saveRoutepath(item, `/${path.join('/')}`, views, routes)
+
+    if (needBreak) {
+      process.env.BUILD_FILE = ''
+      return 2 // break
+    }
   }
 
   traverseSource(source, handlerSingleSource)

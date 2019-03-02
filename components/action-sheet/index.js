@@ -1,6 +1,5 @@
 import Vue from 'vue'
 import ActionSheet from './action-sheet'
-const ActionSheetCtor = Vue.extend(ActionSheet)
 
 const noop = function() {}
 
@@ -24,7 +23,9 @@ ActionSheet.create = function({
   onShow = noop,
   onHide = noop,
   onSelected = noop,
+  onCancel = noop,
 }) {
+  const ActionSheetCtor = Vue.extend(ActionSheet)
   const vm = new ActionSheetCtor({
     propsData: {
       value,
@@ -90,7 +91,16 @@ ActionSheet.create = function({
       }
     },
   )
+  vm.$on(
+    'cancel',
+    /* istanbul ignore next */ item => {
+      if (typeof onCancel === 'function') {
+        onCancel.call(null, item)
+      }
+    },
+  )
 
+  /* istanbul ignore next */
   vm.$on('hook:beforeDestroy', () => {
     const parent = vm.$el.parentNode
     const index = instances.indexOf(vm)

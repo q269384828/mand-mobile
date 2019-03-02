@@ -1,9 +1,6 @@
 <template>
   <div class="md-example-child md-example-child-drop-menu md-example-child-drop-menu-3">
-    <md-drop-menu
-      ref="dropMenu3"
-      :data="data"
-    >
+    <md-drop-menu :data="data">
       <template slot-scope="{ option }">
         <div class="md-drop-menu-custom-title" v-text="option.text"></div>
         <div class="md-drop-menu-custom-brief">{{ option.text }}【可使用slot-scope进行自定义描述】</div>
@@ -13,14 +10,13 @@
   </div>
 </template>
 
-<script>import {DropMenu, Dialog} from 'mand-mobile'
+<script>import {DropMenu} from 'mand-mobile'
 
 export default {
   name: 'drop-menu-demo',
   /* DELETE */
   title: '自定义菜单项',
   titleEnUS: 'Custom menu options',
-  codeSandBox: 'https://codesandbox.io/s/w72k6o7l48',
   height: 250,
   /* DELETE */
   components: {
@@ -34,23 +30,17 @@ export default {
           text: '一级选项1',
           options: [
             {
+              value: '0',
               text: '二级选项1',
             },
             {
+              value: '1',
               text: '二级选项2',
             },
           ],
         },
       ],
     }
-  },
-  methods: {
-    getSelectedValue(selector, index) {
-      const value = this.$refs[selector].getSelectedValue(index)
-      Dialog.alert({
-        content: `<pre>${JSON.stringify(value)}</pre>`,
-      })
-    },
   },
 }
 </script>
@@ -59,7 +49,9 @@ export default {
 .md-example-child-drop-menu-3
   .md-drop-menu-custom-title
     font-size 28px
+    text-align center
   .md-drop-menu-custom-brief
     font-size 20px
     color #999
+    text-align center
 </style>

@@ -14,9 +14,10 @@ import Demo0 from './cases/demo0'
 import Demo1 from './cases/demo1'
 import Demo2 from './cases/demo2'
 import Demo3 from './cases/demo3'
+import Demo4 from './cases/demo4'
 
 export default {
-  ...createDemoModule('button', [Demo0, Demo1, Demo2, Demo3]),
+  ...createDemoModule('button', [Demo0, Demo1, Demo2, Demo3, Demo4]),
 }
 
 // export default {
@@ -37,13 +38,16 @@ export default {
     margin-bottom 10px
     h1
       margin-bottom 10px
-      color color-gray-1
+      color #111A34
       font-size font-heading-normal
       font-weight normal
     .md-button
-      float left
+      // float left
       margin-bottom 10px
+      &.inline, &.link
+        margin-right 10px
     .md-example-box
+      position relative
       float left
       width 100%
       hairline(top)

@@ -1,178 +1,87 @@
 <template>
-  <div class="md-radio" :class="{across: isAcrossBorder}">
-    <md-field>
-      <template v-for="(item, index) in options">
-        <md-field-item
-          class="md-radio-item"
-          :class="{
-            'selected': $_isSelectedIndex(index) || $_isSelectedValue(item.value || item.text || item.label, index),
-            'icon-left': iconPosition === 'left'
-          }"
-          title=""
-          :key="index"
-          :disabled="$_isInvalidIndex(item, index)"
-          @click="$_onItemClick(item, index)"
-          customized
-        >
-          <!-- radio-option-content -->
-          <template v-if="hasSlot">
-            <!-- use slot -->
-            <div class="md-radio-content">
-              <slot :option="item"></slot>
-            </div>
-          </template>
-          <template v-else>
-            <!-- use data or optionRender -->
-            <div class="md-radio-content" v-html="$_getItemText(item)"></div>
-          </template>
-
-          <!-- radio-option-check-icon -->
-          <template v-if="$_isSelectedIndex(index) || $_isSelectedValue(item.value || item.text || item.label, index)">
-            <md-icon
-              v-if="icon"
-              :name="icon"
-              :size="iconSize"
-            ></md-icon>
-          </template>
-          <template v-else>
-            <md-icon
-              v-if="iconInverse"
-              :name="iconInverse"
-              :size="iconSize"
-            ></md-icon>
-          </template>
-        </md-field-item>
-      </template>
-      <md-input-item
-        v-if="hasInputOption"
-        ref="inputItem"
-        :class="{
-          'selected': $_isSelectedIndex(options.length),
-        }"
-        :title="inputOptionLabel"
-        :placeholder="inputOptionPlaceholder"
-        v-model="inputOptionValue"
-        @focus="$_onItemFocus(options.length)"
-      >
-      </md-input-item>
-    </md-field>
-  </div>
+  <label
+    class="md-radio"
+    :class="{
+      'is-disabled': disabled,
+      'is-checked': isChecked,
+      'is-inline': inline
+    }"
+    @click="$_onClick"
+  >
+    <div class="md-radio-icon">
+      <md-icon :name="currentIcon" :size="size" :svg="iconSvg"/>
+    </div>
+    <div class="md-radio-label" v-if="$slots.default || label">
+      <slot>{{ label }}</slot>
+    </div>
+  </label>
 </template>
 
-<script>import Field from '../field'
-import FieldItem from '../field-item'
-import InputItem from '../input-item'
-import Icon from '../icon'
-import {inArray, compareObjects, noop, warn} from '../_util'
+<script>import Icon from '../icon'
+import radioMixin from './mixins'
+
 export default {
   name: 'md-radio',
 
+  mixins: [radioMixin],
+
   components: {
-    [Field.name]: Field,
-    [FieldItem.name]: FieldItem,
-    [InputItem.name]: InputItem,
     [Icon.name]: Icon,
   },
 
   props: {
-    options: {
-      type: Array,
-      default() {
-        return []
-      },
-    },
-    defaultIndex: {
-      type: Number,
-      default: -1,
-    },
-    defaultValue: {
-      type: String,
-      default: '',
-    },
-    invalidIndex: {
-      type: [Number, Array],
-      default() {
-        return []
-      },
-    },
-    hasInputOption: {
-      type: Boolean,
-      default: false,
+    name: {
+      required: true,
     },
     value: {
+      default: '',
+    },
+    size: {
+      type: String,
+      default: 'md',
+    },
+    label: {
       type: String,
       default: '',
     },
-    inputOptionLabel: {
-      type: String,
-      default: '',
-    },
-    inputOptionPlaceholder: {
-      type: String,
-      default: '',
-    },
-    icon: {
-      type: String,
-      default: 'right',
-    },
-    iconInverse: {
-      type: String,
-      default: '',
-    },
-    iconSize: {
-      type: String,
-      default: 'sm',
-    },
-    iconPosition: {
-      type: String,
-      default: 'right',
-    },
-    optionRender: {
-      type: Function,
-      default: noop,
-    },
-    isSlotScope: {
-      type: Boolean,
-      default: undefined,
-    },
-    isAcrossBorder: {
+    inline: {
       type: Boolean,
       default: false,
     },
-  },
-
-  data() {
-    return {
-      selectedIndex: this.defaultIndex,
-      inputOptionValue: '',
-    }
+    disabled: {
+      type: Boolean,
+      default: false,
+    },
+    // Mixins Props
+    // icon: {
+    //   type: String,
+    //   default: 'checked',
+    // },
+    // iconInverse: {
+    //   type: String,
+    //   default: 'check',
+    // },
+    // iconDisabled: {
+    //   type: String,
+    //   default: 'check-disabled',
+    // },
+    // iconSvg: {
+    //   type: Boolean,
+    //   default: false,
+    // },
   },
 
   computed: {
-    hasSlot() {
-      return this.isSlotScope !== undefined ? this.isSlotScope : !!this.$scopedSlots.default
+    isChecked() {
+      return this.value === this.name
     },
-  },
-
-  watch: {
-    options: {
-      handler(val, oldVal) {
-        if (!compareObjects(val, oldVal)) {
-          this.$_initSelected()
-        }
-      },
-      deep: true,
+    currentIcon() {
+      return this.disabled ? this.iconDisabled : this.value === this.name ? this.icon : this.iconInverse
     },
-    inputOptionValue(val) {
-      this.$emit('input', val)
-    },
-  },
-
-  created() {
-    this.$_initSelected()
   },
 
   methods: {
+<<<<<<< HEAD
     // MARK: private methods
     $_initSelected() {
       const defaultIndex = this.defaultIndex
@@ -261,6 +170,11 @@ export default {
         this.$refs['inputItem'].focus()
       } else {
         this.$_onItemClick(this.options[index], index)
+=======
+    $_onClick() {
+      if (!this.disabled) {
+        this.$emit('input', this.name)
+>>>>>>> 18544c76be38dcf6854e44bbdbdef665e1379462
       }
     },
   },
@@ -269,44 +183,34 @@ export default {
 
 <style lang="stylus">
 .md-radio
-  .md-field
-    padding 0 32px
-    .md-field-item.md-radio-item
-      position relative
-      padding 0
-      .md-field-item-inner
-        padding 32px 0
-      .md-icon
-        position absolute
-        right 0
-        top 50%
-        transform translateY(-50%)
-        fill radio-color
-      &.selected
-        color radio-color
-      &.icon-left
-        .md-icon
-          left 0
-          right auto !important
-        .md-field-item-content
-          padding-left 40px
-      .md-field-item-content.left
-        margin-left 0
-    .md-input-item
-      padding 0 !important
-      &.selected
-        .md-input-item-title
-          color radio-color
-  &.across
-    .md-field
-      padding 0
-      .md-field-item.md-radio-item
-        .md-field-item-inner
-          padding 32px
-          .md-icon
-            right 32px
-        &.icon-left
-          .md-icon
-            left 32px
+  display flex
+  align-items center
+  line-height 1.5
+  margin-top v-gap-sm
+  margin-bottom v-gap-sm
+  .md-radio-icon
+    color color-text-placeholder
+    .md-icon
+      display flex
+  &.is-checked
+    .md-radio-icon
+      color radio-color
+  &.is-disabled
+    .md-radio-icon
+    .md-radio-label
+      color color-text-disabled
+  &.is-inline
+    display inline-flex
+    &:not(:last-child)
+      margin-right 40px
+
+.md-radio-icon
+  position relative
+  flex-shrink 0
+
+.md-radio-label
+  margin-left h-gap-sm
+  font-size inherit
+  font-weight font-weight-normal
 </style>
 

@@ -26,14 +26,13 @@ Vue.component(PopupTitleBar.name, PopupTitleBar)
 |has-mask|是否有蒙层|Boolean|`true`|-|
 |mask-closable|点击蒙层是否可关闭弹出层|Boolean|`true`|-|
 |position|弹出层位置|String|`center`|`center`, `top`, `bottom`, `left`, `right`|
-|transition|弹出层过度动画|String|`fade, slide-up/down/left/right`|-|
-|prevent-scroll|是否禁止滚动穿透|Boolean|`false`|此方案在内容顶部和底部仍有滚动穿透的问题，推荐使用`ScrollView`作为滚动区域|
-|prevent-scroll-exclude|禁止滚动的排除元素|String/HTMLElement|-|-|
+|transition|弹出层过度动画|String|-|`fade`, `fade-bounce`, `fade-slide`, `fade-zoom`<br> `slide-up`, `slide-down`, `slide-left`, `slide-right`|
 
 #### PopupTitleBar Props
 |属性 | 说明 | 类型 | 默认值 | 备注|
 |----|-----|------|------|------|
 |title|标题|String|-|-|
+|describe|描述|String|-|-|
 |ok-text|确认按钮文案|String|-|为空则没有确认按钮|
 |cancel-text|取消按钮文案|String|-|为空则没有取消按钮|
 

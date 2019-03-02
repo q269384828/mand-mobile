@@ -5,20 +5,12 @@
       :scrolling-x="false"
       @scroll="$_onScroll"
     >
-      <md-tab-bar
-        slot="header"
-        ref="tabBar"
-        :default-index="activeBlockIndex - 1"
-        :titles="tabBarTitles"
-        :show-ink-bar="true"
-        :key="activeBlockIndex"
-        @indexChanged="$_onTabChange"
-      ></md-tab-bar>
       <div
         v-for="i in category"
         :key="i"
         class="scroll-view-category"
       >
+        <p class="scroll-view-category-title">{{ i }}</p>
         <div
           v-for="j in list"
           :key="j"
@@ -28,23 +20,22 @@
         </div>
       </div>
     </md-scroll-view>
+    <p v-if="activeBlockIndex > 0" class="scroll-view-striky-title">{{ activeBlockIndex }}</p>
   </div>
 </template>
 
-<script>import {ScrollView, TabBar} from 'mand-mobile'
+<script>import {ScrollView} from 'mand-mobile'
 
 export default {
   name: 'scroll-view-demo-3',
   /* DELETE */
-  title: '配合TabBar',
-  titleEnUS: 'With TabBar',
+  title: '粘性标题',
+  titleEnUS: 'Stricky Title',
   message: '请在移动设备中扫码预览',
   messageEnUS: 'Please scan QR code and preview on mobile device',
-  height: 800,
   /* DELETE */
   components: {
     [ScrollView.name]: ScrollView,
-    [TabBar.name]: TabBar,
   },
   data() {
     return {
@@ -52,17 +43,11 @@ export default {
       list: 5,
       dimensions: [],
       scrollY: 0,
-      isManual: false,
     }
   },
   computed: {
-    tabBarTitles() {
-      return this.dimensions.map((item, index) => {
-        return index + 1
-      })
-    },
     activeBlockIndex() {
-      let activeIndex = 1
+      let activeIndex = -1
       this.dimensions.forEach((dimension, index) => {
         if (this.scrollY >= dimension[0] && this.scrollY <= dimension[1]) {
           activeIndex = index + 1
@@ -79,7 +64,6 @@ export default {
   methods: {
     $_initScrollBlock() {
       const blocks = this.$el.querySelectorAll('.scroll-view-category')
-
       let offset = 0
       Array.prototype.slice.call(blocks).forEach((block, index) => {
         const innerHeight = block.clientHeight
@@ -88,18 +72,7 @@ export default {
       })
     },
     $_onScroll({scrollTop}) {
-      if (!this.isManual) {
-        this.scrollY = scrollTop
-      }
-    },
-    $_onTabChange(index) {
-      const offsetTop = this.dimensions[index][0]
-      this.isManual = true
-      this.$refs.scrollView.scrollTo(0, offsetTop, true)
-      setTimeout(() => {
-        this.scrollY = offsetTop
-        this.isManual = false
-      }, 500)
+      this.scrollY = scrollTop
     },
   },
 }
@@ -109,10 +82,25 @@ export default {
 .md-example-child-scroll-view-4
   position relative
   height 800px
+<<<<<<< HEAD
   .md-tab-bar
     box-shadow 0 2px 8px #f0f0f0
   .scroll-view-container
     padding-top 80px
+=======
+  background #FFF
+  .scroll-view-striky-title
+    position absolute
+    top 0
+    left 0
+    right 0
+  .scroll-view-category-title, .scroll-view-striky-title
+    padding 10px 0
+    text-align center
+    font-size 32px
+    font-family DINAlternate-Bold
+    background-color #f0f0f0
+>>>>>>> 18544c76be38dcf6854e44bbdbdef665e1379462
   .scroll-view-item
     padding 30px 0
     text-align center

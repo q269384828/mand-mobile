@@ -3,7 +3,7 @@ title: ActivityIndicator
 preview: https://didi.github.io/mand-mobile/examples/#/activity-indicator
 ---
 
-Activity indicator, generally used for ongoing tasks <sup class="version-after">1.4.0+</sup>
+Activity indicator, generally used for ongoing tasks
 
 ### Import
 
@@ -23,6 +23,7 @@ Vue.component(ActivityIndicator.name, ActivityIndicator)
 |------|------|------|------|------|
 |type|-|String|`roller`|`roller`, `spinner`, `carousel`|
 |size|icon size|Number|`70px`|unit `px`, or reset `.md-activity-indicator-svg` style directly|
+|width|icon width|Number|-|unit `px`, only for `roller`|
 |color|icon color|String|`#fc9153/dark`|`spinner` cannot customize color value, the optional values are `dark` and `light`|
 |text-color|text color|String|`#999`|or reset `.md-activity-indicator-text` style directly|
 |text-size|text font size|String|`70px`|or reset `.md-activity-indicator-text` style directly|

@@ -7,13 +7,22 @@
       }
     }]
   ],
-  "plugins": ["transform-object-rest-spread", "syntax-dynamic-import"],
+  "plugins": [
+    "transform-object-rest-spread",
+    "syntax-dynamic-import",
+    "transform-vue-jsx"
+  ],
   "env": {
     "test": {
-      "presets": [["env", {
-        "modules": false
-      }], "stage-2"],
-      "plugins": ["istanbul"]
+      "presets": [
+        ["env", { "targets": { "node": "current" }}]
+      ],
+      "plugins": [
+        ["import", {
+          "libraryName": "mand-mobile",
+          "libraryDirectory": "components"
+        }]
+      ]
     }
   }
 }

@@ -2,7 +2,8 @@
   <div class="md-example-child md-example-child-steps md-example-child-steps-3">
     <md-steps
       :steps="steps"
-      :current="2">
+      :current="2"
+    >
     </md-steps>
   </div>
 </template>
@@ -14,7 +15,6 @@ export default {
   /* DELETE */
   title: '指定当前步骤',
   titleEnUS: 'Specify the current step',
-  codeSandBox: 'https://codesandbox.io/s/zwvk8l3053',
   height: 150,
   /* DELETE */
   components: {

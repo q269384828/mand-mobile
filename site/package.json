@@ -13,7 +13,11 @@
     "indices": "node ./build/bin/gen-indices --log"
   },
   "dependencies": {
+<<<<<<< HEAD
     "mand-mobile": "^1.6.7",
+=======
+    "mand-mobile": "^2.1.0",
+>>>>>>> 18544c76be38dcf6854e44bbdbdef665e1379462
     "v-tooltip": "^2.0.0-rc.31",
     "vue": "^2.5.2",
     "vue-clipboard2": "^0.1.0",
@@ -21,7 +25,6 @@
     "vue-router": "^3.0.1"
   },
   "devDependencies": {
-    "algoliasearch": "^3.25.1",
     "autoprefixer": "^7.1.2",
     "babel-core": "^6.22.1",
     "babel-eslint": "^7.1.1",

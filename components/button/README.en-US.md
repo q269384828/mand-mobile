@@ -21,10 +21,15 @@ Vue.component(Button.name, Button)
 #### Button Props
 |Props | Description | Type | Default | Note |
 |----|-----|------|------ |------|
-|type|button type|String|`primary`|`primary`, `ghost`, `ghost-primary`, `link`|
-|size|button size|String|`large`|`large`, `small`(only works if `type` is `ghost/ghost-primary`)|
-|icon|button icon|String|-|refer to `Icon` for optional values|
-|disabled|disabled or not|Boolean|`false`|-|
+|type|theme type|String|`default`|`default`, `primary`, `warning`, `disabled`, `link`|
+|native-type|button type|String|`button`|-|
+|size|-|String|`large`|`large/small`|
+|plain|-|Boolean|`false`|-|
+|round|-|Boolean|`false`|-|
+|inline|-|Boolean|`false`|-|
+|icon|-|String|-|refer to `Icon` for optional values|
+|icon-svg|use svg icon|Boolean|`false`|-|
+|inactive|-|Boolean|`false`|The button is not clickable which is inactive or disabled. The former is generally used for subjective factors such as invalid form validation, and the latter is used for objective factors such as no permission or no inventory.|
 
 #### Button Events
 

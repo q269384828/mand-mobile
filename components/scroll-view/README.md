@@ -3,7 +3,7 @@ title: ScrollView 滚动区域/下拉刷新
 preview: https://didi.github.io/mand-mobile/examples/#/scroll-view
 ---
 
-用于模拟原生的滚动区域，并支持下拉刷新和加载更多 <sup class="version-after">1.5.0+</sup>
+用于模拟原生的滚动区域，并支持下拉刷新和加载更多
 
 ### 引入
 
@@ -30,13 +30,16 @@ Vue.component(ScrollView.name, ScrollView)
 |scrolling-x | 水平滚动 | Boolean | `true` | - |
 |scrolling-y | 垂直滚动 | Boolean | `true` | - |
 |bouncing | 可回弹 | Boolean | `true` | -|
-|autoReflow <sup class="version-after">1.5.3+</sup> | 内容发生变化时自动重置滚动区域尺寸 | Boolean | `false` | 当设置为`false`时，内容发生变化需手动调用`reflowScroller` |
-|endReachedThreshold | 触发到达底部的提前量 | Number | 0 | 单位`px` |
+|auto-reflow | 内容发生变化时自动重置滚动区域尺寸 | Boolean | `false` | 当设置为`false`时，内容发生变化需手动调用`reflowScroller` |
+|manual-init | 手动初始化 | Boolean | `false` | 一般用于异步初始化的场景，需手动调用`init`方法完成初始化 |
+|end-reached-threshold | 触发到达底部的提前量 | Number | 0 | 单位`px` |
+|immediate-check-end-reaching | 初始化时立即触发是否到达底部检查 | Boolean | `false` | - |
+|touch-angle | 触发滚动的角度范围 | Number | 45 | 单位`deg` |
 
 #### ScrollViewRefresh Props
 |属性 | 说明 | 类型 | 默认值 | 备注|
 |----|-----|------|------|------|
-|scroll-top | 距离顶部距离 | Number | 0 | 单位`px` |
+|scroll-top | 距离顶部距离 | Number | `0` | 单位`px` |
 |is-refresh-active | 释放可刷新状态 | Boolean | `false` | - |
 |is-refreshing | 刷新中状态 | Boolean | `false` | - |
 |refresh-text | 待刷新文案 | String | `下拉刷新` | - |
@@ -77,6 +80,9 @@ Vue.component(ScrollView.name, ScrollView)
 吸底区域插槽
 
 #### ScrollView Methods
+
+##### init()
+初始化滚动区域，当`manual-init`设置为`true`时使用
 
 ##### reflowScroller()
 重置滚动区域，一般滚动区域中的内容发生变化之后需调用

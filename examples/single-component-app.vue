@@ -8,8 +8,6 @@
 
 <script>
 import './assets/responsive'
-import demo from '../components/radio/demo/'
-
 
 export default {
   name: 'app',
@@ -28,10 +26,10 @@ block()
   position relative
   min-height 100%
   max-width 750px
+  font-size 28px
   font-size-adjust none
   -webkit-text-size-adjust 100%
   -webkit-overflow-scrolling touch
-  font-family -apple-system,"Helvetica Neue",Arial,"PingFang SC","Hiragino Sans GB",STHeiti,"Microsoft YaHei","Microsoft JhengHei","Source Han Sans SC","Noto Sans CJK SC","Source Han Sans CN","Noto Sans SC","Source Han Sans TC","Noto Sans CJK TC","WenQuanYi Micro Hei",SimSun,sans-serif !important
   -webkit-font-smoothing antialiased
   -moz-osx-font-smoothing grayscale
   background color-primary-background
@@ -44,24 +42,9 @@ block()
       display inline-block
       line-height 1
       &.home
-        top 5px
-        width 36px
-        height 32px
-        i
-          position absolute
-          left 0
-          width 100%
-          height .04rem
-          background color-bg-mask
-          border-radius 2px
-          &:nth-of-type(1)
-            top 0
-          &:nth-of-type(2)
-            top 50%
-            width 70%
-            margin-top -.02rem
-          &:nth-of-type(3)
-            bottom 0
+        top 10px
+        .md-icon
+          color color-text-base
       &.name
         margin-left h-gap-lg
         font-size font-heading-large
@@ -70,7 +53,7 @@ block()
       &.name-zh
         top 9px
         margin-left h-gap-sm
-        font-size font-body-large 
+        font-size font-body-large
         font-weight font-weight-normal
         color color-text-minor
         
@@ -90,7 +73,7 @@ block()
           font-weight font-weight-medium
           a
             margin-right 5px
-            background color-primary-tap
+            background color-primary
             color #fff
             padding 5px 10px
             border-radius radius-normal
@@ -101,7 +84,7 @@ block()
         .md-example-describe
           block()
           margin-top 15px
-          font-size font-minor-large 
+          font-size font-minor-large
           font-weight 300
           color color-text-minor
         .md-example-content
@@ -109,6 +92,7 @@ block()
           position relative
           margin-top 20px
           box-sizing border-box
+          font-size 28px
 .md-dialog pre
   width 100%
   padding 20px 10px

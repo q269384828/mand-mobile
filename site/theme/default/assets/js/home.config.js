@@ -1,5 +1,8 @@
 import MfeTable from '../../components/Table'
 import MfeGitStar from '../../components/GitStar'
+import MfeAnimation0 from '../../components/home/Animation0'
+import MfeAnimation1 from '../../components/home/Animation1'
+import MfeAnimation2 from '../../components/home/Animation2'
 
 const qrcodeTableView = {
   name: 'qrcodeTable',
@@ -11,13 +14,13 @@ const qrcodeTableView = {
       qrcodeTableShow: false
     }
   },
-  template: '<mfe-table v-model="qrcodeTableShow" style="width:160px;height:160px;top:65px;left:-10px;overflow:hidden;"><img src="//manhattan.didistatic.com/static/manhattan/mand/docs/mand-doc-home-qrcode.png" alt=""></mfe-table>'
+  template: '<mfe-table v-model="qrcodeTableShow" style="width:160px;height:160px;top:65px;left:-10px;overflow:hidden;"><img src="//manhattan.didistatic.com/static/manhattan/mand-mobile/2.0/docs/mand-doc-home-qrcode.png" alt=""></mfe-table>'
 }
 
 export default {
   'zh-CN': [
     {
-      title: 'Mand Mobile',
+      title: 'Mand Mobile <i>2</i>',
       describe: '面向金融场景的Vue移动端UI组件库，丰富、灵活、实用，快速搭建优质的金融类产品，让复杂的金融场景变简单。',
       buttons: [{
         type: 'link',
@@ -39,15 +42,21 @@ export default {
       }],
       animations: {
         bg: '//manhattan.didistatic.com/static/manhattan/mand/docs/mand-doc-home-0.svg',
-        content: '//manhattan.didistatic.com/static/manhattan/mand/docs/mand-doc-home-0.png'
+        content: MfeAnimation0
       }
     },
     {
       title: '用户体验',
       describe: '基于「合理、好用」设计价值观，从交互操作、视觉抽象、图形可视等角度共同解决问题。 ',
+      buttons: [{
+        type: 'link',
+        text: '设计原则',
+        src: '/zh-CN/design/principle/intuition',
+        theme: 'demo'
+      }],
       animations: {
         bg: '//manhattan.didistatic.com/static/manhattan/mand/docs/mand-doc-home-1.svg',
-        content: '//manhattan.didistatic.com/static/manhattan/mand/docs/mand-doc-home-1.png'
+        content: MfeAnimation1
       },
       decorate: '//manhattan.didistatic.com/static/manhattan/mand/docs/mand-doc-home-cirlce.svg'
     },
@@ -58,7 +67,7 @@ export default {
         {
           icon: '//manhattan.didistatic.com/static/manhattan/mand/docs/mand-doc-home-2-0.svg',
           title: '丰富的组件',
-          describe: '30+的基础组件，覆盖金融场景',
+          describe: '40+的基础组件，覆盖金融场景',
         },
         {
           icon: '//manhattan.didistatic.com/static/manhattan/mand/docs/mand-doc-home-2-1.svg',
@@ -83,14 +92,14 @@ export default {
       }],
       animations: {
         bg: '//manhattan.didistatic.com/static/manhattan/mand/docs/mand-doc-home-3.svg',
-        content: '//manhattan.didistatic.com/static/manhattan/mand/docs/mand-doc-home-3.png'
+        content: MfeAnimation2
       },
       decorate: '//manhattan.didistatic.com/static/manhattan/mand/docs/mand-doc-home-rectangle.svg'
     },
   ],
   'en-US': [
     {
-      title: 'Mand Mobile',
+      title: 'Mand Mobile <i>2</i>',
       describe: 'A mobile UI toolkit, based on Vue.js 2, designed for financial scenarios. Rich, flexible, practical, quickly build high-quality financial products, making complex financial scenarios easier.',
       buttons: [{
         type: 'link',
@@ -112,15 +121,23 @@ export default {
       }],
       animations: {
         bg: '//manhattan.didistatic.com/static/manhattan/mand/docs/mand-doc-home-0.svg',
-        content: '//manhattan.didistatic.com/static/manhattan/mand/docs/mand-doc-home-0.png'
+        // content: '//manhattan.didistatic.com/static/manhattan/mand/docs/mand-doc-home-0.png'
+        content: MfeAnimation0,
       }
     },
     {
       title: 'User Experience',
       describe: 'Based on the "reasonable and easy to use" design values, we will jointly solve problems from the perspective of interactive operation, visual abstraction, and graphic visualization.',
+      buttons: [{
+        type: 'link',
+        text: 'Principles',
+        src: '/en-US/design/principle/intuition',
+        theme: 'demo'
+      }],
       animations: {
         bg: '//manhattan.didistatic.com/static/manhattan/mand/docs/mand-doc-home-1.svg',
-        content: '//manhattan.didistatic.com/static/manhattan/mand/docs/mand-doc-home-1.png'
+        // content: '//manhattan.didistatic.com/static/manhattan/mand/docs/mand-doc-home-1.png'
+        content: MfeAnimation1,
       },
       decorate: '//manhattan.didistatic.com/static/manhattan/mand/docs/mand-doc-home-cirlce.svg'
     },
@@ -131,7 +148,7 @@ export default {
         {
           icon: '//manhattan.didistatic.com/static/manhattan/mand/docs/mand-doc-home-2-0.svg',
           title: 'Rich components',
-          describe: '30+ basic components covering financial scenarios',
+          describe: '40+ basic components covering financial scenarios',
         },
         {
           icon: '//manhattan.didistatic.com/static/manhattan/mand/docs/mand-doc-home-2-1.svg',
@@ -156,7 +173,8 @@ export default {
       }],
       animations: {
         bg: '//manhattan.didistatic.com/static/manhattan/mand/docs/mand-doc-home-3.svg',
-        content: '//manhattan.didistatic.com/static/manhattan/mand/docs/mand-doc-home-3.png'
+        // content: '//manhattan.didistatic.com/static/manhattan/mand/docs/mand-doc-home-3.png'
+        content: MfeAnimation2,
       },
       decorate: '//manhattan.didistatic.com/static/manhattan/mand/docs/mand-doc-home-rectangle.svg'
     },

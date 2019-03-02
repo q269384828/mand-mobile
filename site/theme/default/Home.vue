@@ -13,8 +13,8 @@
             <div class="home-animation-bg">
               <img :src="homeBlock.animations.bg" alt="">
             </div>
-            <div class="home-animation-content">
-              <img :src="homeBlock.animations.content" alt="">
+            <div class="home-animation-content" v-if="homeBlock.animations.content">
+              <component :is="homeBlock.animations.content"></component>
             </div>
           </template>
           <template v-else>
@@ -62,7 +62,7 @@
             :key="`home-box-block-${homeBlockIndex}-0`"
             v-show="blockShow[homeBlockIndex]"
           >
-            <span v-text="homeBlock.title"></span>
+            <span v-html="homeBlock.title"></span>
           </h2>
           <!-- 模块描述 -->
           <p
@@ -103,7 +103,7 @@
                 :class="homeBlockButton.theme"
                 :data-index="3 + homeBlockButtonIndex"
                 :key="`home-box-block-${homeBlockIndex}-button-${homeBlockButtonIndex}`"
-                @click="handlerButtonClick(homeBlockButton.click, `block-button-handler-slots-${homeBlockIndex}`)"
+                @click.stop="handlerButtonClick(homeBlockButton.click, `block-button-handler-slots-${homeBlockIndex}`)"
               >
                 {{ homeBlockButton.text }}
                 <component v-if="homeBlockButton.slots" :is="homeBlockButton.slots" :ref="`block-button-handler-slots-${homeBlockIndex}`"></component>
@@ -140,7 +140,6 @@
 <script>
 import MfeTable from './components/Table'
 import homeConfig from './assets/js/home.config'
-import { setTimeout } from 'timers';
 
 export default {
   name: 'mfe-blog-theme-default-home',
@@ -152,19 +151,9 @@ export default {
   data () {
     return {
       qrcodeTableShow: false,
-      blockShow: []
+      blockShow: [],
     }
   },
-
-  // directives: {
-  //   dynamicShow: {
-  //     bind (el) {
-  //       setTimeout(() => {
-  //         el.style.display = 'block'
-  //       }, 800)
-  //     },
-  //   }
-  // },
 
   mounted() {
     if ($(window).width() < 750) {
@@ -210,13 +199,14 @@ export default {
       }, delay)
     },
     scrollBlockView () {
-      const bottomOffset = $(document).scrollTop() + $(window).height()
+      const scrollTop = $(document).scrollTop()
+      const bottomOffset = scrollTop + $(window).height()
       $('.home-box-block').each((index, item) => {
         const hh = $(item).height()
-        if (bottomOffset >= index * hh  + hh/2 + 100) {
+        // const topPos = index < 1 ? 0 : (index - 1) * hh  + hh/2 + 100
+        const bottomPos = index * hh  + hh/2 + 100
+        if (bottomOffset >= bottomPos) {
           this.$set(this.blockShow, index, true)
-        // } else {
-        //   this.$set(this.blockShow, index, false)
         }
       })
     },
@@ -252,6 +242,9 @@ export default {
           // transition all .3s
           span
             position relative
+            i
+             font-style normal
+             color #2f86f6
             &:after
               content ""
               position absolute
@@ -289,11 +282,11 @@ export default {
             &:hover
               opacity .8
             &.start
-              background-image linear-gradient(-90deg, #FFD653 0%, #FF8B48 100%)
+              background-image linear-gradient(-90deg, #98c4fd 0%, #2f86f6 100%)
               color #FFF
             &.demo
               background-color #ECF6FF
-              color #048EFA
+              color #2F86F6
               box-shadow none
               img
                 width 120px
@@ -337,7 +330,7 @@ export default {
             color #555
             text-align center
           a
-            color #048efa
+            color #2F86F6
             text-decoration none
       &.home-box-block-0
         // height 700px
@@ -350,11 +343,8 @@ export default {
           left 380px
           top -100px
         .home-animation-content
-          left 220px
+          left 221px
           top 247px
-          img
-            width 614px
-            height 410px
       &.home-box-block-1
         // height 830px
         .home-text
@@ -368,9 +358,6 @@ export default {
         .home-animation-content
           right 0
           top 143px
-          img
-            width 544px
-            height 503px
         .home-decorate
           right -400px
           top 500px
@@ -395,9 +382,6 @@ export default {
         .home-animation-content
           bottom 0
           left 0
-          img
-            width 536px
-            height 381px
         .home-decorate
           top 0
           left -300px

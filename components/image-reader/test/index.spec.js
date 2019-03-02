@@ -1,11 +1,7 @@
-import ImageReader from '../index'
-import triggerEvent from '../../popup/test/touch-trigger'
-import {mount} from 'avoriaz'
+import {ImageReader} from 'mand-mobile'
+import {mount} from '@vue/test-utils'
 import imageProcessor from '../image-processor'
 import {dataUrl} from './file.mock'
-import Promise from 'es6-promise'
-
-Promise.polyfill()
 
 describe('ImageReader', () => {
   let wrapper
@@ -18,10 +14,11 @@ describe('ImageReader', () => {
     wrapper = mount(ImageReader, {
       propsData: {
         size: 10,
+        mime: ['jpeg', 'png'],
       },
     })
 
-    expect(wrapper.contains('input')).to.equal(true)
+    expect(wrapper.contains('input')).toBe(true)
 
     window.Worker = null
     wrapper.vm.$_readFile({

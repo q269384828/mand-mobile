@@ -1,6 +1,5 @@
 import Vue from 'vue'
 import Dialog from './dialog'
-const DialogConstructor = Vue.extend(Dialog)
 
 /* istanbul ignore next */
 const noop = function() {}
@@ -14,15 +13,19 @@ const instances = []
  * @param {Object} props
  * @return {Dialog}
  */
-const generate = function({title = '', icon = '', content = '', closable = false, btns = []}) {
+const generate = function({title = '', icon = '', iconSvg = false, content = '', closable = false, btns = []}) {
+  const DialogConstructor = Vue.extend(Dialog)
   const vm = new DialogConstructor({
     propsData: {
       value: true,
       title,
       icon,
+      iconSvg,
       content,
       closable,
       btns,
+      transition: 'md-bounce',
+      preventScroll: true,
     },
   }).$mount()
 
@@ -55,24 +58,35 @@ const generate = function({title = '', icon = '', content = '', closable = false
 Dialog.confirm = ({
   title = '',
   icon = '',
+  iconSvg = false,
   content = '',
   cancelText = '取消',
+  cancelWarning = false,
   confirmText = '确定',
+  confirmWarning = false,
   closable = false,
   onConfirm = noop,
+  onCancel = noop,
 }) => {
   const vm = generate({
     title,
     icon,
+    iconSvg,
     content,
     closable,
     btns: [
       {
         text: cancelText,
-        handler: /* istanbul ignore next */ () => vm.close(),
+        warning: cancelWarning,
+        handler: /* istanbul ignore next */ () => {
+          if (onCancel() !== false) {
+            vm.close()
+          }
+        },
       },
       {
         text: confirmText,
+        warning: confirmWarning,
         handler: /* istanbul ignore next */ () => {
           if (onConfirm() !== false) {
             vm.close()
@@ -91,15 +105,26 @@ Dialog.confirm = ({
  * @param {Object} props
  * @return {Dialog}
  */
-Dialog.alert = ({title = '', icon = '', content = '', confirmText = '确定', closable = false, onConfirm = noop}) => {
+Dialog.alert = ({
+  title = '',
+  icon = '',
+  iconSvg = false,
+  content = '',
+  confirmText = '确定',
+  closable = false,
+  warning = false,
+  onConfirm = noop,
+}) => {
   const vm = generate({
     title,
     icon,
+    iconSvg,
     content,
     closable,
     btns: [
       {
         text: confirmText,
+        warning,
         handler: /* istanbul ignore next */ () => {
           if (onConfirm() !== false) {
             vm.close()
@@ -119,7 +144,7 @@ Dialog.alert = ({title = '', icon = '', content = '', confirmText = '确定', cl
  * @return {Dialog}
  */
 Dialog.succeed = props => {
-  props.icon = 'circle-right'
+  props.icon = 'success-color'
   return Dialog.confirm(props)
 }
 
@@ -130,7 +155,7 @@ Dialog.succeed = props => {
  * @return {Dialog}
  */
 Dialog.failed = props => {
-  props.icon = 'circle-cross'
+  props.icon = 'warn-color'
   return Dialog.confirm(props)
 }
 

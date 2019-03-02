@@ -6,13 +6,13 @@ title: Quickstart
 
 **New project** can be initialized and integrated with `mand-mobile` by [vue-cli](https://github.com/vuejs/vue-cli). Please refer to <a href="javascript:jumpAnchor('Installation')">Installation</a> for **existing projects**.
 
-* Vue CLI 2([Template](https://github.com/mand-mobile/mand-mobile-template))
+* Vue CLI 2/3([Template](https://github.com/mand-mobile/mand-mobile-template))(sp 1.x)
 
 ```shell
 vue init mand-mobile/mand-mobile-template my-mand-mobile-project
 ```
 
-* Vue CLI 3([Plugin](https://github.com/mand-mobile/vue-cli-plugin-mand))
+* Vue CLI 3([Plugin](https://github.com/mand-mobile/vue-cli-plugin-mand))(sp 1.x/2.x)
 
 ```shell
 vue create my-project
@@ -21,19 +21,33 @@ npm install --save-dev vue-cli-plugin-mand
 vue invoke mand
 ```
 
+* Vue CLI 3([Example](https://github.com/mand-mobile/vue-cli3-example))(sp 1.x/2.x)
+
+* Nuxt([Example](https://github.com/mand-mobile/nuxt-example))
+
 #### Installation
 
-##### NPM
+##### **NPM or Yarn**
 
-```bash
+```shell
 npm install mand-mobile --save
+
+# or 
+
+yarn add mand-mobile
 ```
 
+<<<<<<< HEAD
 ##### Import in Browser
+=======
+##### **Import in Browser**
+>>>>>>> 18544c76be38dcf6854e44bbdbdef665e1379462
 
 Add `script` and `link` tags in your browser and use the global variable `window['mand-mobile']`.
 
-The `JS` and `CSS` bundles are provided in the `mand-mobile/lib` or `mand-mobile/lib-vw` directory of the `npm` distribution. See <a href="javascript:jumpAnchor('Release Package Directory')">Release Package Directory</a>. You can also download it via [UNPKG](https://unpkg.com/mand-mobile/lib/)
+The `JS` and `CSS` bundles are provided in the `mand-mobile/lib` or `mand-mobile/lib-vw` directory of the `npm` distribution. See <a href="javascript:jumpAnchor('Release Package Directory')">Release Package Directory</a>.    
+
+You can also download it via [![](https://data.jsdelivr.com/v1/package/npm/mand-mobile/badge)](https://www.jsdelivr.com/package/npm/mand-mobile) or [UNPKG](https://unpkg.com/mand-mobile/lib/).
 
 #### Import
 
@@ -79,13 +93,10 @@ The `JS` and `CSS` bundles are provided in the `mand-mobile/lib` or `mand-mobile
 
 and then
 
+> If there is no configuration above, it will be imported in full amount, all styles need to be manually imported, and reference<a href="javascript:jumpAnchor('Totally Import')">Totally Import</a>
+
 ```javascript
 import { Button } from 'mand-mobile'
-
-/**
- * [Note] If there is no configuration above, it will be imported in full amount,
- * all styles need to be manually imported, and reference #Totally Import.
- */
 ```
 
 ##### Manually Import
@@ -142,6 +153,7 @@ module.exports = {
   'plugins': [
     require('postcss-pxtorem')({
       rootValue: 100,
+      minPixelValue: 2,
       propWhiteList: []
     })
   ]
@@ -156,6 +168,7 @@ const pxtorem = require('postcss-pxtorem');
 // Postcss
 webpackConfig.postcss.push(pxtorem({
   rootValue: 100,
+  minPixelValue: 2,
   propWhiteList: []
 }))
 
@@ -168,6 +181,7 @@ webpackConfig.plugins.push(new webpack.LoaderOptionsPlugin({
       use: [
         poststylus(pxtorem({
           rootValue: 100,
+          minPixelValue: 2,
           propWhiteList: []
         }))
       ]
@@ -183,7 +197,7 @@ This is a form page developed by `Mand Mobile`. More components can be found in 
 ```vue
 <template>
   <div id="app">
-    <md-field title="投保人" class="block">
+    <md-field class="block" title="投保人">
       <md-input-item
         title="投保人姓名"
         placeholder="请填写投保人姓名"
@@ -193,15 +207,15 @@ This is a form page developed by `Mand Mobile`. More components can be found in 
         placeholder="请填写投保人身份证号"
       ></md-input-item>
     </md-field>
-    <md-field title="被保人" class="block">
+    <md-field class="block" title="被保人">
       <md-input-item
         title="被保人姓名"
         placeholder="请填写被保人姓名"
       ></md-input-item>
       <md-field-item
         title="与投保人关系"
-        arrow="arrow-right"
-        :value="relation"
+        :content="relation"
+        arrow
         @click="isPickerShow = true"
         solid
       ></md-field-item>

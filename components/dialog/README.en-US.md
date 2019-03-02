@@ -10,7 +10,9 @@ A floating layer to get users' feedback or display information.
 ```javascript
 import { Dialog } from 'mand-mobile'
 
-Vue.component(Dialog.name, Dialog)
+Dialog.alert({ content: '' })
+
+this.$dialog.alert({ content: '' }) // Totally Import
 ```
 
 ### Code Examples
@@ -23,16 +25,15 @@ Vue.component(Dialog.name, Dialog)
 |----|-----|------|------|------|
 | v-model | whether to show a dialog or not | Boolean | `false` | - |
 | title | title of dialog | String | - | - |
-| icon | name of icon | String | - |Refer to `Icon` component for customized icon|
+| icon | name of icon | String | - |-|
+| icon-svg | svg icon | Boolean |`false`|Refer to `Icon` component for customized icon|
 | closable | whether the close button is visible or not | Boolean | `true` | - |
-| btns | action buttons in the footer| Array {text, handler} | `[]` | - |
+| layout | layout of action buttons, `row, column` | String | `row` | - |
+| btns | action buttons in the footer| Array {text, handler, warning} | `[]` | - |
 | append-to | portal node of dialog | HTMLElement | `document.body` | - |
 | has-mask | has mask or not | Boolean | `true` | - |
 | mask-closable | if the dialog will be closed when clicking mask| Boolean | `false` | - |
-| position | the position of popup, `center/top/bottom/left/right` | String | `center`| - |
-| transition | the animation effect of popup, `fade, slide-up/down/left/right`  | String | `fade` | - |
-| prevent-scroll | whether to prevent from scrolling or not| Boolean | false | - |
-| prevent-scroll-exclude | excluded elements of prevented scrolling| String | - | - |
+| transition | the animation effect of dialog | String | `fade` |`fade`, `fade-bounce`, `fade-slide`, `fade-zoom`<br> `slide-up`, `slide-down`, `slide-left`, `slide-right` |
 
 #### Dialog Slots
 Default slots is used as the content of dialog
@@ -53,7 +54,7 @@ Invoked after dialog is hidden
 #### Dialog Static Methods
 Dynamically create interactive dialogs
 
-##### confirm(props)
+##### Dialog.confirm(props)
 Dynamically create a confirmation dialog
 
 | Props | Description | Type | Default |
@@ -63,6 +64,8 @@ Dynamically create a confirmation dialog
 | content | content of dialog | String | -|
 | cancelText | cancelation button | String | `Cancel` |
 | confirmText | confirmation button | String | `Confirm` |
+| cancelWarning | clicking the Cancel button is a warning action | Boolean | `false` |
+| confirmWarning | clicking the Confirm button is a warning action | Boolean | `false` |
 | onConfirm | callback function is invoked when clicking confirmation button | Function | -|
 
 ##### Dialog.alert(props)
@@ -74,6 +77,7 @@ Dynamically create an alert dialog
 | title | title of dialog | String | - |
 | content | content of dialog | String | -|
 | confirmText | confirmation button | String | `Confirm` |
+| warning | clicking the Confirm button is a warning action | Boolean | `false` |
 | onConfirm | callback function is invoked when clicking confirmation button | Function | -|
 
 ##### Dialog.succeed(props)
@@ -97,4 +101,4 @@ Dynamically create a fail dialog
 | onConfirm | callback function is invoked when clicking confirmation button| Function | -|
 
 ##### Dialog.closeAll()
-Close all global dialogs <sup class="version-after">1.4.0+</sup>
+Close all global dialogs

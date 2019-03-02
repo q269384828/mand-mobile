@@ -1,6 +1,7 @@
 <template>
   <div
     class="md-popup-title-bar"
+    :class="{large: !!describe}"
     @touchmove="$_preventScroll"
   >
     <!-- Cancel -->
@@ -20,10 +21,20 @@
 
     <!-- Title -->
     <div
-      class="title-bar-title"
       v-if="title"
-      v-html="title"
-    ></div>
+      class="title-bar-title"
+    >
+      <p
+        v-if="title"
+        class="title"
+        v-html="title"
+      ></p>
+      <p
+        v-if="describe"
+        class="describe"
+        v-html="describe"
+      ></p>
+    </div>
     <div
       class="title-bar-title"
       v-else
@@ -48,22 +59,31 @@
   </div>
 </template>
 
-<script>export default {
+<script>import titleBarMixin from './mixins/title-bar'
+
+export default {
   name: 'md-popup-title-bar',
 
+  mixins: [titleBarMixin],
+
   props: {
-    title: {
-      type: String,
-      default: '',
-    },
-    okText: {
-      type: String,
-      default: '',
-    },
-    cancelText: {
-      type: String,
-      default: '',
-    },
+    // Mixin Props
+    // title: {
+    //   type: String,
+    //   default: '',
+    // },
+    // describe: {
+    //   type: String,
+    //   default: '',
+    // },
+    // okText: {
+    //   type: String,
+    //   default: '',
+    // },
+    // cancelText: {
+    //   type: String,
+    //   default: '',
+    // },
   },
 
   methods: {
@@ -80,31 +100,41 @@
   position relative
   width 100%
   height popup-title-bar-height
-  background popup-title-bar-bg
-  hairline(bottom, popup-title-bar-border-color)
+  background-color popup-title-bar-bg
+  border-radius popup-title-bar-radius popup-title-bar-radius 0 0
   clearfix()
+  overflow hidden
+  &.large
+    height popup-title-bar-height-large
   &>div
     display flex
     float left
     height 100%
+    flex-direction column
     align-items center
     justify-content center
     overflow hidden
     text-overflow ellipsis
     word-break break-word
     white-space nowrap
-    color popup-title-bar-color-title
   .title-bar-left, .title-bar-right
     position absolute
     width 20%
-    // padding 0 h-gap-lg
+    max-height popup-title-bar-height
     font-size popup-title-bar-font-size-button
+    font-weight popup-title-bar-font-weight-button
     box-sizing border-box
   .title-bar-title
     width 100%
     padding 0 20%
     box-sizing border-box
-    font-size popup-title-bar-font-size-title
+    p.title
+      font-size popup-title-bar-font-size-title
+      color popup-title-bar-color-title
+    p.describe
+      margin-top 4px
+      font-size popup-title-bar-font-size-describe
+      color popup-title-bar-color-describe
   .title-bar-left
     left 0
     color popup-title-bar-color-button-left

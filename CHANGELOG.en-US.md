@@ -3,6 +3,7 @@ title: Change Log
 toc: hidden
 ---
 
+<<<<<<< HEAD
 ### 1.6.7
 `2018-12-28`
 - Fix
@@ -120,102 +121,99 @@ toc: hidden
 `2018-06-15`
 - Feature
   - `Toast` add support of custom position [#89](https://github.com/didi/mand-mobile/issues/89)
-- Fix
-  - `InputItem` unformatted input maxlength limit
+=======
+### 2.1.2
 
-### 1.3.2
-`2018-06-11`
+`2019-02-25`
+
+>>>>>>> 18544c76be38dcf6854e44bbdbdef665e1379462
+- Fix
+  - Fix `ScrollView` is not able to trigger the problem when the content is not full.[#335](https://github.com/didi/mand-mobile/issues/335)
+  - Fixed a problem with the line break when the `InputItem` title floated
+
+### 2.1.1
+
+`2019-02-23`
+
+- Fix
+  - Fix the problem that `postcss` is not in effect at build time, causing assets such as images in `mand-mobile.css` not to be processed by url inline。
+  
+### 2.1.0
+
+`2019-02-22`
+
 - Feature
-  - Increase `css varialbe` coverage
+  - `Seletor`: `defaultValue` prop remove type limits[#305](https://github.com/didi/mand-mobile/issues/305)
+  - `ScrollView`: add `immediateCheckEndReaching` prop，in order to check reach bottom immediately and emit `endReached` event[#312](https://github.com/didi/mand-mobile/issues/312)
+  - `Picker` and `DatePicker`: add `lineHeight` prop, which is used to customize option line height[#323](https://github.com/didi/mand-mobile/issues/323)
+  - `ScrollView`: add `touchAngle` prop, in order to control scroll angle[#326](https://github.com/didi/mand-mobile/issues/326)
+  - `Amount`: use system default font
 
-### 1.3.1
-`2018-06-08`
+- Fix
+  - Update type declaration
+  - `WaterMark`: fix can not click content area[#304](https://github.com/didi/mand-mobile/issues/304)
+  - `Swiper`: fix when set `isLoop` as `false` and `transition` as `slideY`, can not scroll problem[#311](https://github.com/didi/mand-mobile/issues/311)
+  - `TabPicker`: fix scroll and click bug[#319](https://github.com/didi/mand-mobile/issues/319)
+  - `InputItem`: fix wrong cursor position[#322](https://github.com/didi/mand-mobile/issues/322)
+  - `InputItem`: fix bug at `Vue 2.6+`[#324](https://github.com/didi/mand-mobile/issues/324)
+  - Update docs
+
+### 2.0.0
+
+`2019-01-30`
+
 - Feature
-  - Add support of `css varialbe`
-  - `ImageReader` callback add image file argument
-  - `Cashier` add support of customized text
-- Fix
-  - `InputItem` issue [#104](https://github.com/didi/mand-mobile/issues/104)
+  - `DetailItem` increase supported types of `content`[#285](https://github.com/didi/mand-mobile/issues/285)
+  - `Dialog` add default value `true` of `preventScroll`[#286](https://github.com/didi/mand-mobile/issues/286)
+  - `Radio` increase supported types of `value`[#289](https://github.com/didi/mand-mobile/issues/289)
+  - `Icon` font type increases without prefix class name[#295](https://github.com/didi/mand-mobile/issues/295)
+  - `Check`，`CheckBox`increase supported types of `name` and `value`[#297](https://github.com/didi/mand-mobile/issues/297)
+  - `InputItem` add prop `virtual-keyboard-vm`, used to support external custom financial keyboards
+  - `Cashier` add scoped slot `footer` and `channels` add property `img`
 
-### 1.3.0
-`2018-06-01`
+- Fix
+  - `InputItem` remove setting cursor for native type [#268](https://github.com/didi/mand-mobile/issues/268)
+  - supplement `index.d.ts`
+  - fix part of components style issues
+
+### 2.0.0-rc.5
+
+`2019-01-04`
+
 - Feature
-  - `Selector`, `TabPicker` add support of `mask-closable` porp [#64](https://github.com/didi/mand-mobile/issues/64)
-  - `Cashier` change the presentation of channels [#77](https://github.com/didi/mand-mobile/issues/77)
-  - `Capatcha` add support to customize button text and add `auto-countdown` prop to control whether auto send code or not [#84](https://github.com/didi/mand-mobile/issues/84)
-  - `ActionSheet` add `maxHeight` [#86](https://github.com/didi/mand-mobile/issues/86)
-  - `InputItem` support `digit` type and other standard html input type [#95](https://github.com/didi/mand-mobile/issues/95)
-  - `Picker`，`DatePicker`，`TabPicker` will cancel change when click mask or cancel button
-- Fix
-  - Fix `DatePicker` bug [#75](https://github.com/didi/mand-mobile/issues/75)
-  - Fix some document bugs
+  - Add `PascalCase` name to global components[#261](https://github.com/didi/mand-mobile/issues/261)
+  - `ScrollView` add prop `manual-init` and method `init`
+  - `TabBar`, `Tabs` add prop `immediate`
+  - `Swiper` add prop `transition-duration`
 
-### 1.2.3
-`2018-05-11`
 - Fix
-  - Fix issue [#78](https://github.com/didi/mand-mobile/issues/78)
-  - Update documentation site
+  - fix part of components style issues
 
-### 1.2.2
-`2018-05-09`
-- Fix
-  - Fix issue [#67](https://github.com/didi/mand-mobile/issues/67)
-  - Fix issue [#69](https://github.com/didi/mand-mobile/issues/69)
-  - Fix issue [#72](https://github.com/didi/mand-mobile/issues/72)
+### 2.0.0-rc.4
+
+`2018-12-21`
+
 - Feature
-  - Add `vw` responsive
-  - Make `Popup` to adapt iPhone X
-
-<!-- CUTOFF -->
-### 1.1.1
-`2018-05-06`
-- Fix
-  - Fix issue [#62](https://github.com/didi/mand-mobile/issues/62)
-  - Fix issue [#63](https://github.com/didi/mand-mobile/issues/63)
-
-### 1.1.0
-`2018-05-04`
-- Feature
-  - Add `fade` mode of `Swiper` [#20](https://github.com/didi/mand-mobile/issues/20)
-  - Add `v-model` prop to control the visibility of `ImageViewer` [#42](https://github.com/didi/mand-mobile/issues/24)
-  - Add support digit support of `Toast` content [#43](https://github.com/didi/mand-mobile/issues/43)
+  - Optimize `NumberKeyboard` input experience
+  - `Cashier` adds slot `scene`
+  - `Picker` adds prop `default-value`[#255](https://github.com/didi/mand-mobile/issues/255)
 
 - Fix
-  - Fix `Picker` bug when reset `DefaultIndex` [#50](https://github.com/didi/mand-mobile/issues/50)
-  - Fix `display:box` warning of `Autoprefixer` [#54](https://github.com/didi/mand-mobile/issues/54)
+  - Fix `Popup` continuous "show & hide" invalidation problem
+  - Fix `Steps` style compatibility issues
+  - Fix `InputItem` style problem, increase close button click area
+  - `setError` of `Captcha` no longer clears codes
 
-<!-- CUTOFF -->
-### 1.0.9
-`2018-04-26`
-- Fix issue [#47](https://github.com/didi/mand-mobile/issues/47)
+### 2.0.0-rc.3
 
-### 1.0.8
-`2018-04-24`
-- Remove the need of `.native` modifier of Button
-- `Landscape` component add `mask-closable` prop
+`2018-12-14`
 
-### 1.0.6
-`2018-04-20`
-- Fix issue [#29](https://github.com/didi/mand-mobile/issues/29)
+🎉🎉🎉 👏👏👏 Learn more in the<a href="#/en-US/docs/migration">Migration from 1.x</a>.
 
-<!-- CUTOFF -->
-### 1.0.5
-`2018-04-18`
-- Fix issue [#24](https://github.com/didi/mand-mobile/issues/24)
+### 1.x
 
-### 1.0.4
-`2018-04-12`
-- Fix `components/index.js` bug
+<<<<<<< HEAD
+=======
+Visit [GitHub](https://github.com/didi/mand-mobile/blob/1.x/CHANGELOG.en-US.md) to read `1.x` change logs.
 
-### 1.0.2
-`2018-04-12`
-- Add global package version
-
-### 1.0.1
-`2018-04-12`
-- Fix wrong package entry
-
-### 1.0.0
-`2018-04-11`
-- Initial release
-
+>>>>>>> 18544c76be38dcf6854e44bbdbdef665e1379462

@@ -1,29 +1,27 @@
-import Field from '../index'
-import {mount} from 'avoriaz'
+import {FieldItem} from 'mand-mobile'
+import sinon from 'sinon'
+import {shallowMount} from '@vue/test-utils'
 
-describe('Field', () => {
+describe('Field - Operation', () => {
   let wrapper
 
   afterEach(() => {
     wrapper && wrapper.destroy()
   })
 
-  it('create a simple field with title', () => {
-    wrapper = mount(Field, {
-      propsData: {
-        title: 'field title',
+  it('field item click event', () => {
+    let clicked = false
+    wrapper = shallowMount(FieldItem, {
+      listeners: {
+        click() {
+          clicked = true
+        },
       },
     })
-    expect(wrapper.hasClass('md-field')).to.be.true
-    expect(wrapper.vm.title).to.equal('field title')
-  })
+    const eventSpy = sinon.spy(wrapper.vm, '$emit')
 
-  it('create a simple field without title', () => {
-    wrapper = mount(Field, {
-      propsData: {
-        title: '',
-      },
-    })
-    expect(wrapper.find('.md-field-title').length).to.equal(0)
+    wrapper.find('.md-field-item').trigger('click')
+    expect(eventSpy.calledWith('click')).toBe(true)
+    expect(clicked).toBe(true)
   })
 })

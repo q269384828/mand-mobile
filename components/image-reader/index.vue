@@ -40,6 +40,7 @@ export default {
     mime: {
       type: Array,
       default() {
+        /* istanbul ignore next */
         return []
       },
     },
@@ -65,6 +66,7 @@ export default {
 
   computed: {
     mimeType() {
+      /* istanbul ignore else */
       if (this.mime.length) {
         let mimeStr = ''
         this.mime.forEach(type => {
@@ -133,6 +135,7 @@ export default {
 
     // MARK: events handler
     $_onFileChange(event) {
+      /* istanbul ignore next */
       const fileElement = event.target
 
       /* istanbul ignore next */
@@ -180,11 +183,16 @@ export default {
   width 100%
   height 100%
   z-index 100
+  left 0
+  top 0
   -webkit-tap-highlight-color rgba(0,0,0,0)
-  .md-image-reader-file
-    position absolute
-    width 100%
-    height 100%
-    opacity 0
-    -webkit-tap-highlight-color rgba(0,0,0,0)
+
+.md-image-reader-file
+  position absolute
+  width 100%
+  height 100%
+  opacity 0
+  left 0
+  top 0
+  -webkit-tap-highlight-color rgba(0,0,0,0)
 </style>

@@ -1,28 +1,55 @@
 <template>
-  <div class="md-example-child md-example-child-tab-bar md-example-child-tab-bar-4">
+  <div class="md-example-child md-example-child-tabs md-example-child-tab-bar-4">
     <md-tab-bar
-      :titles="titles"
-      :show-ink-bar="true"
-      :ink-bar-animate="false"
-    ></md-tab-bar>
+      v-model="current"
+      :items="items"
+      :has-ink="false"
+    >
+      <template slot="item" slot-scope="{ item }">
+        <div class="custom-item">
+          <div class="icon">
+            <md-icon :name="item.icon" />
+          </div>
+          <div class="text">
+            <span v-text="item.label"></span>
+          </div>
+        </div>
+      </template>
+    </md-tab-bar>
   </div>
 </template>
 
-<script>import {TabBar} from 'mand-mobile'
+<script>import {TabBar, Icon} from 'mand-mobile'
 
 export default {
   name: 'tab-bar-demo',
   /* DELETE */
-  title: '禁用下划线动画',
-  titleEnUS: 'Disable underline animation',
+  title: '自定义内容',
+  titleEnUS: 'Custom Item',
   /* DELETE */
   components: {
     [TabBar.name]: TabBar,
+    [Icon.name]: Icon,
   },
   data() {
     return {
-      titles: ['第一', '第二', '第三', '第四'],
+      current: 1,
+      items: [{name: 1, label: '首页', icon: 'home'}, {name: 2, label: '我的', icon: 'user'}],
     }
   },
 }
 </script>
+
+<style lang="stylus">
+.md-example-child-tab-bar-4
+  .custom-item
+    display flex
+    flex-direction column
+    align-items center
+    justify-content center
+    height 100%
+    flex 1
+    .text
+      font-size 20px
+</style>
+

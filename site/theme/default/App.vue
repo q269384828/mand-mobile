@@ -1,12 +1,16 @@
 <template>
   <div class="mfe-blog-theme-default default-container" :class="{'is-home': isHome}">
+<<<<<<< HEAD
     <mb-notice-bar :lang="lang"></mb-notice-bar>
     <mb-header :is-active="isHome"/>
+=======
+    <mb-header :is-active="isHome" :logo-ads="logoAds"/>
+>>>>>>> 18544c76be38dcf6854e44bbdbdef665e1379462
     <div class="default-content">
       <mb-menu
         v-if="!noMenu"
         v-model="isMenuShow"
-        menua-ads="menuAds"
+        :menua-ads="menuAds"
       />
       <div class="default-content-wrapper">
         <router-view></router-view>
@@ -14,6 +18,9 @@
     </div>
     <div class="default-menu-trigger" v-if="!noMenu" @click="isMenuShow = !isMenuShow">
       <i class="icon-catalog"></i>
+    </div>
+    <div class="default-menu-trigger" v-else @click="changeLang">
+      <i class="lang" v-text="lang === 'en-US' ? '中文' : 'English'"></i>
     </div>
     <mb-footer/>
     <div class="hover-ggs" v-if="hoverAds && hoverAds.length" >
@@ -39,7 +46,11 @@ import './assets/css/tooltip.css'
 import Header from './components/Header'
 import Footer from './components/Footer'
 import Menu from './components/Menu'
+<<<<<<< HEAD
 import NoticeBar from './components/NoticeBar'
+=======
+import { localStore } from './assets/js/util'
+>>>>>>> 18544c76be38dcf6854e44bbdbdef665e1379462
 
 export default {
   name: 'mfe-blog-theme-default',
@@ -52,8 +63,9 @@ export default {
   data() {
     return {
       isMenuShow: false,
-      hoverAds: [],
-      menuAds: [],
+      hoverAds: [], // {image: string, link: string}
+      menuAds: [], // {image: string, link: string}
+      logoAds: {}, // images: Array logo下方图片集合，text: string logo下方slogan
     }
   },
   watch: {
@@ -63,8 +75,18 @@ export default {
       },
       deep: true
     },
+    lang: {
+      handler (val) {
+        document.documentElement.setAttribute('lang', val === 'en-US' ? 'en' : val)
+      },
+      immediate: true,
+      deep: true
+    },
   },
   computed: {
+    lang() {
+      return ~this.$route.path.indexOf('zh-CN') ? 'zh-CN' : 'en-US'
+    },
     noMenu() {
       return this.$route.meta.noMenu
     },
@@ -80,11 +102,21 @@ export default {
   },
   methods: {
     getConfig () {
-      $.get(`//static.galileo.xiaojukeji.com/static/tms/api/mand_mobile_config.json?${Date.now()}`).then(data => {
-        this.hoverAds = data.hoverAds
-        this.menuAds = data.menuAds
+      $.get(`//star.xiaojukeji.com/config/get.node?city=-1&name=mand_mobile_ads&${Date.now()}`).then(({ data }) => {
+        this.hoverAds = data.mand_mobile_ads.hoverAds
+        this.menuAds = data.mand_mobile_ads.menuAds
+        this.logoAds = data.mand_mobile_ads.logoAds
       })
-    }
+    },
+    changeLang () {
+      const lang = this.lang === 'zh-CN' ? 'en-US' : 'zh-CN'
+      localStore('MAND_MOBILE_LANG', lang)
+      location.href = location.href.replace(this.lang, lang)
+
+      if (~location.href.indexOf('home')) {
+       location.reload()
+      }
+    },
   }
 }
 
@@ -128,8 +160,12 @@ export default {
     box-shadow 0 0 10px #f0f0f0
     border solid 1px #f0f0f0
     i
-      color #048efa
-      font-size 24px
+      color #2F86F6
+      font-style normal
+      &.icon-catalog
+        font-size 24px
+      &.lang
+        font-size 12px
   .hover-ggs
     position fixed
     z-index 9999

@@ -1,214 +1,126 @@
-import ActionSheet from '../index'
-import {mount} from 'avoriaz'
+import {ActionSheet} from 'mand-mobile'
+import sinon from 'sinon'
+import {mount} from '@vue/test-utils'
 
-describe('ActionSheet', () => {
-  let wrapper, vm
+describe('ActionSheet - Operation', () => {
+  let wrapper
 
   afterEach(() => {
     wrapper && wrapper.destroy()
-    vm && vm.$destroy()
   })
 
-  /*--------------------------------------------------------------------------*/
-  /* Component tests
-  /*--------------------------------------------------------------------------*/
-  it('create a action-sheet', done => {
-    wrapper = mount(ActionSheet, {
-      propsData: {
-        options: [
-          {
-            label: '选项1',
-            value: 0,
-          },
-          {
-            label: '选项2',
-            value: 1,
-          },
-          {
-            label: '选项3',
-            value: 2,
-          },
-        ],
-        value: true,
+  const propsData = {
+    title: '操作说明的标题',
+    options: [
+      {
+        label: '选项1',
+        value: 0,
       },
-    })
+      {
+        label: '选项2',
+        value: 1,
+      },
+      {
+        label: '选项3',
+        value: 2,
+      },
+    ],
+    defaultIndex: 1,
+    invalidIndex: 2,
+    cancelText: '取消',
+  }
 
-    expect(wrapper.hasClass('md-action-sheet')).to.be.true
-    wrapper.vm.$nextTick(() => {
-      expect(wrapper.find('.md-action-sheet-item').length).to.equal(3)
-      done()
+  test('empty options', () => {
+    wrapper = mount(ActionSheet, {
+      sync: false,
     })
+    expect(wrapper.findAll('.md-action-sheet-item').length).toBe(0)
   })
 
-  it('create a action-sheet with defaultIndex', done => {
+  test('show/hide/selected events', done => {
     wrapper = mount(ActionSheet, {
-      propsData: {
-        options: [
-          {
-            label: '选项1',
-            value: 0,
-          },
-          {
-            label: '选项2',
-            value: 1,
-          },
-          {
-            label: '选项3',
-            value: 2,
-          },
-        ],
-        value: true,
-        defaultIndex: 1,
-      },
+      propsData,
+      sync: false,
     })
 
-    wrapper.vm.$nextTick(() => {
-      expect(wrapper.find('.md-action-sheet-item')[1].hasClass('active')).to.equal(true)
-      done()
-    })
-  })
-
-  it('action-sheet events selected', done => {
-    wrapper = mount(ActionSheet, {
-      propsData: {
-        options: [
-          {
-            label: '选项1',
-            value: 0,
-          },
-          {
-            label: '选项2',
-            value: 1,
-          },
-          {
-            label: '选项3',
-            value: 2,
-          },
-        ],
-        value: true,
-        activeIndex: 1,
-      },
-    })
-    const eventStub = sinon.stub(wrapper.vm, '$emit')
-
-    wrapper.vm.$nextTick(() => {
-      wrapper.find('.md-action-sheet-item')[0].trigger('click')
-      expect(wrapper.vm.clickIndex).equal(0)
-      expect(eventStub.calledWith('selected')).to.be.true
-      done()
-    })
-  })
-
-  it('selector events cancel', done => {
-    wrapper = mount(ActionSheet, {
-      propsData: {
-        options: [
-          {
-            label: '选项1',
-            value: 0,
-          },
-          {
-            label: '选项2',
-            value: 1,
-          },
-          {
-            label: '选项3',
-            value: 2,
-          },
-        ],
-        value: true,
-        activeIndex: 1,
-      },
-    })
-    const eventStub = sinon.stub(wrapper.vm, '$emit')
-
-    wrapper.vm.$nextTick(() => {
-      const cancelBtn = wrapper.find('.cancel-btn')[0]
-      cancelBtn.trigger('click')
-      expect(eventStub.calledWith('cancel')).to.be.true
-      done()
-    })
-  })
-
-  it('select an invalid item', done => {
-    wrapper = mount(ActionSheet, {
-      propsData: {
-        invalidIndex: 0,
-        options: [
-          {
-            label: '选项1',
-            value: 0,
-          },
-          {
-            label: '选项2',
-            value: 1,
-          },
-          {
-            label: '选项3',
-            value: 2,
-          },
-        ],
-        value: true,
-        activeIndex: 1,
-      },
-    })
-    const eventStub = sinon.stub(wrapper.vm, '$emit')
-
-    wrapper.vm.$nextTick(() => {
-      wrapper.find('.md-action-sheet-item')[0].trigger('click')
-      expect(eventStub.calledWith('selected')).to.be.false
-      done()
-    })
-  })
-
-  it('create a high action-sheet', done => {
-    wrapper = mount(ActionSheet, {
-      propsData: {
-        invalidIndex: 0,
-        maxHeight: 0,
-        options: [{label: '选项1', value: 1}, {label: '选项2', value: 2}, {label: '选项3', value: 3}],
-        value: true,
-        activeIndex: 1,
-      },
-    })
+    const eventSpy = sinon.spy(wrapper.vm, '$emit')
+    wrapper.vm.value = true
 
     setTimeout(() => {
-      expect(wrapper.data().scroller).to.equal('.md-action-sheet-content')
+      expect(eventSpy.calledWith('show')).toBe(true)
+      wrapper
+        .findAll('.md-action-sheet-item')
+        .at(0)
+        .trigger('click')
+      expect(eventSpy.calledWith('selected')).toBe(true)
+      expect(eventSpy.calledWith('input')).toBe(true)
+      setTimeout(() => {
+        expect(eventSpy.calledWith('hide')).toBe(true)
+        done()
+      }, 500)
+    }, 300)
+  })
+
+  test('cancel events', done => {
+    wrapper = mount(ActionSheet, {
+      propsData: {
+        ...propsData,
+        value: true,
+      },
+      sync: false,
+    })
+
+    const eventSpy = sinon.spy(wrapper.vm, '$emit')
+
+    setTimeout(() => {
+      wrapper.find('.md-action-sheet-cancel').trigger('click')
+      expect(eventSpy.calledWith('cancel')).toBe(true)
       done()
     }, 300)
   })
 
-  it('create a empty action-sheet', () => {
-    wrapper = mount(ActionSheet, {})
+  test('disabled option', done => {
+    wrapper = mount(ActionSheet, {
+      propsData: {
+        ...propsData,
+        value: true,
+      },
+      sync: false,
+    })
 
-    expect(wrapper.propsData().options).to.be.array
-  })
-
-  /*--------------------------------------------------------------------------*/
-  /* Static method tests
-  /*--------------------------------------------------------------------------*/
-  it('dynamically create a actionsheet', () => {
-    vm = ActionSheet.create({})
-    expect(vm.value).to.be.true
-  })
-
-  it('close all actionsheets', () => {
-    const vm1 = ActionSheet.create({})
-    const vm2 = ActionSheet.create({})
-    ActionSheet.closeAll()
-
-    expect(vm1.value).to.be.false
-    expect(vm2.value).to.be.false
-  })
-
-  it('destroy all actionsheets', done => {
-    const vm1 = ActionSheet.create({})
-    const vm2 = ActionSheet.create({})
-    ActionSheet.destroyAll()
+    const eventSpy = sinon.spy(wrapper.vm, '$emit')
 
     setTimeout(() => {
-      expect(vm1.value).to.be.false
-      expect(vm2.value).to.be.false
+      const disabledOption = wrapper.findAll('.md-action-sheet-item').at(2)
+      expect(disabledOption.classes('disabled')).toBe(true)
+      disabledOption.trigger('click')
+      expect(eventSpy.calledWith('selected')).toBe(false)
+      done()
+    }, 300)
+  })
+
+  test('static methods create/closeAll', done => {
+    ActionSheet.create({
+      ...propsData,
+      value: true,
+    })
+
+    setTimeout(() => {
+      expect(document.body.querySelectorAll('.md-action-sheet').length > 0).toBe(true)
+      ActionSheet.closeAll()
+      done()
+    }, 300)
+  })
+
+  test('static methods create/destroyAll', done => {
+    ActionSheet.create({
+      ...propsData,
+      value: true,
+    })
+
+    setTimeout(() => {
+      expect(document.body.querySelectorAll('.md-action-sheet').length > 0).toBe(true)
+      ActionSheet.destroyAll()
       done()
     }, 300)
   })

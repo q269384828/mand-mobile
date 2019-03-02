@@ -27,7 +27,6 @@ export default {
   describeEnUS: 'Complex structure, displaying a group of multiple items per screen',
   message:
     '@before-change: from: <span id="valueSwiper15">0</span>, to: <span id="valueSwiper16">0</span><br/>@after-change: from: <span id="valueSwiper17">0</span>, to: <span id="valueSwiper18">0</span>',
-  codeSandBox: 'https://codesandbox.io/s/rw9kkkjmpo',
   /* DELETE */
   components: {
     [Swiper.name]: Swiper,
@@ -62,8 +61,8 @@ export default {
 }
 </script>
 
-<style lang="stylus" scoped>
-.md-example-child
+<style lang="stylus">
+.md-example-child-swiper-3
   height 250px
   li
     list-style none

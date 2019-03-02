@@ -4,13 +4,12 @@
       v-model="isActionSheetShow"
       position="bottom"
       prevent-scroll
-      :prevent-scroll-exclude="scroller"
       @show="$_onShow"
       @hide="$_onHide"
     >
-      <div class="md-action-sheet-content" :style="{maxHeight: `${maxHeight}px`}">
-        <header v-if="title">{{ title }}</header>
-        <ul>
+      <div class="md-action-sheet-content">
+        <header class="md-action-sheet-header" v-if="title">{{ title }}</header>
+        <ul class="md-action-sheet-list">
           <template v-for="(item, index) in options">
             <li
               :key="index"
@@ -20,10 +19,13 @@
                 'md-action-sheet-item': true
               }"
               @click="$_onSelect(item, index)"
-              v-html="item.text || item.label"
-            ></li>
+            >
+              <div class="md-action-sheet-item-wrapper">
+                <div class="md-action-sheet-item-section" v-html="item.text || item.label"></div>
+              </div>
+            </li>
           </template>
-          <li class="cancel-btn" @click="$_onCancel">{{ cancelText }}</li>
+          <li class="md-action-sheet-cancel" @click="$_onCancel">{{ cancelText }}</li>
         </ul>
       </div>
     </md-popup>
@@ -67,10 +69,6 @@ export default {
       type: String,
       default: '取消',
     },
-    maxHeight: {
-      type: Number,
-      default: 400,
-    },
   },
 
   data() {
@@ -92,22 +90,13 @@ export default {
   },
 
   methods: {
-    $_setScroller() {
-      const boxer = this.$el ? this.$el.querySelector('.md-action-sheet-content') : null
-      if (boxer && boxer.clientHeight >= this.maxHeight) {
-        this.scroller = '.md-action-sheet-content'
-      } else {
-        this.scroller = ''
-      }
-    },
     // MARK: events handler, 如 $_onButtonClick
     $_onShow() {
-      this.$_setScroller()
       this.$emit('show')
     },
     $_onHide() {
       this.$emit('hide')
-      this.$emit('input', false)
+      this.$_hideSheet()
     },
     $_onSelect(item, index) {
       if (index === this.invalidIndex || inArray(this.invalidIndex, index)) {
@@ -115,10 +104,14 @@ export default {
       }
       this.clickIndex = index
       this.$emit('selected', item)
-      this.$emit('input', false)
+      this.$_hideSheet()
     },
     $_onCancel() {
       this.$emit('cancel')
+      this.$_hideSheet()
+    },
+    $_hideSheet() {
+      this.isActionSheetShow = false
       this.$emit('input', false)
     },
   },
@@ -129,36 +122,58 @@ export default {
 .md-action-sheet
   color action-sheet-color
   -webkit-font-smoothing antialiased
-  .md-action-sheet-content
-    position relative
-    width 100%
-    font-size action-sheet-font-size
-    background action-sheet-bg
-    text-align center
-    overflow auto
-    header
-      vertical-height(action-sheet-height)
-      padding 0 30px
-      word-ellipsis()
-    >ul
-      li
-        vertical-height(action-sheet-height)
-        hairline(top, color-border-base)
-        box-sizing border-box
-        font-size action-sheet-font-size
-        &.active
-          color action-sheet-color-highlight
-        &.disabled
-          opacity action-sheet-disabled-opacity
-        &.cancel-btn
-          height 132px
-          line-height 120px
-          color action-sheet-color-cancel
-          &::before
-            display block
-            content ''
-            height 12px
-            background action-sheet-cancel-gap-bg
+  .md-popup
+    z-index action-sheet-zindex
   .md-popup-box
     background-color color-bg-base
+
+.md-action-sheet-content
+  position relative
+  width 100%
+  font-size action-sheet-font-size
+  background action-sheet-bg
+  text-align center
+  overflow auto
+
+.md-action-sheet-header
+  position relative
+  vertical-height(action-sheet-height)
+  hairline(bottom, color-border-base)
+  word-ellipsis()
+  overflow visible
+
+.md-action-sheet-item
+  position relative
+  vertical-height(action-sheet-height)
+  padding 0 action-sheet-padding-h
+  box-sizing border-box
+  font-size action-sheet-font-size
+  transition background-color .3s
+  -webkit-user-select none
+  &.active
+    color action-sheet-color-highlight
+  &.disabled .md-action-sheet-item-section
+    opacity action-sheet-disabled-opacity
+  &:first-of-type
+    .md-action-sheet-item-wrapper:after
+      display none
+  &:active
+    background-color color-bg-tap
+    &.disabled
+      background-color transparent
+
+.md-action-sheet-item-wrapper
+  position relative
+  hairline(top, color-border-base)
+
+.md-action-sheet-cancel
+  height 132px
+  line-height 120px
+  color action-sheet-color-cancel
+  font-weight font-weight-medium
+  &::before
+    display block
+    content ''
+    height 12px
+    background action-sheet-cancel-gap-bg
 </style>

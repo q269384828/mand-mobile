@@ -1,6 +1,7 @@
 const rollup = require('rollup')
 const path = require('path')
 const { rollupPlugin, DEV_OUTPUT_DIR, PROJECT_DIR } = require('./rollup-plugin-config')
+const { resultLog } = require('../utils')
 
 
 // express
@@ -11,8 +12,14 @@ const history = require('connect-history-api-fallback')
 const port = 4000
 
 const inputOptions = {
-  input: path.resolve(PROJECT_DIR, 'examples/main.indemand.js'),
+  input: path.resolve(PROJECT_DIR, 'examples/main.js'),
   plugins: rollupPlugin,
+  onwarn (warning) {
+    // throw on others
+    if (warning.code === 'NON_EXISTENT_EXPORT') {
+      throw new Error(warning.message)
+    }
+  }
 }
 
 const outputCommonjsOptions = {
@@ -26,12 +33,12 @@ function watch() {
   })
   const watcher = rollup.watch(watchOptions)
   watcher.on('event', e => {
-    console.info(e)
     if (e.code === 'END') {
-      console.info('resource rebuild')
+      resultLog('success', 'Dev Server Ready!')
     }
-    if (e.code === 'ERROR') {
-      console.info(e)
+    if (e.code === 'ERROR' || e.code === 'FATAL') {
+      console.log('\n')
+      resultLog('error', e.error.stack)
     }
   })
 }

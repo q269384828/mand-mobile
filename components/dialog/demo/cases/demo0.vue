@@ -2,6 +2,7 @@
   <div class="md-example-child md-example-child-dialog md-example-child-dialog-0">
     <md-button @click="basicDialog.open = true">基本</md-button>
     <md-button @click="iconDialog.open = true">带图标</md-button>
+    <md-button @click="warnDialog.open = true">警示操作</md-button>
     <md-button @click="actDialog.open = true">多操作</md-button>
 
     <md-dialog
@@ -14,8 +15,7 @@
     </md-dialog>
 
     <md-dialog
-      icon="circle-right"
-      title="窗口标题"
+      icon="location"
       :closable="true"
       v-model="iconDialog.open"
       :btns="iconDialog.btns"
@@ -24,8 +24,18 @@
     </md-dialog>
 
     <md-dialog
+      title="警示操作"
+      :closable="false"
+      v-model="warnDialog.open"
+      :btns="warnDialog.btns"
+    >
+      或是因为习惯了孤独，我们渴望被爱；又或是害怕爱而不得，我们最后仍然选择孤独。
+    </md-dialog>
+
+    <md-dialog
       title="窗口标题"
       :closable="false"
+      layout="column"
       v-model="actDialog.open"
       :btns="actDialog.btns"
     >
@@ -48,6 +58,10 @@ export default {
         open: false,
         btns: [
           {
+            text: '取消',
+            handler: this.onBasicCancel,
+          },
+          {
             text: '确认操作',
             handler: this.onBasicConfirm,
           },
@@ -62,15 +76,32 @@ export default {
           },
         ],
       },
-      actDialog: {
+      warnDialog: {
         open: false,
         btns: [
           {
             text: '取消',
-            handler: this.onActCancel,
           },
           {
-            text: '确认操作',
+            text: '警示操作',
+            warning: true,
+          },
+        ],
+      },
+      actDialog: {
+        open: false,
+        btns: [
+          {
+            text: '操作一',
+            type: 'danger',
+            handler: this.onActConfirm,
+          },
+          {
+            text: '操作二',
+            handler: this.onActConfirm,
+          },
+          {
+            text: '操作三',
             handler: this.onActConfirm,
           },
         ],
@@ -84,22 +115,19 @@ export default {
       })
       this.basicDialog.open = false
     },
+    onBasicCancel() {
+      Toast({
+        content: '你点击了取消',
+      })
+      this.basicDialog.open = false
+    },
     onIconConfirm() {
       Toast({
         content: '你点击了确认',
       })
       this.iconDialog.open = false
     },
-    onActCancel() {
-      Toast({
-        content: '你点击了取消',
-      })
-      this.actDialog.open = false
-    },
     onActConfirm() {
-      Toast({
-        content: '你点击了确认',
-      })
       this.actDialog.open = false
     },
   },

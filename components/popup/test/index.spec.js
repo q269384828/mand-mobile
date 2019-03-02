@@ -1,81 +1,27 @@
-import Popup from '../index'
-import PopupTitleBar from '../title-bar'
-import {mount} from 'avoriaz'
+import {Popup} from 'mand-mobile'
+import sinon from 'sinon'
+import {shallowMount} from '@vue/test-utils'
 import triggerTouch from './touch-trigger'
 
-describe('Popup', () => {
+describe('Popup - Operation', () => {
   let wrapper
 
   afterEach(() => {
     wrapper && wrapper.destroy()
   })
 
-  it('create a popup', done => {
-    wrapper = mount(Popup, {
+  it('popup show/hide', done => {
+    wrapper = shallowMount(Popup, {
       propsData: {
-        value: true,
-      },
-      slots: {
-        default: PopupTitleBar,
+        value: false,
       },
     })
-
-    wrapper.vm.$nextTick(() => {
-      expect(wrapper.vm.isPopupShow).to.be.true
-      expect(wrapper.vm.isPopupBoxShow).to.be.true
-      wrapper.vm.value = false
-      done()
-    })
-  })
-
-  it('create a popup with position center', done => {
-    wrapper = mount(Popup, {
-      propsData: {
-        position: 'center',
-      },
-    })
-    expect(wrapper.vm.transition).to.equal('fade')
-    wrapper.vm.value = true
+    const eventSpy = sinon.spy(wrapper.vm, '$emit')
+    wrapper.setProps({value: true})
     setTimeout(() => {
-      const popupBox = wrapper.find('.md-popup-box')[0]
-      expect(wrapper.hasClass('md-popup') && wrapper.hasClass('center') && popupBox.hasClass('fade')).to.be.true
-      done()
-    }, 300)
-  })
+      expect(eventSpy.calledWith('beforeShow')).toBe(true)
 
-  it('popup with transition', done => {
-    wrapper = mount(Popup, {
-      propsData: {
-        position: 'bottom',
-      },
-    })
-    const popupBox = wrapper.find('.md-popup-box')[0]
-
-    expect(wrapper.vm.transition).to.equal('slide-up')
-
-    wrapper.vm.transition = 'slide-for-test'
-    // expect(popupBox.hasClass('slide-for-test')).to.be.true
-    done()
-  })
-
-  it('popup without mask', done => {
-    wrapper = mount(Popup, {
-      propsData: {
-        hasMask: false,
-      },
-    })
-
-    wrapper.vm.value = true
-    setTimeout(() => {
-      expect(wrapper.contains('.md-popup-mask')).to.be.true
-      done()
-    }, 300)
-  })
-
-  it('popup mask is closable', done => {
-    wrapper = mount(Popup)
-    expect(wrapper.hasClass('with-mask')).to.be.true
-
+<<<<<<< HEAD
     wrapper.vm.value = true
     setTimeout(() => {
       const popupMask = wrapper.find('.md-popup-mask')[0]
@@ -85,17 +31,27 @@ describe('Popup', () => {
         done()
       }, 50)
     }, 300)
+=======
+      const mask = wrapper.find('.md-popup-mask')
+      mask.trigger('click')
+      expect(eventSpy.calledWith('maskClick')).toBe(true)
+      expect(eventSpy.calledWith('input')).toBe(true)
+      expect(eventSpy.calledWith('beforeHide')).toBe(true)
+      done()
+    }, 50)
+    // expect(eventSpy.calledWith('before-show')).toBe(true)
+>>>>>>> 18544c76be38dcf6854e44bbdbdef665e1379462
   })
 
   it('popup prevent scroll', done => {
-    wrapper = mount(Popup, {
+    wrapper = shallowMount(Popup, {
       propsData: {
         preventScroll: true,
         value: true,
       },
     })
 
-    const popupBox = wrapper.find('.md-popup-box')[0]
+    const popupBox = wrapper.find('.md-popup-box')
     setTimeout(() => {
       document.body.style.height = '10000px'
       triggerTouch(popupBox.element, 'touchstart', 0, 0)

@@ -1,8 +1,8 @@
-import Cashier from '../index'
-import {mount} from 'avoriaz'
-import {setTimeout} from 'timers'
+import {Cashier} from 'mand-mobile'
+import sinon from 'sinon'
+import {mount} from '@vue/test-utils'
 
-describe('Cashier', () => {
+describe('Cashier - Operation', () => {
   let wrapper
 
   afterEach(() => {
@@ -19,6 +19,7 @@ describe('Cashier', () => {
       icon: 'cashier-icon-2',
       text: '支付宝支付',
       value: '002',
+      disabled: true,
     },
     {
       icon: 'cashier-icon-3',
@@ -38,54 +39,65 @@ describe('Cashier', () => {
   ]
 
   it('cashier default-index', done => {
-    wrapper = mount(Cashier)
-
-    const eventStub = sinon.stub(wrapper.vm, '$emit')
+    wrapper = mount(Cashier, {
+      propsData: {
+        channels: [channels[0]],
+        channelLimit: 0,
+      },
+    })
 
     wrapper.vm.channels = channels
     wrapper.vm.defaultIndex = 1
+    wrapper.vm.channelLimit = 2
     wrapper.vm.value = true
     setTimeout(() => {
       expect(
         wrapper
-          .find('.choose-channel-item.default')[0]
+          .find('.choose-channel-list')
+          .find('.default')
           .text()
           .trim(),
-      ).to.equal(channels[1].text)
-      expect(wrapper.vm.activeChannelIndex).to.equal(1)
+      ).toEqual(channels[1].text)
 
-      const moreBtn = wrapper.find('.choose-channel-more')[0]
+      const moreBtn = wrapper.find('.choose-channel-more')
       moreBtn.trigger('click')
+      expect(wrapper.vm.$refs.channel.isChannelShow).toBeTruthy()
+
+      const eventSpy = sinon.spy(wrapper.vm.$refs.channel, '$emit')
+      const channelItems = wrapper.findAll('.md-cashier-channel-item')
+      const confirmBtn = wrapper.find('.md-cashier-pay-button')
+      expect(channelItems.length).toEqual(channels.length)
+
+      channelItems.at(1).trigger('click') // invalid click
+      channelItems.at(2).trigger('click')
+      expect(eventSpy.calledWith('select')).toBeTruthy()
+
+      confirmBtn.trigger('click')
+      expect(eventSpy.calledWith('pay')).toBeTruthy()
+      expect(wrapper.vm.$refs.channel.activeChannelIndex).toEqual(2)
+
+      wrapper.vm.value = false
       wrapper.vm.$nextTick(() => {
-        expect(wrapper.find('.choose-channel-item').length).to.equal(channels.length)
-
-        const item = wrapper.find('.choose-channel-item')[2]
-        item.trigger('click')
-        expect(eventStub.calledWith('select')).to.be.true
-        expect(wrapper.vm.activeChannelIndex).to.equal(2)
-
-        const confirm = wrapper.find('.md-cashier-pay-button')[0]
-        confirm.trigger('click')
-        expect(eventStub.calledWith('pay')).to.be.true
-
-        wrapper.vm.value = false
+        moreBtn.trigger('click') // invalid click
         done()
       })
-    }, 500)
+    }, 300)
   })
 
   it('cashier captcha', done => {
     wrapper = mount(Cashier, {
-      propsData: {channels},
+      propsData: {
+        value: true,
+      },
     })
 
-    wrapper.vm.value = true
     wrapper.vm.next('captcha', {
       text: '123',
     })
+
     wrapper.vm.$nextTick(() => {
-      expect(wrapper.find('.md-cashier-captcha').length > 0).to.be.true
-      const cancel = wrapper.find('.md-popup-cancel')[0]
+      expect(!!wrapper.find('.md-cashier-captcha')).toBeTruthy()
+      const cancel = wrapper.find('.md-popup-cancel')
       cancel.trigger('click')
       done()
     })
@@ -93,63 +105,69 @@ describe('Cashier', () => {
 
   it('cashier loading', done => {
     wrapper = mount(Cashier, {
-      propsData: {channels},
+      propsData: {
+        channels,
+        value: true,
+      },
     })
 
-    wrapper.vm.value = true
     wrapper.vm.next('loading', {
       text: '123',
     })
     wrapper.vm.$nextTick(() => {
-      expect(wrapper.find('.md-cashier-loading').length > 0).to.be.true
+      expect(!!wrapper.find('.md-cashier-loading')).toBeTruthy()
       expect(
         wrapper
-          .find('.md-cashier-block-text')[0]
+          .find('.md-cashier-block-text')
           .text()
           .trim(),
-      ).to.equal('123')
+      ).toEqual('123')
       done()
     })
   })
 
   it('cashier success', done => {
     wrapper = mount(Cashier, {
-      propsData: {channels},
+      propsData: {
+        channels,
+        value: true,
+      },
     })
 
-    wrapper.vm.value = true
     wrapper.vm.next('success', {
       text: '123',
     })
     wrapper.vm.$nextTick(() => {
-      expect(wrapper.find('.md-cashier-success').length > 0).to.be.true
+      expect(!!wrapper.find('.md-cashier-success')).toBeTruthy()
       expect(
         wrapper
-          .find('.md-cashier-block-text')[0]
+          .find('.md-cashier-block-text')
           .text()
           .trim(),
-      ).to.equal('123')
+      ).toEqual('123')
       done()
     })
   })
 
   it('cashier fail', done => {
     wrapper = mount(Cashier, {
-      propsData: {channels},
+      propsData: {
+        channels,
+        value: true,
+      },
     })
 
-    wrapper.vm.value = true
     wrapper.vm.next('fail', {
       text: '123',
     })
     wrapper.vm.$nextTick(() => {
-      expect(wrapper.find('.md-cashier-fail').length > 0).to.be.true
+      expect(!!wrapper.find('.md-cashier-fail')).toBeTruthy()
       expect(
         wrapper
-          .find('.md-cashier-block-text')[0]
+          .find('.md-cashier-block-text')
           .text()
           .trim(),
-      ).to.equal('123')
+      ).toEqual('123')
       done()
     })
   })

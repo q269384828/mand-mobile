@@ -28,8 +28,9 @@ Vue.component(InputItem.name, InputItem)
 |type|input type, special type has text formatting|String|`text`|`text`,`bankCard`,`phone`,<br/>`money`,`password`|
 |name|name of input|String|-|one of the event arguments, is used to distinguish multi inputs|
 |v-model|value of input|String|-|-|
-|title|title of input|String|-|support `HtmlFragment` and `slot(name: left)`|
+|title|title of input|String|-|`slot left` as alternative|
 |placeholder|placeholder of input|String|-|-|
+|brief|description|String|-|-|
 |maxlength|maximum number of characters that can be entered|String/Number|-|the maxlength of `phone` type is fixed at 11|
 |size|size of input|String|`normal`|`large`,`normal`|
 |align|text alignment|String|`left`|`left`,`center`,`right`|
@@ -37,13 +38,15 @@ Vue.component(InputItem.name, InputItem)
 |readonly|readonly|Boolean|`false`|-|
 |disabled|disabled|Boolean|`false`|-|
 |is-title-latent|hide title or not|Boolean|`false`|title will be displayed when input is focused or content is not empty|
-|is-highlight|the input is highlighted or not|Boolean|`false`|only affect the font color of `placeholder`|
+|is-highlight|the input is highlighted or not|Boolean|`false`|highlight focused item border|
 |is-formative|if the input text is automatically formatted according to the type|Boolean|the default value is `true` when `type` is `bankCard`, `phone` or `money`, otherwise `false`|-|
+|is-amount|the input is financial figures|Boolean|`false`|-|
 |formation|input text formatting callback function|Function(name, curValue, curPos): {value: curValue, range: curPos}|-|passing parameter `name` is the name of input, `curValue` is input value, `curPos` is the current position of input cursor, and returned `value` is formatted value. `range` is the position of input cursor after formatting|
 |clearable|use clear control or not|Boolean|`false`|-|
-|is-virtual-keyboard|if use financial numeric keypad control|Boolean|`false`|-|
-|virtual-keyboard-disorder|if number keys of financial numeric keypad is out of order|Boolean|`false`|-|
-|virtual-keyboard-ok-text|confirmation key texts of financial numeric keypad|String|`confirm`|-|
+|is-virtual-keyboard|use financial number keyboard control|Boolean|`false`|-|
+|virtual-keyboard-disorder|if number keys of financial number keyboard is out of order|Boolean|`false`|-|
+|virtual-keyboard-ok-text|confirmation key texts of financial number keyboard|String|`confirm`|-|
+|virtual-keyboard-vm|financial number keyboard instance|Object|-|generally used for custom number keyboard|
 
 #### InputItem Slots
 
@@ -52,6 +55,12 @@ Left slot, generally is used to place icons, etc.
 
 #### right
 Right slot, generally is used to place icons, etc.
+
+#### brief
+Description slot，generally used to description is more complicated, can not be satisfied with `brief` in `Props`, need to use `v-if` control.(Not recommended)
+
+#### error
+Error slot，generally used to error is more complicated, can not be satisfied with `error` in `Props`, need to use `v-if` control, refer to the 'input with error message' in the example.(Not recommended)
 
 #### InputItem Methods
 
